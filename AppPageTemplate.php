@@ -19,6 +19,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <title>Showit React App</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <?php
     $CSSfiles = scandir(dirname(__FILE__) . '/app/build/static/css/');
     foreach($CSSfiles as $filename) {

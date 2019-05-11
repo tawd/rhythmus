@@ -18,7 +18,7 @@ export default {
             if(parsedConfig && parsedConfig.uid) {
                 this.uid = parsedConfig.uid;
             }
-            this.authKey="?k="+Buffer.from(this.uid + ":" + this.apiKey).toString('base64');
+            this.authKey="k="+Buffer.from(this.uid + ":" + this.apiKey).toString('base64');
         }
     }
 }

@@ -71,7 +71,7 @@ class KRAReview {
     public function register_routes() {
         $version = '1';
         $namespace = $this->plugin_slug . '/v' . $version;
-        $endpoint = '/kra_review/';
+        $endpoint = '/kra-review/';
 
         register_rest_route( $namespace, $endpoint, array(
             array(
@@ -118,21 +118,10 @@ class KRAReview {
      * @return WP_Error|WP_REST_Request
      */
     public function get_kra_review( $request ) {
-        
-        $kra_review = "This is a test";
+        //Currently reading sample data from a file and returning
+        $sample = json_decode(file_get_contents(__DIR__.'/sample-data/kra-teammate-year.json'));
 
-        // Don't return false if there is no option
-        if ( ! $kra_review ) {
-            return new \WP_REST_Response( array(
-                'success' => true,
-                'value' => ''
-            ), 200 );
-        }
-
-        return new \WP_REST_Response( array(
-            'success' => true,
-            'value' => $kra_review
-        ), 200 );
+        return new \WP_REST_Response( $sample, 200 );
     }
 
     /**

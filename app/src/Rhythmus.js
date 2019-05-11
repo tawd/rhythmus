@@ -1,56 +1,87 @@
-import React, {Component}  from 'react';
+import React from 'react';
 import './Rhythmus.css';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import TeamList from './views/TeamKRABrowser/TeamListView';
 
-import TeamList from './views/TeamList';
 
-class Rhythmus extends Component {
+function TabContainer(props) {
+  return (
+    <Typography component="div" style={{ padding: 8 * 3 }}>
+      {props.children}
+    </Typography>
+  );
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+  },
+});
+
+
+class Rhythmus extends React.Component {
   constructor(){
     super();
     this.state = {
-        currentView:"teamlist",
-        isLoading:false
+      value: 0
     };
   }
+
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
+
   componentDidMount() {
 
   }
 
-  viewMyKRA = () => {
-    this.setState({currentView:"kra"});
+  viewKRAReviews = () => {
+    this.setState({value:0});
   }
   viewWeeklyReports = () => {
-    console.log(this);
-    this.setState({currentView:"weeklyreports"});
+    this.setState({cvalue:1});
   }
-  viewKRAReviews = () => {
-    this.setState({currentView:"teamlist"});
+  viewMyKRA = () => {
+    this.setState({ value:2});
   }
 
-  onChooseTeammate = (userid) => {
-
-  }
 
   render() {
-    let appView = <p></p>;
-
-    if(this.state.currentView == "teamlist") {
-      appView = <TeamList onChooseTeammate={this.onChooseTeammate}/>;
-    }
+    const { classes } = this.props;
+    const { value } = this.state;
 
     return (
-      <div className="App">
-        <header className="App-header">
-          
-          <p>
-            Welcome to the Rhythmus!
-          </p>
-          <button onClick={this.viewKRAReviews}>KRA Reviews</button>
-          <button onClick={this.viewWeeklyReports}>Weekly Reports</button>
-          <button onClick={this.viewMyKRA}>My KRA</button>
-          {appView}
-        </header>
+    <React.Fragment>
+      <CssBaseline />
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Tabs value={value} onChange={this.handleChange}>
+            <Tab label="KRA Reviews" />
+            <Tab label="Weekly Reports" />
+            <Tab label="My KRA" />
+          </Tabs>
+        </AppBar>
+        {value === 0 && <TabContainer><TeamList onChooseTeammate={this.onChooseTeammate}/></TabContainer>}
+        {value === 1 && <TabContainer>Weekly Reports</TabContainer>}
+        {value === 2 && <TabContainer>My KRA</TabContainer>}
       </div>
+      </React.Fragment>
     );
   }
 }
-export default Rhythmus;
+
+Rhythmus.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+export default withStyles(styles)(Rhythmus);
