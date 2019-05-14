@@ -71,12 +71,18 @@ spl_autoload_register(function ($class) {
 });
 
 /**
+ * Register activation and deactivation hooks
+ */
+register_activation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'activate' ) );
+register_deactivation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'deactivate' ) );
+
+/**
  * Initialize Plugin
  *
  * @since 1.0.0
  */
 function init() {
-  $rhythmus = Rhythmus::get_instance();  
+  $rhythmus = Rhythmus::get_instance();
   $kra_review_rest = Endpoint\KRAReview::get_instance();
   $teammate_rest = Endpoint\Teammate::get_instance();
 
@@ -102,9 +108,5 @@ add_action( 'json_api', function( $controller, $method )
     header ("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
 }, 10, 2 );
 */
-/**
- * Register activation and deactivation hooks
- */
-register_activation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'activate' ) );
-register_deactivation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'deactivate' ) );
+
 

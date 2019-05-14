@@ -1,0 +1,9 @@
+# Composer files
+vendor/
+
+# IDE Specific Files
+.settings
+.project
+.buildpath
+.idea/
+
