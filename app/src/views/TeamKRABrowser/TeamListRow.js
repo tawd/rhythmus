@@ -24,17 +24,16 @@ class TeamListRow extends Component {
         let teammate = this.props.teammate;
         let year = this.props.year;
         let scores = teammate.scores;
-        let scoreCols = "";
-        
+        let scoreCols = [];
+        let idprefix = teammate.userid+"-"+year+"-";
+
+        scoreCols.push(<TableCell key={"name-"+teammate.userid} onClick={this.onChooseTeammateKRA}>{teammate.name}</TableCell>)
         for (let i = 1; i <= 12; i++) {
-            scoreCols =[scoreCols,<TeamListRowCol onChooseTeammateMonth={this.onChooseTeammateMonth} 
+            scoreCols.push(<TeamListRowCol key={idprefix+i} onChooseTeammateMonth={this.onChooseTeammateMonth} 
                                 onChooseTeammateKRA={this.onChooseTeammateKRA}
-                                userid={teammate.userid} month={i} year={year} score={scores[i]} />];
+                                userid={teammate.userid} month={i} year={year} score={scores[i]} />);
         }
-        let namekey = "name-"+teammate.userid;
-        return (
-            <TableRow key={teammate.userid}><TableCell key={namekey} onClick={this.onChooseTeammateKRA}>{teammate.name}</TableCell>{scoreCols}</TableRow>
-        );
+        return (<TableRow key={teammate.userid}>{scoreCols}</TableRow>);
     }
 
 }

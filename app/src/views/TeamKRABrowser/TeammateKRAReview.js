@@ -19,7 +19,7 @@ class TeammateKRAReview extends Component {
 
         this.setState({isLoading:true});
 
-        const{year, month, userid} = this.props;
+        const{year, userid} = this.props;
         let params = "year="+year+"&userid="+userid;
         fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-review?'+params+'&'+Config.authKey,{
             method: "GET",
@@ -33,8 +33,7 @@ class TeammateKRAReview extends Component {
                 }
             })
             .then(data => {
-                let teammate = data.teammate;
-                this.setState({teammate:teammate,isLoading:false});
+                this.setState({teammate:data,isLoading:false});
             }
         ).catch(error => this.setState({error, isLoading:false}));
     
@@ -50,9 +49,9 @@ class TeammateKRAReview extends Component {
             return <p>Loading...</p>;
         }
 
-        let desc = this.props.userid +"-"+this.props.month+"-"+this.props.year;//+"-"+this.state.teammate.userid;
+        let desc = teammate.name+": "+this.props.userid +"-"+this.props.month+"-"+this.props.year;
         return(
-            <div>Teammate:{desc}</div>
+            <div>{desc}</div>
         )
     }
 }

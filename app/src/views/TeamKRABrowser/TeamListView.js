@@ -9,18 +9,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-
-const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-  },
-  table: {
-    minWidth: 700,
-  },
-});
 
 class TeamList extends Component {
 
@@ -68,11 +56,9 @@ class TeamList extends Component {
             })
             .then(data => {
                 let teammates = data.teammates.map((teammate) => {
-                    return (
-                        <TeamListRow onChooseTeammateMonth={this.onChooseTeammateMonth} 
+                    return (<TeamListRow key={teammate.userid} onChooseTeammateMonth={this.onChooseTeammateMonth} 
                                      onChooseTeammateKRA={this.onChooseTeammateKRA} 
-                                     teammate={teammate} year={year}/>
-                    );
+                                     teammate={teammate} year={year}/>);
                 })
             this.setState({teammates:teammates,isLoading:false});
             }
@@ -84,7 +70,7 @@ class TeamList extends Component {
            "July", "August", "September", "October", "November", "December" ];
         let months;
         for (let i = 0; i < 12; i++) {
-            months =[months,<TableCell>{m[i]}</TableCell>];
+            months =[months,<TableCell key={"m-"+i}>{m[i]}</TableCell>];
           }
         return months;
     }
@@ -108,12 +94,8 @@ class TeamList extends Component {
             )
         }
 
-        let styles = {
-            table: {
-              minWidth: 700,
-            }};
         return(
-        <Table className={styles.table} padding="none" align="center">
+        <Table padding="none" align="center">
             <TableHead>
             <TableRow><TableCell>Name</TableCell>{this.getMonths()}</TableRow>
             </TableHead>

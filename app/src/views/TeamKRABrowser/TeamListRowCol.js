@@ -12,7 +12,7 @@ class TeamListRowCol extends Component {
 
         let key = this.props.userid+"-"+this.props.year+"-"+this.props.month;
 
-        return <TableCell key={key} onClick={this.onChooseTeammateMonth}>{this.props.score}</TableCell>
+        return (<TableCell key={key} onClick={this.onChooseTeammateMonth}>{this.props.score}</TableCell>);
     }
 
 }
