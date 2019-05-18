@@ -88,20 +88,16 @@ function init() {
 		include(__DIR__ . '/AppPageTemplate.php');
 		exit();
   }
+  if("import" == $current_path) {
+    status_header( 200 );
+		include(__DIR__ . '/Import.php');
+		exit();
+  }
+
 
 }
 add_action( 'plugins_loaded', 'Rhythmus\\init' );
 
-//Allow CORS
-/*
-add_action( 'json_api', function( $controller, $method )
-{
-    header( "Access-Control-Allow-Origin: *" );
-    header ("Access-Control-Allow-Headers: *");
-    header ("Access-Control-Expose-Headers: Content-Length, X-JSON");
-    header ("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
-}, 10, 2 );
-*/
 /**
  * Register activation and deactivation hooks
  */

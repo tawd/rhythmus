@@ -1,0 +1,12 @@
+month,year,kra,work,workscore,edu,eduscore,char,charscore,Scores
+7,2018,0.8,"Update React and other modules used in App",0.9,Learn to make hummus,1,Patience,0.8,3.5
+8,2018,1,"Update platform to support new 'Trial' process ",1,"Read Parenting from the Inside Out ",0.7,Being Present,0.9,3.6
+9,2018,1,"Walkthrough platform with Corey and help him to deliver an update to the platform",1,"Continue reading Parenting book",0.5,Patience,0.9,3.4
+10,2018,1,"Research what new browser features are available to use in the Showit renderer. Lead the team well while everyone is gone.",1,"Learn about and experiment with Reactive programming (RxJS)",0.7,Patience,0.85,3.55
+11,2018,1,"Have new renderer outputting basic structure of a page. ",0.7,"Read How We Love",1,Generosity,0.9,3.6
+12,2018,1,Login tracking,1,"Read How We Love Our Kids",0.8,Courage,0.9,3.7
+1,2019,1,"Improve tracking of launched sites.",0.5,"Read Measure What Matters",1,Courage,0.9,3.4
+2,2019,1,Contact form architecture,0.8,Mindset,1,Selflessness,0.85,3.65
+3,2019,1,ConvertKit Integration,0.9,"Read Agile: An Essential Guide",1,Growth Mindset,0.85,3.75
+4,2019,1,Account Management,0.6,Angular,0.7,Empathy,0.8,3.1
+5,2019,,Convert Kit,,"Read Getting Things Done",,Patience,,0
