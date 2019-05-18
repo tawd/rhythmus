@@ -74,8 +74,8 @@ class Rhythmus {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-        //TODO: install db tables
-    
+		include_once dirname( __FILE__ ) . '/class-rhythmus-install.php';
+		Rhythmus_Install::rhythmus_install();
     }
 
 	/**
