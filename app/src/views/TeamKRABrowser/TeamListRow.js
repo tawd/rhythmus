@@ -6,13 +6,6 @@ import TableRow from '@material-ui/core/TableRow';
 
 class TeamListRow extends Component {
 
-    constructor(){
-        super();
-        this.state = {
-            teammate:{}
-        };
-    }
-    
     onChooseTeammateMonth = (userid, month, year) => {
         this.props.onChooseTeammateMonth(userid, month, year);
     }

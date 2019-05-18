@@ -1,0 +1,29 @@
+{
+    "topics":[
+        {
+            "name":"kra",
+            "title":"Key Results Areas",
+            "description":"The areas of your job that when you are doing these successfully, you are winning at work.",
+            "type":"slider",
+            "source":"kra-titles"
+        },
+        {
+            "name":"work",
+            "title":"Work Goal",
+            "description":"A SMART goal for work that has a specific measurement that you can accomplish this month.",
+            "type":"outof"
+        },
+        {
+            "name":"education",
+            "title":"Education Goal",
+            "description":"A SMART goal to further your educational growth that has a specific measurement that you can accomplish this month.",
+            "type":"outof"
+        },
+        {
+            "name":"character",
+            "title":"Character or Discipline",
+            "description":"A character trait that you will be working on, or a habit that will create discipline in your life to affect your character.",
+            "type":"slider"
+        }
+    ]
+}

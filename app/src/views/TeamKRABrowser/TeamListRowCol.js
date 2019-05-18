@@ -9,7 +9,6 @@ class TeamListRowCol extends Component {
     }
 
     render() {
-
         let key = this.props.userid+"-"+this.props.year+"-"+this.props.month;
 
         return (<TableCell key={key} onClick={this.onChooseTeammateMonth}>{this.props.score}</TableCell>);

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import TeammateKRAReview from './TeammateKRAReview';
+import KRAReviewEditor from '../KRAReview/KRAReviewEditor';
 import TeamListRow from './TeamListRow';
 import '../../Rhythmus.css';
 import Config from '../../config.js';
@@ -9,8 +9,9 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-class TeamList extends Component {
+class TeamListView extends Component {
 
     constructor(){
         super();
@@ -30,7 +31,6 @@ class TeamList extends Component {
     }
     onChooseTeammateKRA = (userid) => {
         //TODO: Open the user KRA details, not review
-        console.log("Clicked username to view their kra"+userid);
     }
 
     onCloseTeammate = () => {
@@ -66,8 +66,8 @@ class TeamList extends Component {
     }
 
     getMonths(){
-        var m = [ "January", "February", "March", "April", "May", "June", 
-           "July", "August", "September", "October", "November", "December" ];
+        let m = Config.monthNames;
+
         let months;
         for (let i = 0; i < 12; i++) {
             months =[months,<TableCell key={"m-"+i}>{m[i]}</TableCell>];
@@ -83,14 +83,11 @@ class TeamList extends Component {
         }
         if(isLoading)
         {
-            return <p>Loading...</p>;
+            return <CircularProgress />;
         }
         if(viewTeammate){
             return(
-                <div>
-                    <button onClick={this.onCloseTeammate}>Close</button>
-                    <TeammateKRAReview userid={userid} month={month} year={year} />
-                </div>
+                    <KRAReviewEditor userid={userid} month={month} year={year} onCloseTeammate={this.onCloseTeammate}/>
             )
         }
 
@@ -107,5 +104,4 @@ class TeamList extends Component {
     }
 }
 
-
-export default TeamList;
+export default TeamListView;

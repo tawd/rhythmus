@@ -3,6 +3,10 @@ export default {
     apiKey:"",
     uid:"",
     authKey:"",
+    kraTopics:false,
+
+    monthNames: [ "January", "February", "March", "April", "May", "June", 
+       "July", "August", "September", "October", "November", "December" ],
 
     load: function() {
         const appConfig = document.getElementById('app-config');

@@ -3,91 +3,85 @@
     "version":1,
     "name":"Aaron Griffy",
     "userid":"345",
-    "reviews":[ 
-        {
-            "year":"2019",
-            "month":"1",
-            "total":"3.13",
-            "reviewed":"true",
+    "reviews":{ 
+        "2019-1":{
+            "year":2019,
+            "month":1,
+            "total":3.13,
+            "reviewed":true,
             "review_notes":"with Todd great stuff",
             "create-date":"2019-01-01 12:34",
             "last-update":"2019-02-12 16:34",
-            "detail":{
+            "submit-date":"2019-02-12 16:34",
+            "topics":{
                 "kra":{
                     "goal":"Lead Team,Write Code",
                     "goal_notes":"",
-                    "amount":"1",
-                    "outof":"3",
                     "notes":"Needs improvement",
-                    "score":"0.33"
+                    "score":0.30
                 },
                 "work":{
                     "goal":"Finish API",
                     "goal_notes":"",
-                    "amount":"4",
-                    "outof":"4",
+                    "amount":4,
+                    "outof":4,
                     "notes":"Did it",
-                    "score":"1"
+                    "score":1
                 },
                 "education":{
                     "goal":"Read 5 chapters of book",
                     "goal_notes":"",
-                    "amount":"4",
-                    "outof":"5",
+                    "amount":4,
+                    "outof":5,
                     "notes":"Read 4 chapters",
-                    "score":"0.8"
+                    "score":0.8
                 },
                 "character":{
                     "goal":"Patience",
                     "goal_notes":"",
-                    "amount":"4",
-                    "outof":"4",
                     "notes":"Very Patient",
-                    "score":"1"
+                    "score":1
                 }
             }
         },
-        {
+        "2019-2":{
             "month":"2",
             "total":"3.13",
-            "reviewed":"false",
+            "reviewed":false,
             "review_notes":"",
             "create-date":"2019-02-01 12:34",
             "last-update":"2019-03-14 16:34",
-            "detail":{
+            "submit-date":"2019-03-14 16:34",
+            "topics":{
                 "kra":{
                     "goal":"Lead Team,Write Code",
                     "goal_notes":"",
-                    "amount":"1",
-                    "outof":"3",
                     "notes":"Needs improvement",
-                    "score":"0.33"
+                    "score":0.5
                 },
                 "work":{
                     "goal":"Finish API",
                     "goal_notes":"",
-                    "amount":"4",
-                    "outof":"4",
+                    "amount":4,
+                    "outof":4,
                     "notes":"Did it",
-                    "score":"1"
+                    "score":1
                 },
                 "education":{
                     "goal":"Read 5 chapters of book",
                     "goal_notes":"",
-                    "amount":"4",
-                    "outof":"5",
+                    "amount":4,
+                    "outof":5,
                     "notes":"Read 4 chapters",
-                    "score":"0.8"
+                    "score":0.8
                 },
                 "character":{
                     "goal":"Patience",
                     "goal_notes":"",
-                    "amount":"4",
-                    "outof":"4",
                     "notes":"Very Patient",
-                    "score":"1"
+                    "score":1
                 }
             }
         }
-    ]
+    }
 }

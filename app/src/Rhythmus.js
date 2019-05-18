@@ -7,7 +7,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
-import TeamList from './views/TeamKRABrowser/TeamListView';
+import TeamListView from './views/TeamKRABrowser/TeamListView';
 
 
 function TabContainer(props) {
@@ -72,7 +72,7 @@ class Rhythmus extends React.Component {
             <Tab label="My KRA" />
           </Tabs>
         </AppBar>
-        {value === 0 && <TabContainer><TeamList onChooseTeammate={this.onChooseTeammate}/></TabContainer>}
+        {value === 0 && <TabContainer><TeamListView /></TabContainer>}
         {value === 1 && <TabContainer>Weekly Reports</TabContainer>}
         {value === 2 && <TabContainer>My KRA</TabContainer>}
       </div>
