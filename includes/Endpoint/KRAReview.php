@@ -77,38 +77,30 @@ class KRAReview {
             array(
                 'methods'               => \WP_REST_Server::READABLE,
                 'callback'              => array( $this, 'get_kra_review' ),
-                'permission_callback'   => array( $this, 'kra_read_permissions_check' ),
+                'permission_callback'   => array( $this, 'kra_permissions_check' ),
                 'args'                  => array(),
             ),
         ) );
 
-        register_rest_route( $namespace, $endpoint, array(
-            array(
-                'methods'               => \WP_REST_Server::CREATABLE,
-                'callback'              => array( $this, 'update_kra_review' ),
-                'permission_callback'   => array( $this, 'kra_update_permissions_check' ),
-                'args'                  => array(),
-            ),
-        ) );
 
         register_rest_route( $namespace, $endpoint, array(
             array(
                 'methods'               => \WP_REST_Server::EDITABLE,
                 'callback'              => array( $this, 'update_kra_review' ),
-                'permission_callback'   => array( $this, 'kra_update_permissions_check' ),
+                'permission_callback'   => array( $this, 'kra_permissions_check' ),
                 'args'                  => array(),
             ),
         ) );
 
+        $endpoint = '/kra-topics/';
         register_rest_route( $namespace, $endpoint, array(
             array(
-                'methods'               => \WP_REST_Server::DELETABLE,
-                'callback'              => array( $this, 'delete_kra_review' ),
-                'permission_callback'   => array( $this, 'kra_update_permissions_check' ),
+                'methods'               => \WP_REST_Server::READABLE,
+                'callback'              => array( $this, 'get_kra_topics' ),
+                'permission_callback'   => array( $this, 'kra_permissions_check' ),
                 'args'                  => array(),
             ),
         ) );
-
     }
 
     /**
@@ -125,59 +117,63 @@ class KRAReview {
     }
 
     /**
+     * Get KRA Topics
+     *
+     * @param WP_REST_Request $request Full data about the request.
+     * @return WP_Error|WP_REST_Request
+     */
+    public function get_kra_topics( $request ) {
+        //Currently reading sample data from a file and returning
+        $sample = json_decode(file_get_contents(__DIR__.'/sample-data/kra-topics.json'));
+
+        return new \WP_REST_Response( $sample, 200 );
+    }
+
+    /**
      * Create OR Update 
      *
      * @param WP_REST_Request $request Full data about the request.
      * @return WP_Error|WP_REST_Request
      */
     public function update_kra_review( $request ) {
+        global $wpdb;
         $data = json_decode(file_get_contents('php://input'), true);
 
+        $table_name = $wpdb->prefix . 'rhythmus_kra_review';
 
-        //TODO: Finish
+        //TODO: Need to check that the userid that is passed in is the current user or supervised or the current user is super admin
+        $sql = $wpdb->prepare( "REPLACE INTO $table_name
+                (user_id, year, month, total, reviewed, review_notes, topics, last_update_date)
+                VALUES
+                (%d, %d, %d, %d, %d, %s, %s, now())",
+                $data['userid'], $data['year'], $data['month'], $data['total'], 
+                $data['reviewed'], $data['review_notes'], json_encode($data['topics'])
+            );
+
         $updated = false;
+        if( $wpdb->query($sql) ) {
+            $updated = true;
+        }
 
         return new \WP_REST_Response( array(
-            'success'   => $updated,
-            'value'     => $updated
+            'success'   => $updated
         ), 200 );
     }
 
     /**
-     * Delete 
-     *
-     * @param WP_REST_Request $request Full data about the request.
-     * @return WP_Error|WP_REST_Request
-     */
-    public function delete_kra_review( $request ) {
-
-        //TODO: Finish
-        $deleted = false;
-
-        return new \WP_REST_Response( array(
-            'success'   => $deleted,
-            'value'     => ''
-        ), 200 );
-    }
-
-    /**
-     * Check if a given request has access to read KRA
+     * Check if a given request has access
      *
      * @param WP_REST_Request $request Full data about the request.
      * @return WP_Error|bool
      */
-    public function kra_read_permissions_check( $request ) {
-        //TODO: Need to make sure user is a logged in teammate
-        return true;
-    }
-
-   /**
-     * Check if a given request has access to update a KRA
-     *
-     * @param WP_REST_Request $request Full data about the request.
-     * @return WP_Error|bool
-     */
-    public function kra_update_permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
+    public function kra_permissions_check( $request ) {
+        $key = base64_decode($_GET['k']);
+        if( $key && strpos($key, ":") > 0 ) {
+            $keyParts = explode(":", $key);
+            if($params[1] == get_user_meta($params[0], 'rhythmus-key', true)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
