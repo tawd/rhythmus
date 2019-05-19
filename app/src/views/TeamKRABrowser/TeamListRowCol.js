@@ -10,8 +10,13 @@ class TeamListRowCol extends Component {
 
     render() {
         let key = this.props.userid+"-"+this.props.year+"-"+this.props.month;
+        let score = this.props.score;
+        let scoreVal = "";
+        if(score) {
+            scoreVal = score.score;
+        }
 
-        return (<TableCell key={key} onClick={this.onChooseTeammateMonth}>{this.props.score}</TableCell>);
+        return (<TableCell key={key} onClick={this.onChooseTeammateMonth}>{scoreVal}</TableCell>);
     }
 
 }

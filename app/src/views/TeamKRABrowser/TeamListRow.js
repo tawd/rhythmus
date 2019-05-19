@@ -16,15 +16,23 @@ class TeamListRow extends Component {
     render() {
         let teammate = this.props.teammate;
         let year = this.props.year;
-        let scores = teammate.scores;
+        let month = this.props.month;
+        let scores = teammate.months;
         let scoreCols = [];
-        let idprefix = teammate.userid+"-"+year+"-";
 
-        scoreCols.push(<TableCell key={"name-"+teammate.userid} onClick={this.onChooseTeammateKRA}>{teammate.name}</TableCell>)
-        for (let i = 1; i <= 12; i++) {
-            scoreCols.push(<TeamListRowCol key={idprefix+i} onChooseTeammateMonth={this.onChooseTeammateMonth} 
+        scoreCols.push(<TableCell key={"name-"+teammate.userid} onClick={this.onChooseTeammateKRA}>{teammate.name}</TableCell>);
+        for (let i = 0; i < this.props.numCols; i++) {
+            let currMonth = month - i;
+            let currYear = year;
+            if(currMonth < 1) {
+                currMonth = currMonth + 12;
+                currYear = year - 1;
+            }
+            let currScore = scores[currYear+"-"+currMonth];
+            let key = teammate.userid+"-"+currYear+"-"+currMonth;
+            scoreCols.push(<TeamListRowCol key={key} onChooseTeammateMonth={this.onChooseTeammateMonth} 
                                 onChooseTeammateKRA={this.onChooseTeammateKRA}
-                                userid={teammate.userid} month={i} year={year} score={scores[i]} />);
+                                userid={teammate.userid} month={currMonth} year={currYear} score={currScore} />);
         }
         return (<TableRow key={teammate.userid}>{scoreCols}</TableRow>);
     }
