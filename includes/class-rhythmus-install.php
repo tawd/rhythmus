@@ -16,7 +16,7 @@ class Rhythmus_Install
 
         $table_name = $wpdb->prefix . "rhythmus_kra_review";
         $sql = "CREATE TABLE $table_name (
-          user_id bigint(20),
+          teammate_id bigint(20),
           year int(4),
           month int(2),
           create_date datetime default CURRENT_TIMESTAMP,
@@ -27,7 +27,7 @@ class Rhythmus_Install
           reviewed tinyint(1) default 0,
           review_notes varchar(255),
           topics longtext,
-          PRIMARY KEY  (user_id, year, month)
+          PRIMARY KEY  (teammate_id, year, month)
             ) $charset_collate;";
         dbDelta( $sql );
 
@@ -46,7 +46,7 @@ class Rhythmus_Install
         $table_name = $wpdb->prefix . "rhythmus_kra";
         $sql = "CREATE TABLE $table_name (
           id mediumint(9) NOT NULL AUTO_INCREMENT,
-          user_id bigint(20),
+          teammate_id bigint(20),
           is_current tinyint(1) default 0,
           create_date datetime default CURRENT_TIMESTAMP,
           last_update_date datetime ON UPDATE CURRENT_TIMESTAMP,
@@ -56,13 +56,13 @@ class Rhythmus_Install
             ) $charset_collate;";
         dbDelta( $sql );
 
-        $table_name = $wpdb->prefix . "rhythmus_member";
+        $table_name = $wpdb->prefix . "rhythmus_teammate";
         $sql = "CREATE TABLE $table_name (
           id mediumint(9) NOT NULL AUTO_INCREMENT,
-          user_id mediumint(9),
+          wp_user_id mediumint(9),
           fname varchar (100),
           lname varchar (100),
-          member_data text,
+          teammate_data text,
           slack text,
           is_active tinyint(1)  NOT NULL DEFAULT 1, 
           is_super_admin tinyint(1) NOT NULL DEFAULT 0,
@@ -92,7 +92,7 @@ class Rhythmus_Install
         $table_name = $wpdb->prefix . "rhythmus_weekly_report";
         $sql = "CREATE TABLE $table_name (
           id mediumint(9) NOT NULL AUTO_INCREMENT,
-          user_id mediumint(9),
+          teammate_id mediumint(9),
           week_id mediumint(9),
           report_data text,
           notes text,
@@ -122,8 +122,8 @@ class Rhythmus_Install
         $table_name = $wpdb->prefix . "rhythmus_supervisor";
         $sql = "CREATE TABLE $table_name (
           id mediumint(9) NOT NULL AUTO_INCREMENT,
-          user_id mediumint(9),
-          supervisor_id mediumint(9),
+          teammate_id mediumint(9),
+          supervisor_teammate_id mediumint(9),
           date_added datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
           PRIMARY KEY  (id)
             ) $charset_collate;";
