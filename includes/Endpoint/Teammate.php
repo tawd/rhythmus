@@ -91,9 +91,9 @@ class Teammate {
     public function get_teammate_list( $request ) {
         global $wpdb;
 
-        $results = $wpdb->get_results( "SELECT rm.user_id, fname, lname, year, month, total, submitted, reviewed 
-        from {$wpdb->prefix}rhythmus_member rm left outer join {$wpdb->prefix}rhythmus_kra_review rkr on rm.user_id = rkr.user_id 
-        where rm.is_active = 1 order by fname asc, year desc, month desc", OBJECT );
+        $results = $wpdb->get_results( "SELECT rt.id, fname, lname, year, month, total, submitted, reviewed 
+        from {$wpdb->prefix}rhythmus_teammate rt left outer join {$wpdb->prefix}rhythmus_kra_review rkr on rt.id = rkr.teammate_id 
+        where rt.is_active = 1 order by fname asc, year desc, month desc", OBJECT );
 
         $teammates = array ();
         $currUser = false;
@@ -101,16 +101,16 @@ class Teammate {
         $currScores = array();
         foreach ( $results as $row ) 
         {
-            if($row->user_id != $currUserID) {
+            if($row->id != $currUserID) {
                 if($currUser) {
                     $currUser["months"] = $currScores;
                     array_push($teammates, $currUser);
                 }
                 $currUser = array(
                     "name" => $row->fname." ".$row->lname,
-                    "userid" => $row->user_id
+                    "userid" => $row->id
                 );
-                $currUserID = $row->user_id;
+                $currUserID = $row->id;
                 $currScores = array();
             }
             $key = $row->year."-".$row->month;
