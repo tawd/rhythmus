@@ -43,7 +43,6 @@ class Rhythmus {
 	 * @since     1.0.0
 	 */
 	private function __construct() {
-		$this->plugin_version = WP_REACTIVATE_VERSION;
 	}
 
 	/**
