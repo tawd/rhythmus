@@ -123,10 +123,34 @@ class KRAReview {
      * @return WP_Error|WP_REST_Request
      */
     public function get_kra_topics( $request ) {
-        //Currently reading sample data from a file and returning
-        $sample = json_decode(file_get_contents(__DIR__.'/sample-data/kra-topics.json'));
+        global $wpdb;
 
-        return new \WP_REST_Response( $sample, 200 );
+        $results = $wpdb->get_results( "SELECT id, name, title, description, type, source 
+        FROM {$wpdb->prefix}rhythmus_kra_topic", OBJECT );
+ 
+        $topics = array();
+
+        foreach ( $results as $row ) 
+        {
+            $type="";
+            if($row->type == 1) {
+                $type = "slider";
+            }elseif($row->type == 0){
+                $type = "outof";
+            }
+            $topic = array(
+                "name" => $row->name,
+                "title"=> $row->title,
+                "type"=>$type,
+                "description"=>$row->description
+            );
+            if($row->source == 1) {
+                $topic["source"] = "kra-titles";
+            }
+            array_push($topics, $topic);
+        }
+
+        return new \WP_REST_Response( array("topics"=>$topics), 200 );
     }
 
     /**
