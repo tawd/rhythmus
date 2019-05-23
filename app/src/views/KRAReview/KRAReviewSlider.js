@@ -20,7 +20,7 @@ class KRAReviewSlider extends Component {
         this.props.onChange(key, val);
     };
     render() {
-        const { classes, score } = this.props;
+        let { classes, score } = this.props;
         if(!score) {
             score = 0.5;
         }
