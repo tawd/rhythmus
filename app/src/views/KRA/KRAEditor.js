@@ -8,7 +8,7 @@ import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 
 import _ from 'lodash';
 
 
-class KRAReviewEditor extends Component {
+class KRAEditor extends Component {
 
     constructor(){
         super();
@@ -18,15 +18,19 @@ class KRAReviewEditor extends Component {
         };
     }
     
-    onChooseTeammateKRA = (userid) => {
-        //TODO: Implement what happens to view a teammate's KRA when their name is clicked from the list
+    onCloseKRA = () => {
+        
     }
 
     componentDidMount() {
         this.setState({isLoading:true});
 
+        const{userid} = this.props;
+        this.setState({isLoading:true, userid:userid});
+        let params = "teammate_id="+userid;
+
         let year = 2019;
-        fetch(Config.baseURL + '/wp-json/rhythmus/v1/teammate-list?year='+year+'&'+Config.authKey,{
+        fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra?'+params+'&'+Config.authKey,{
             method: "GET",
             cache: "no-cache"
         })
@@ -38,18 +42,14 @@ class KRAReviewEditor extends Component {
                 }
             })
             .then(data => {
-                let teammates = data.teammates.map((teammate) => {
-                    return (<TeamListRow key={teammate.userid} onChooseTeammateMonth={this.onChooseTeammateMonth} 
-                                     onChooseTeammateKRA={this.onChooseTeammateKRA} 
-                                     teammate={teammate} year={year}/>);
-                })
-            this.setState({teammates:teammates,isLoading:false});
+                let kra = data;
+                this.setState({kra:kra,isLoading:false});
             }
         ).catch(error => this.setState({error, isLoading:false}));
     }
 
     render() {
-        const{isLoading, error, viewTeammate, userid, month, year} = this.state;
+        const{isLoading, error, userid} = this.state;
         if(error)
         {
             return <p>{error.message}</p>
@@ -61,29 +61,17 @@ class KRAReviewEditor extends Component {
         if(viewTeammate){
             return(
                 <div>
-                    <button onClick={this.onCloseTeammate}>Close</button>
-                    <TeammateKRAReview userid={userid} month={month} year={year} />
+                    <button onClick={this.onCloseKRA}>Close</button>
                 </div>
             )
         }
 
         return(
             <div>
-                <RIEInput
-                    value={this.state.text}
-                    propName='title'
-                    beforeStart={this.onStartEditing}
-                    afterFinish={this.onFinishEditing}
-                    validate={_.isString} />
-                <RIETextArea
-                    value={this.state.textarea}
-                    propName="textarea"
-                     />
-
             </div>
         )
     }
 }
 
 
-export default KRAReviewEditor;
+export default KRAEditor;

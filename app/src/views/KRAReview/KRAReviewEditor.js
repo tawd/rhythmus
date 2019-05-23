@@ -144,7 +144,7 @@ class KRAReviewEditor extends Component {
     loadKRAs= () => {
         const{year, userid, month} = this.props;
         this.setState({isLoading:true, month:month, year:year});
-        let params = "year="+year+"&userid="+userid;
+        let params = "teammate_id="+userid;
         fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-review?'+params+'&'+Config.authKey,{
             method: "GET",
             cache: "no-cache"
@@ -159,8 +159,8 @@ class KRAReviewEditor extends Component {
             .then(data => {
                 let teammate = data;
                 this.setState({teammate:teammate});
-                if(teammate && teammate.reviews) {
-                    let review = teammate.reviews[year+"-"+month];
+                if(teammate && teammate.months) {
+                    let review = teammate.months[year+"-"+month];
                     if(!review){
                         review = {};
                     }
@@ -188,7 +188,7 @@ class KRAReviewEditor extends Component {
             let m = Config.monthNames;
             let onReviewTopicChangeFunction = this.onReviewTopicChange;
             let topicJSX = [];
-            let { reviewed, review_notes } = review;
+            let { reviewed, review_notes,score} = review;
             if( ! reviewed ) {
                 reviewed = false;
             }
@@ -216,6 +216,7 @@ class KRAReviewEditor extends Component {
                         <Grid item xs={12}>
                             <Paper className={classes.paper}>
                                 <h2>{teammate.name} for {m[month-1]}, {year}</h2>
+                                <h3>Score: {score}</h3>
                             </Paper>
                         </Grid>
                         {topicJSX}

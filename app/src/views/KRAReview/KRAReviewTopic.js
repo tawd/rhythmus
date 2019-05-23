@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import '../../Rhythmus.css';
+import KRAReviewSlider from './KRAReviewSlider';
+import KRAReviewOutOf from './KRAReviewOutOf';
+
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -35,21 +38,16 @@ class KRAReviewTopic extends Component {
 
     handleChange = name => event => {
         this.props.onReviewTopicChange(this.props.topic.name, name, event.target.value);
-        //this.setState({ [name]: event.target.value });
     };
 
-    handleSliderChange = (event, value) => {
-        let key = event.target.id;
-        let val = value.toFixed(2);
+    handleScoreChange = (key, val) => {
         this.props.onReviewTopicChange(this.props.topic.name, key, val);
     };
+
     render() {
         const { classes, review } = this.props;
         let { title, description, type } = this.props.topic;
-        let { score, goal, goal_notes } = review;
-        if(!score) {
-            score = 0.5;
-        }
+        let { score, amount, outof, goal, goal_notes } = review;
         if(typeof score != 'number')
         {
             score = parseFloat(score);
@@ -61,24 +59,12 @@ class KRAReviewTopic extends Component {
             goal_notes = "";
         }
         let scoring;
-        if(type === "slider"){
-            scoring = <div><Slider
-            id="score"
-            className={classes.slider}
-            value={score}
-            min={0}
-            max={1}
-            step={0.05}
-            aria-labelledby="scoring"
-            onChange={this.handleSliderChange}
-          />
-            <p>Score: {score}</p></div>
-        } else {
-            //TODO: Build out the amount out of scoring interface
-            scoring = <div>
-
-            </div>
+        if (type === "slider") {
+            scoring = <KRAReviewSlider score={score} onChange={this.handleScoreChange} />
+        } else if(type === "outof") {
+            scoring = <KRAReviewOutOf score={score} amount={amount} outof={outof} onChange={this.handleScoreChange} />;
         }
+        
         return(
             <Grid item xs={12}><Paper className={classes.paper}>
                 <h3>{title}</h3>
