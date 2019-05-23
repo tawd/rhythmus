@@ -110,10 +110,44 @@ class KRAReview {
      * @return WP_Error|WP_REST_Request
      */
     public function get_kra_review( $request ) {
-        //Currently reading sample data from a file and returning
-        $sample = json_decode(file_get_contents(__DIR__.'/sample-data/kra-teammate-year.json'));
+        global $wpdb;
+        $teammate_id = $_GET["teammate_id"];
 
-        return new \WP_REST_Response( $sample, 200 );
+        $sql = $wpdb->prepare( "SELECT rt.id, fname, lname, year, month, total, submitted, reviewed, topics, 
+        review_notes, submit_date, last_update_date 
+        from {$wpdb->prefix}rhythmus_teammate rt left outer join {$wpdb->prefix}rhythmus_kra_review rkr on rt.id = rkr.teammate_id 
+        where rt.id = %d order by year desc, month desc", $teammate_id );
+
+        $results = $wpdb->get_results($sql, OBJECT);
+
+
+        $teammate = array(
+            "app" => 'Rhythmus',
+            "version" => 1
+        );
+        $months = array();
+
+        foreach ( $results as $row ) 
+        {
+            if(!$teammate["userid"]) {
+                $teammate["userid"] = $row->id;
+                $teammate["name"] = $row->fname." ".$row->lname;
+            }
+            $key = $row->year."-".$row->month;
+            $months[$key] = array(
+                "score" => $row->total,
+                "reviewed" => ($row->reviewed == 1),
+                "submitted" => ($row->submitted == 1),
+                "review_notes" => $row->review_notes,
+                "create-date" => $row->create_date,
+                "last-update" => $row->last_update_date,
+                "submit-date" => $row->submit_date,
+                "topics" => json_decode($row->topics),
+            );
+        }
+        $teammate["months"] = $months;
+        
+        return new \WP_REST_Response( $teammate, 200 );
     }
 
     /**
