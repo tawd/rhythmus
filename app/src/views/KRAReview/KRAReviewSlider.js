@@ -21,24 +21,33 @@ class KRAReviewSlider extends Component {
     };
     render() {
         let { classes, score } = this.props;
+        let scoreLabel = "";
         if(!score) {
             score = 0.5;
-        }
-        if(typeof score != 'number')
-        {
-            score = parseFloat(score);
+        } else {
+            if(typeof score != 'number')
+            {
+                score = parseFloat(score);
+            }
+            if(score >=0 ) {
+                scoreLabel = "Score: " + score;
+            }
         }
         return(
-            <Slider
-            id="score"
-            className={classes.slider}
-            value={score}
-            min={0}
-            max={1}
-            step={0.05}
-            aria-labelledby="scoring"
-            onChange={this.handleSliderChange}
-          />
+            <div>
+                <Slider
+                    id="score"
+                    className={classes.slider}
+                    value={score}
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    aria-labelledby="scoring"
+                    onChange={this.handleSliderChange}
+                />
+                <br/>
+                {scoreLabel}
+          </div>
         );
     }
 }

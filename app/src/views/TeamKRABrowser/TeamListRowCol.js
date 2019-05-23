@@ -20,7 +20,7 @@ class TeamListRowCol extends Component {
         if(score) {
             scoreVal = score.score;
             scoreVal = parseFloat(scoreVal);
-            if(scoreVal == 4 ){
+            if(scoreVal === 4 ){
                 style["background"] = "#529e4b";
             }else if(scoreVal >=3 ){
                 style["background"] = "#83c985";
@@ -28,6 +28,9 @@ class TeamListRowCol extends Component {
                 style["background"] = "#dfdc6c";
             }else if(scoreVal >=1 ){
                 style["background"] = "#df8171";
+            }
+            if(!score.reviewed) {
+                style["textDecoration"] = "underline";
             }
         }
 
