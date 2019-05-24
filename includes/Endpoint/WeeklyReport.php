@@ -86,6 +86,15 @@ class WeeklyReport {
                 'args'                  => array(),
             ),
         ) );
+
+        register_rest_route( $namespace, $endpoint, array(
+            array(
+                'methods'               => \WP_REST_Server::EDITABLE,
+                'callback'              => array( $this, 'update_wr_status' ),
+                'permission_callback'   => array( $this->auth, 'permissions_check' ),
+                'args'                  => array(),
+            ),
+        ) );
     }
 
     /**
@@ -99,5 +108,38 @@ class WeeklyReport {
         $sample = json_decode(file_get_contents(__DIR__.'/sample-data/wr-status-list.json'));        
         return new \WP_REST_Response( $sample, 200 );
 
+    }
+
+    /**
+     * Create OR Update 
+     *
+     * @param WP_REST_Request $request Full data about the request.
+     * @return WP_Error|WP_REST_Request
+     */
+    public function update_wr_status( $request ) {
+        global $wpdb;
+        
+        // TODO: Why are we reading the contents this way and not through POST?
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        // TODO: validation on incoming data
+        $status = array_key_exists( 'status', $data ) ? (int) $data['status'] : 0;
+        $teammate_id = $data['teammate_id'];
+        $week_id = $data['week_id'];
+
+        $table_name = $wpdb->prefix . 'rhythmus_weekly_report';
+
+        // TODO: What data are we going to use as an update key?
+        $sql = $wpdb->prepare( "UPDATE $table_name SET status = %d WHERE teammate_id = %d AND week_id = %d", $status, $teammate_id, $week_id );
+
+        $updated = false;
+        if( $wpdb->query($sql) ) {
+            $updated = true;
+        }
+
+        // TODO: We should probably create a common response format.
+        return new \WP_REST_Response( array(
+            'success'   => $updated
+        ), 200 );
     }
 }
