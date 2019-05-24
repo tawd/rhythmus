@@ -30,9 +30,6 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-/**
- * Current version
- */
 define( 'RHYTHMUS_VERSION', '1.0.0' );
 
 
