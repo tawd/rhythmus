@@ -11,12 +11,22 @@
  */
 
 namespace Rhythmus\Endpoint;
+
 use Rhythmus;
+use Rhythmus\EndpointAuthentication;
 
 /**
  * @subpackage REST_Controller
  */
 class WeeklyReport {
+
+    /**
+     * Handle endpoint authentication
+     *
+     * @var EndpointAuthentication $auth
+     */
+    protected $auth;
+
     /**
 	 * Instance of this class.
 	 *
@@ -31,7 +41,8 @@ class WeeklyReport {
 	 */
 	private function __construct() {
         $plugin = Rhythmus\Rhythmus::get_instance();
-		$this->plugin_slug = $plugin->get_plugin_slug();
+        $this->plugin_slug = $plugin->get_plugin_slug();
+        $this->auth = new EndpointAuthentication();
 	}
 
     /**
@@ -71,7 +82,7 @@ class WeeklyReport {
             array(
                 'methods'               => \WP_REST_Server::READABLE,
                 'callback'              => array( $this, 'get_wr_status_list' ),
-                'permission_callback'   => array( $this, 'logged_in_permissions_check' ),
+                'permission_callback'   => array( $this->auth, 'permissions_check' ),
                 'args'                  => array(),
             ),
         ) );
@@ -88,21 +99,5 @@ class WeeklyReport {
         $sample = json_decode(file_get_contents(__DIR__.'/sample-data/wr-status-list.json'));        
         return new \WP_REST_Response( $sample, 200 );
 
-    }
-    /**
-     * Check if a given request has access
-     *
-     * @param WP_REST_Request $request Full data about the request.
-     * @return WP_Error|bool
-     */
-    public function logged_in_permissions_check( $request ) {
-        $key = base64_decode($_GET['k']);
-        if($key && strpos($key, ":") > 0 ) {
-            $keyParts = explode(":", $key);
-            if($params[1] == get_user_meta($params[0], 'rhythmus-key', true)) {
-                return true;
-            }
-        }
-        return false;
     }
 }
