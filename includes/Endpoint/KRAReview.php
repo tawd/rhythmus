@@ -11,13 +11,22 @@
  */
 
 namespace Rhythmus\Endpoint;
-use Rhythmus;
 
+use Rhythmus;
+use Rhythmus\EndpointAuthentication;
 
 /**
  * @subpackage REST_Controller
  */
 class KRAReview {
+
+    /**
+     * Handle endpoint authentication
+     *
+     * @var EndpointAuthentication $auth
+     */
+    protected $auth;
+    
     /**
 	 * Instance of this class.
 	 *
@@ -35,7 +44,8 @@ class KRAReview {
 	 */
 	private function __construct() {
         $plugin = Rhythmus\Rhythmus::get_instance();
-		$this->plugin_slug = $plugin->get_plugin_slug();
+        $this->plugin_slug = $plugin->get_plugin_slug();
+        $this->auth = new EndpointAuthentication();
 	}
 
     /**
@@ -77,7 +87,7 @@ class KRAReview {
             array(
                 'methods'               => \WP_REST_Server::READABLE,
                 'callback'              => array( $this, 'get_kra_review' ),
-                'permission_callback'   => array( $this, 'kra_permissions_check' ),
+                'permission_callback'   => array( $this->auth, 'permissions_check' ),
                 'args'                  => array(),
             ),
         ) );
@@ -87,7 +97,7 @@ class KRAReview {
             array(
                 'methods'               => \WP_REST_Server::EDITABLE,
                 'callback'              => array( $this, 'update_kra_review' ),
-                'permission_callback'   => array( $this, 'kra_permissions_check' ),
+                'permission_callback'   => array( $this->auth, 'permissions_check' ),
                 'args'                  => array(),
             ),
         ) );
@@ -97,7 +107,7 @@ class KRAReview {
             array(
                 'methods'               => \WP_REST_Server::READABLE,
                 'callback'              => array( $this, 'get_kra_topics' ),
-                'permission_callback'   => array( $this, 'kra_permissions_check' ),
+                'permission_callback'   => array( $this->auth, 'permissions_check' ),
                 'args'                  => array(),
             ),
         ) );
@@ -216,22 +226,5 @@ class KRAReview {
         return new \WP_REST_Response( array(
             'success'   => $updated
         ), 200 );
-    }
-
-    /**
-     * Check if a given request has access
-     *
-     * @param WP_REST_Request $request Full data about the request.
-     * @return WP_Error|bool
-     */
-    public function kra_permissions_check( $request ) {
-        $key = base64_decode($_GET['k']);
-        if( $key && strpos($key, ":") > 0 ) {
-            $keyParts = explode(":", $key);
-            if($params[1] == get_user_meta($params[0], 'rhythmus-key', true)) {
-                return true;
-            }
-        }
-        return false;
     }
 }
