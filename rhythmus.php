@@ -32,6 +32,9 @@ if ( ! defined( 'WPINC' ) ) {
 
 define( 'RHYTHMUS_VERSION', '1.0.0' );
 
+if ( ! defined( 'RHYTHMUS_ENV' ) ) {
+  define( 'RHYTHMUS_ENV', 'development' );
+}
 
 /**
  * Autoloader

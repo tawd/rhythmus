@@ -12,6 +12,10 @@ class EndpointAuthentication {
      */
     public function permissions_check( $request ) {
 
+        if ( RHYTHMUS_ENV === 'development' ) {
+            return true;
+        }
+
         $key = base64_decode( $_GET['k'] );
         if ( $key && strpos( $key, ":" ) > 0 ) {
             $keyParts = explode(":", $key);
