@@ -39,11 +39,13 @@ const archive = archiver('zip', {
     zlib: { level: 9 }  // sets high compression level
 });
 
-// open the stream for the file we are writing to
+// open the stream for the file we are zipping to
 var output = fs.createWriteStream(outputFileName);
+
 // let the user know we are creating the zip file and providing the name
 console.log("Creating Zip File:", outputFileName);
 
+// let the user know we successfully zipped the file and the script is done
 output.on('close', function () {
     console.log(archive.pointer() + ' total bytes');
     console.log('Archive File Successfully Created.');
@@ -52,7 +54,7 @@ output.on('close', function () {
 output.on('end', function () {
     console.log('Data has been drained');
 });
-
+// if its just a warning, maybe we can continue...
 archive.on('warning', function (err) {
     if (err.code === 'ENOENT') {
         console.log('WARNING: ', err.code);
@@ -60,12 +62,12 @@ archive.on('warning', function (err) {
         throw err;
     }
 });
-
+// uh-oh!
 archive.on('error', function (err) {
     throw err;
 });
 
-// now we pipe the data into our output filestream
+// pipe the data into our output filestream
 archive.pipe(output)
 
 // add all of the files from filesToZip to our archive.
