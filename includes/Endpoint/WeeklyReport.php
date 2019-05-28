@@ -11,12 +11,23 @@
  */
 
 namespace Rhythmus\Endpoint;
+
 use Rhythmus;
+use Rhythmus\EndpointAuthentication;
+use WP_REST_Request;
 
 /**
  * @subpackage REST_Controller
  */
 class WeeklyReport {
+
+    /**
+     * Handle endpoint authentication
+     *
+     * @var EndpointAuthentication $auth
+     */
+    protected $auth;
+
     /**
 	 * Instance of this class.
 	 *
@@ -31,7 +42,8 @@ class WeeklyReport {
 	 */
 	private function __construct() {
         $plugin = Rhythmus\Rhythmus::get_instance();
-		$this->plugin_slug = $plugin->get_plugin_slug();
+        $this->plugin_slug = $plugin->get_plugin_slug();
+        $this->auth = new EndpointAuthentication();
 	}
 
     /**
@@ -71,7 +83,16 @@ class WeeklyReport {
             array(
                 'methods'               => \WP_REST_Server::READABLE,
                 'callback'              => array( $this, 'get_wr_status_list' ),
-                'permission_callback'   => array( $this, 'logged_in_permissions_check' ),
+                'permission_callback'   => array( $this->auth, 'permissions_check' ),
+                'args'                  => array(),
+            ),
+        ) );
+
+        register_rest_route( $namespace, $endpoint, array(
+            array(
+                'methods'               => \WP_REST_Server::EDITABLE,
+                'callback'              => array( $this, 'update_wr_status' ),
+                'permission_callback'   => array( $this->auth, 'permissions_check' ),
                 'args'                  => array(),
             ),
         ) );
@@ -89,20 +110,36 @@ class WeeklyReport {
         return new \WP_REST_Response( $sample, 200 );
 
     }
+
     /**
-     * Check if a given request has access
+     * Create OR Update 
      *
      * @param WP_REST_Request $request Full data about the request.
-     * @return WP_Error|bool
+     * @return WP_Error|WP_REST_Request
      */
-    public function logged_in_permissions_check( $request ) {
-        $key = base64_decode($_GET['k']);
-        if($key && strpos($key, ":") > 0 ) {
-            $keyParts = explode(":", $key);
-            if($params[1] == get_user_meta($params[0], 'rhythmus-key', true)) {
-                return true;
-            }
+    public function update_wr_status( WP_REST_Request $request ) {
+        global $wpdb;
+        
+        $data = $request->get_params();
+
+        // TODO: validation on incoming data
+        $status = array_key_exists( 'status', $data ) ? (int) $data['status'] : 0;
+        $teammate_id = $data['teammate_id'];
+        $week_id = $data['week_id'];
+
+        $table_name = $wpdb->prefix . 'rhythmus_weekly_report';
+
+        // TODO: What data are we going to use as an update key?
+        $sql = $wpdb->prepare( "UPDATE $table_name SET status = %d WHERE teammate_id = %d AND week_id = %d", $status, $teammate_id, $week_id );
+
+        $updated = false;
+        if( $wpdb->query($sql) ) {
+            $updated = true;
         }
-        return false;
+
+        // TODO: We should probably create a common response format.
+        return new \WP_REST_Response( array(
+            'success'   => $updated
+        ), 200 );
     }
 }
