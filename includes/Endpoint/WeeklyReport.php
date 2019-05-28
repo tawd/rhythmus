@@ -14,6 +14,7 @@ namespace Rhythmus\Endpoint;
 
 use Rhythmus;
 use Rhythmus\EndpointAuthentication;
+use WP_REST_Request;
 
 /**
  * @subpackage REST_Controller
@@ -116,11 +117,10 @@ class WeeklyReport {
      * @param WP_REST_Request $request Full data about the request.
      * @return WP_Error|WP_REST_Request
      */
-    public function update_wr_status( $request ) {
+    public function update_wr_status( WP_REST_Request $request ) {
         global $wpdb;
         
-        // TODO: Why are we reading the contents this way and not through POST?
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = $request->get_params();
 
         // TODO: validation on incoming data
         $status = array_key_exists( 'status', $data ) ? (int) $data['status'] : 0;
