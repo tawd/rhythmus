@@ -13,7 +13,7 @@ class TeamListRowCol extends Component {
         let score = this.props.score;
         let scoreVal = "";
         let style = {
-            background: "white",
+            background: "rgba(255,255,255, 0)",
             textAlign: "center",
             cursor: "pointer"
         };

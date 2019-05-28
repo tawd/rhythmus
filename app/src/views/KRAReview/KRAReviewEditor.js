@@ -213,7 +213,7 @@ class KRAReviewEditor extends Component {
                     <Grid container spacing={24}>
                         <Grid item xs={12}>{closeBtn}</Grid>
                         <form className={classes.container} noValidate autoComplete="off">
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                             <Paper className={classes.paper}>
                                 <h2>{teammate.name} for {m[month-1]}, {year}</h2>
                                 <h3>Score: {score}</h3>

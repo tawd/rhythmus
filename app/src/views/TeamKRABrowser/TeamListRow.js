@@ -28,13 +28,21 @@ class TeamListRow extends Component {
                 currMonth = currMonth + 12;
                 currYear = year - 1;
             }
+
+
             let currScore = scores[currYear+"-"+currMonth];
             let key = teammate.userid+"-"+currYear+"-"+currMonth;
             scoreCols.push(<TeamListRowCol key={key} onChooseTeammateMonth={this.onChooseTeammateMonth} 
                                 onChooseTeammateKRA={this.onChooseTeammateKRA}
                                 userid={teammate.userid} month={currMonth} year={currYear} score={currScore} />);
         }
-        return (<TableRow key={teammate.userid}>{scoreCols}</TableRow>);
+
+        let style = {};
+        if (this.props.background) {
+            style.background = "#ccc"
+        }
+        
+        return (<TableRow style={style} key={teammate.userid}>{scoreCols}</TableRow>);
     }
 
 }

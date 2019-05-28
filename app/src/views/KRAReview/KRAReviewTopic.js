@@ -67,23 +67,31 @@ class KRAReviewTopic extends Component {
         return(
             <Grid item xs={12}><Paper className={classes.paper}>
                 <h3>{title}</h3>
-                <TextField
-                    id="goal"
-                    value={goal}
-                    label={title}
-                    className={classes.textField}
-                    helperText={description}
-                    onChange={this.handleChange('goal')}
-                    />
-                {scoring}
-                <TextField
-                    id="goal_notes"
-                    value={goal_notes}
-                    className={classes.textField}
-                    label={title + " Notes"}
-                    margin="normal"
-                    onChange={this.handleChange('goal_notes')}
-                    />
+                <Grid container>
+                    <Grid item xs={4}>
+                        <TextField
+                            id="goal"
+                            value={goal}
+                            label={title}
+                            className={classes.textField}
+                            helperText={description}
+                            onChange={this.handleChange('goal')}
+                            />
+                    </Grid>
+                    <Grid item xs={4}>
+                        {scoring}
+                    </Grid>
+                    <Grid item xs={4}>
+                        <TextField
+                            id="goal_notes"
+                            value={goal_notes}
+                            className={classes.textField}
+                            label={title + " Notes"}
+                            margin="normal"
+                            onChange={this.handleChange('goal_notes')}
+                            />
+                    </Grid>
+                </Grid>
             </Paper></Grid>
         )
     }

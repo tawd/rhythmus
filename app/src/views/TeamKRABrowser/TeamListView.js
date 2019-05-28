@@ -95,8 +95,11 @@ class TeamListView extends Component {
         let currYear = today.getFullYear();
         let currMonth = today.getMonth() + 1;
         let numCols = 8;
+        let shaded = true;
+
         let teammateRowss = teammates.map((teammate) => {
-            return (<TeamListRow key={teammate.userid} onChooseTeammateMonth={this.onChooseTeammateMonth} 
+            shaded = !shaded;
+            return (<TeamListRow background={shaded} key={teammate.userid} onChooseTeammateMonth={this.onChooseTeammateMonth} 
                              onChooseTeammateKRA={this.onChooseTeammateKRA} 
                              teammate={teammate} year={currYear} month={currMonth} numCols={numCols}/>);
         });
