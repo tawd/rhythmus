@@ -15,6 +15,7 @@ namespace Rhythmus\Endpoint;
 use Rhythmus;
 use Rhythmus\EndpointAuthentication;
 use WP_REST_Request;
+use WP_REST_Response;
 
 /**
  * @subpackage REST_Controller
@@ -122,31 +123,35 @@ class WeeklyReport {
         
         $data = $request->get_params();
 
-        // TODO: validation on incoming data
-        $status = array_key_exists( 'status', $data ) ? (int) $data['status'] : 0;
-
-        if ( ! array_key_exists( 'teammate_id', $data ) || ! array_key_exists( 'week_id', $data ) ) {
+        if ( ! array_key_exists( 'status', $data ) || ! array_key_exists( 'userid', $data ) || ! array_key_exists( 'week', $data ) ) {
             return new \WP_REST_Response( array(
                 'success' => false,
                 'message' => 'invalid params',
             ) );
         }
 
-        $teammate_id = $data['teammate_id'];
-        $week_id = $data['week_id'];
+        if ( array_key_exists( 'status', $data ) && $data['status'] === 'complete' ) {
+            $status = 1;
+        } else {
+            $status = 0;
+        }
+
+        $teammate_id = (int) $data['userid'];
+        $week_id = (int) $data['week'];
 
         $table_name = $wpdb->prefix . 'rhythmus_weekly_report';
 
         // TODO: What data are we going to use as an update key?
         $sql = $wpdb->prepare( "UPDATE $table_name SET status = %d WHERE teammate_id = %d AND week_id = %d", $status, $teammate_id, $week_id );
 
-        $updated = false;
-        if( $wpdb->query($sql) ) {
+        if ( $wpdb->query($sql) ) {
             $updated = true;
+        } else {
+            $updated = false;
         }
 
         // TODO: We should probably create a common response format.
-        return new \WP_REST_Response( array(
+        return new WP_REST_Response( array(
             'success'   => $updated
         ), 200 );
     }
