@@ -117,7 +117,7 @@ class WeeklyReport {
      * @param WP_REST_Request $request Full data about the request.
      * @return WP_Error|WP_REST_Request
      */
-    public function update_wr_status( WP_REST_Request $request ) {
+    public function update_wr_status( $request ) {
         global $wpdb;
         
         $data = $request->get_params();
