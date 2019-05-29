@@ -124,6 +124,14 @@ class WeeklyReport {
 
         // TODO: validation on incoming data
         $status = array_key_exists( 'status', $data ) ? (int) $data['status'] : 0;
+
+        if ( ! array_key_exists( 'teammate_id', $data ) || ! array_key_exists( 'week_id', $data ) ) {
+            return new \WP_REST_Response( array(
+                'success' => false,
+                'message' => 'invalid params',
+            ) );
+        }
+
         $teammate_id = $data['teammate_id'];
         $week_id = $data['week_id'];
 
