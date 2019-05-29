@@ -14,6 +14,8 @@ namespace Rhythmus\Endpoint;
 
 use Rhythmus;
 use Rhythmus\EndpointAuthentication;
+
+use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -94,7 +96,27 @@ class WeeklyReport {
                 'methods'               => \WP_REST_Server::EDITABLE,
                 'callback'              => array( $this, 'update_wr_status' ),
                 'permission_callback'   => array( $this->auth, 'permissions_check' ),
-                'args'                  => array(),
+                'args'                  => array(
+                    'status' => array(
+                        'description' => esc_html__( 'The status of the weekly report' ),
+                        'required' => true,
+                        'type' => 'string',
+                        'enum' => array( 'complete', 'incomplete' ),
+                        'validate_callback' => array( $this, 'validate_status' ),
+                    ),
+                    'userid' => array(
+                        'description' => esc_html__( 'The teammate id' ),
+                        'required' => true,
+                        'sanitize_callback' => 'absint',
+                        'validate_callback' => array( $this, 'validate_int' )
+                    ),
+                    'week' => array(
+                        'description' => esc_html__( 'The week id' ),
+                        'required' => true,
+                        'sanitize_callback' => 'absint',
+                        'validate_callback' => array( $this, 'validate_int' )
+                    ),
+                ),
             ),
         ) );
     }
@@ -113,6 +135,43 @@ class WeeklyReport {
     }
 
     /**
+     * Validate the status reported when the weekly report is updated
+     *
+     * @param mixed $value
+     * @param WP_REST_Request $request
+     * @param string $param
+     * @return WP_Error
+     */
+    public function validate_status( $value, $request, $param ) {
+
+        if ( ! is_string( $value ) ) {
+            return new WP_Error( 'invalid_param', 'Invalid status.');
+        }
+        
+        $attributes = $request->get_attributes();
+
+        if ( ! in_array( $value, $attributes['args'][ $param ]['enum'], true ) ) {
+            return new WP_Error( 'rest_invalid_param', 'Invalid status.');
+        }
+
+    }
+
+    /**
+     * Validate any values that ought to be integers
+     *
+     * @param mixed $value
+     * @param WP_REST_Request $request
+     * @param string $param
+     * @return WP_Error
+     */
+    public function validate_int( $value, $request, $param ) {
+
+        if ( ! is_int( (int) $value ) ) {
+            return new WP_Error( 'rest_invalid_param', 'This value needs to be a number.' );
+        }
+    }
+
+    /**
      * Create OR Update 
      *
      * @param WP_REST_Request $request Full data about the request.
@@ -120,24 +179,10 @@ class WeeklyReport {
      */
     public function update_wr_status( $request ) {
         global $wpdb;
-        
-        $data = $request->get_params();
-
-        if ( ! array_key_exists( 'status', $data ) || ! array_key_exists( 'userid', $data ) || ! array_key_exists( 'week', $data ) ) {
-            return new \WP_REST_Response( array(
-                'success' => false,
-                'message' => 'invalid params',
-            ) );
-        }
-
-        if ( array_key_exists( 'status', $data ) && $data['status'] === 'complete' ) {
-            $status = 1;
-        } else {
-            $status = 0;
-        }
-
-        $teammate_id = (int) $data['userid'];
-        $week_id = (int) $data['week'];
+                
+        $status = $request->get_param('status') === 'complete' ? 1 : 0;
+        $teammate_id = $request->get_param('userid');
+        $week_id = $request->get_param('week');
 
         $table_name = $wpdb->prefix . 'rhythmus_weekly_report';
 
