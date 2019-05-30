@@ -101,7 +101,7 @@ class WeeklyReport {
                         'description' => esc_html__( 'The status of the weekly report' ),
                         'required' => true,
                         'type' => 'string',
-                        'enum' => array( 'complete', 'incomplete' ),
+                        'enum' => array( 'complete', 'late', 'out', 'incomplete' ),
                         'validate_callback' => array( $this, 'validate_status' ),
                     ),
                     'userid' => array(
