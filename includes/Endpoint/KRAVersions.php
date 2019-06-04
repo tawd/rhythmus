@@ -125,3 +125,50 @@ class KRAVersions {
         
     }
 }
+
+   
+/**
+ * Get current kra info from database
+ */
+
+$results = $wpdb->get_results( "SELECT * FROM $wp_rhythmus_kra");
+
+if(!empty($results)) {
+
+    echo "<table width='100%' border='0'>"; // Adding <table> and <tbody> tag outside foreach loop so that it wont create again and again
+    echo "<tbody>";
+
+    foreach($results as $row){   
+        echo "<tr>";                           // Adding rows of table inside foreach loop
+        echo "<th>ID</th>" . "<td>" . $row->id . "</td>";
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+        echo "<tr>";        
+        echo "<th>User IP</th>" . "<td>" . $row->teammate_id . "</td>";   //fetching data from teammate_id field
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+        echo "<tr>";        
+        echo "<th>Post ID</th>" . "<td>" . $row->is_current . "</td>";  //fetching data from is_current field
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+        echo "<tr>";        
+        echo "<th>Time</th>" . "<td>" . $row->create_date . "</td>";    //fetching data from create_date field
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+        echo "<tr>";        
+        echo "<th>Time</th>" . "<td>" . $row->last_update_date . "</td>";   //fetching data from last_update_date field
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+        echo "<tr>";        
+        echo "<th>Time</th>" . "<td>" . $row->position . "</td>";   //fetching data from position field
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+        echo "<tr>";        
+        echo "<th>Time</th>" . "<td>" . $row->kra . "</td>";    //fetching data from kra field
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+    }
+    echo "</tbody>";
+    echo "</table>"; 
+
+}
