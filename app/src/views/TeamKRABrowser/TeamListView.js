@@ -3,13 +3,21 @@ import KRAReviewEditor from '../KRAReview/KRAReviewEditor';
 import TeamListRow from './TeamListRow';
 import '../../Rhythmus.css';
 import Config from '../../config.js';
-
+import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
+
+const styles = theme => ({
+    mainTable: {
+        border: 0,
+        borderRadius: 6,
+        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+      },
+});
 
 class TeamListView extends Component {
 
@@ -77,6 +85,7 @@ class TeamListView extends Component {
     }
 
     render() {
+        let { classes } = this.props;
         const{isLoading, error, teammates, viewTeammate, userid, month, year} = this.state;
         if(error)
         {
@@ -106,7 +115,7 @@ class TeamListView extends Component {
         let monthHeadings = this.getMonths(currYear, currMonth, numCols);
 
         return(
-        <Table padding="none" align="center">
+        <Table className={classes.mainTable} align="center">
             <TableHead>
             <TableRow><TableCell>Name</TableCell>{monthHeadings}</TableRow>
             </TableHead>
@@ -118,4 +127,4 @@ class TeamListView extends Component {
     }
 }
 
-export default TeamListView;
+export default withStyles(styles)(TeamListView);

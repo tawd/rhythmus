@@ -52,6 +52,7 @@ class KRAReviewEditor extends Component {
             opent:false
         };
     }
+
     handleChange = name => event => {
         let review = this.state.review;
         review[name] = event.target.value;
@@ -79,6 +80,7 @@ class KRAReviewEditor extends Component {
         this.setState({ review: review });
         this.markForSave();
     }
+
     handleMessageClose = () => {
         this.setState({ open: false });
     }
@@ -202,7 +204,8 @@ class KRAReviewEditor extends Component {
                 } else {
                     review_topic = {};
                 }
-                topicJSX.push(<KRAReviewTopic key={topic.name}  
+                topicJSX.push(<KRAReviewTopic 
+                    key={topic.name}  
                     topic={topic}
                     propName={topic.name}
                     onReviewTopicChange={onReviewTopicChangeFunction}

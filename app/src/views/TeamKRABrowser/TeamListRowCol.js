@@ -1,6 +1,15 @@
 import React, {Component} from 'react';
 import '../../Rhythmus.css';
 import TableCell from '@material-ui/core/TableCell';
+// import { withStyles } from '@material-ui/core/styles';
+
+// const styles = theme => ({
+//     scoreCell: {
+//                     background: "rgba(255,255,255, 0)",
+//             textAlign: "center",
+//             cursor: "pointer"
+//     }
+// });
 
 class TeamListRowCol extends Component {
 
