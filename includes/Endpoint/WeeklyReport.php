@@ -106,8 +106,43 @@ class WeeklyReport {
      */
     public function get_wr_status_list( $request ) {
         //Currently reading sample data from a file and returning
-        $sample = json_decode(file_get_contents(__DIR__.'/sample-data/wr-status-list.json'));        
-        return new \WP_REST_Response( $sample, 200 );
+        $sample = json_decode(file_get_contents(__DIR__.'/sample-data/wr-status-list.json'));
+        /**
+         * 1. Write a query to get some data
+         * - query wp_rhythmus_weekly_report_week
+         * - query wp_rhythmus_weekly_report
+         * - query wp_rhythmus_teammate
+         * 
+         * 2. parse whatever results
+         * - 
+         * 
+         * 3. display the data or send it to display
+         */
+
+        global $wpdb;
+
+        $results = $wpdb->get_results( "SELECT id, start_date, end_date, num_submitted, num_reviewed FROM {$wpdb->prefix}rhythmus_weekly_report_week", OBJECT );
+
+        $output = array();
+
+        foreach ( $results as $result ) {
+
+            $output[] = array(
+                'id' => intval( $result->id ),
+                'start_date' => $result->start_date,
+                'end_date' => $result->end_date,
+                'num_submitted' => intval( $result->num_submitted ),
+                'num_reviewed' => intval( $result->num_reviewed ),
+            );
+        }
+
+        $weeks = array(
+            'weeks' => $output,
+            'teammates' => array(),
+        );
+
+
+        return new \WP_REST_Response( $weeks, 200 );
 
     }
 
