@@ -83,6 +83,7 @@ function init() {
   $kra_review_rest = Endpoint\KRAReview::get_instance();
   $teammate_rest = Endpoint\Teammate::get_instance();
   $wr_rest = Endpoint\WeeklyReport::get_instance();
+  $kra_versions = Endpoint\KRAVersions::get_instance();
 
   $url = explode( '?', $_SERVER['REQUEST_URI'] );
   $current_path = strtolower( trim( $url[0], '/' ) );
