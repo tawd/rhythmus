@@ -1,25 +1,28 @@
 <?php
+
+
 /**
- * Rhythmus
- *
- *
- * @package   Rhythmus
- * @author    Todd Watson
- * @license   GPL-3.0
- * @link      https://showit.co
- * @copyright 2019 Showit, Inc
+ * - Create an "Add new" button
+ * - Button duplictaes the current KRA data into a new dataset
+ * - Display employee name and version # 
+ * - Button for previous versions
+ *      - Sub menu with previous verions
+ * 
  */
 
 namespace Rhythmus\Endpoint;
 
 use Rhythmus;
 use Rhythmus\EndpointAuthentication;
+
+use WP_Error;
 use WP_REST_Request;
+use WP_REST_Response;
 
 /**
  * @subpackage REST_Controller
  */
-class WeeklyReport {
+class KRAVersions {
 
     /**
      * Handle endpoint authentication
@@ -75,14 +78,15 @@ class WeeklyReport {
      * Register the routes for the objects of the controller.
      */
     public function register_routes() {
+        
         $version = '1';
         $namespace = $this->plugin_slug . '/v' . $version;
-        $endpoint = '/wr-status-list/';
+        $endpoint = '/kra-versions/';
 
         register_rest_route( $namespace, $endpoint, array(
             array(
                 'methods'               => \WP_REST_Server::READABLE,
-                'callback'              => array( $this, 'get_wr_status_list' ),
+                'callback'              => array( $this, 'get_kra_versions' ),
                 'permission_callback'   => array( $this->auth, 'permissions_check' ),
                 'args'                  => array(),
             ),
@@ -91,7 +95,7 @@ class WeeklyReport {
         register_rest_route( $namespace, $endpoint, array(
             array(
                 'methods'               => \WP_REST_Server::EDITABLE,
-                'callback'              => array( $this, 'update_wr_status' ),
+                'callback'              => array( $this, 'update_kra_version' ),
                 'permission_callback'   => array( $this->auth, 'permissions_check' ),
                 'args'                  => array(),
             ),
@@ -104,7 +108,7 @@ class WeeklyReport {
      * @param WP_REST_Request $request Full data about the request.
      * @return WP_Error|WP_REST_Request
      */
-    public function get_wr_status_list( $request ) {
+    public function get_kra_versions( $request ) {
         //Currently reading sample data from a file and returning
         $sample = json_decode(file_get_contents(__DIR__.'/sample-data/wr-status-list.json'));        
         return new \WP_REST_Response( $sample, 200 );
@@ -117,29 +121,54 @@ class WeeklyReport {
      * @param WP_REST_Request $request Full data about the request.
      * @return WP_Error|WP_REST_Request
      */
-    public function update_wr_status( $request ) {
-        global $wpdb;
+    public function update_kra_version( $request ) {
         
-        $data = $request->get_params();
-
-        // TODO: validation on incoming data
-        $status = array_key_exists( 'status', $data ) ? (int) $data['status'] : 0;
-        $teammate_id = $data['teammate_id'];
-        $week_id = $data['week_id'];
-
-        $table_name = $wpdb->prefix . 'rhythmus_weekly_report';
-
-        // TODO: What data are we going to use as an update key?
-        $sql = $wpdb->prepare( "UPDATE $table_name SET status = %d WHERE teammate_id = %d AND week_id = %d", $status, $teammate_id, $week_id );
-
-        $updated = false;
-        if( $wpdb->query($sql) ) {
-            $updated = true;
-        }
-
-        // TODO: We should probably create a common response format.
-        return new \WP_REST_Response( array(
-            'success'   => $updated
-        ), 200 );
     }
+}
+
+   
+/**
+ * Get current kra info from database
+ */
+
+$results = $wpdb->get_results( "SELECT * FROM $wp_rhythmus_kra");
+
+if(!empty($results)) {
+
+    echo "<table width='100%' border='0'>"; // Adding <table> and <tbody> tag outside foreach loop so that it wont create again and again
+    echo "<tbody>";
+
+    foreach($results as $row){   
+        echo "<tr>";                           // Adding rows of table inside foreach loop
+        echo "<th>ID</th>" . "<td>" . $row->id . "</td>";
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+        echo "<tr>";        
+        echo "<th>User IP</th>" . "<td>" . $row->teammate_id . "</td>";   //fetching data from teammate_id field
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+        echo "<tr>";        
+        echo "<th>Post ID</th>" . "<td>" . $row->is_current . "</td>";  //fetching data from is_current field
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+        echo "<tr>";        
+        echo "<th>Time</th>" . "<td>" . $row->create_date . "</td>";    //fetching data from create_date field
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+        echo "<tr>";        
+        echo "<th>Time</th>" . "<td>" . $row->last_update_date . "</td>";   //fetching data from last_update_date field
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+        echo "<tr>";        
+        echo "<th>Time</th>" . "<td>" . $row->position . "</td>";   //fetching data from position field
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+        echo "<tr>";        
+        echo "<th>Time</th>" . "<td>" . $row->kra . "</td>";    //fetching data from kra field
+        echo "</tr>";
+        echo "<td colspan='2'><hr size='1'></td>";
+    }
+    echo "</tbody>";
+    echo "</table>"; 
+
 }
