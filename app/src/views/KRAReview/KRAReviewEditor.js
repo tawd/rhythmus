@@ -213,35 +213,35 @@ class KRAReviewEditor extends Component {
             });
             return(
                 <div>
-                    <Grid container spacing={24}>
+                    <Grid container>
                         <Grid item xs={12}>{closeBtn}</Grid>
                         <form className={classes.container} noValidate autoComplete="off">
-                        <Grid item xs={6}>
-                            <Paper className={classes.paper}>
-                                <h2>{teammate.name} for {m[month-1]}, {year}</h2>
-                                <h3>Score: {score}</h3>
-                            </Paper>
-                        </Grid>
-                        {topicJSX}
-                        <Grid item xs={12}>
-                            <FormControlLabel label="Reviewed"
-                                control={
-                                    <Checkbox
-                                    checked={reviewed}
-                                    onChange={this.handleCheckChange('reviewed')}
-                                    value="reviewed"
-                                    color="primary"
-                                    />}
-                                />
-                            <TextField
-                                id="review_notes"
-                                value={review_notes}
-                                label="Review Notes"
-                                className={classes.textField}
-                                onChange={this.handleChange('review_notes')}
-                                />
-                        </Grid>
-                    </form>
+                            <Grid item xs={6}>
+                                <Paper className={classes.paper}>
+                                    <h2>{teammate.name} for {m[month-1]}, {year}</h2>
+                                    <h3>Score: {score}</h3>
+                                </Paper>
+                            </Grid>
+                            {topicJSX}
+                            <Grid item xs={12}>
+                                <FormControlLabel label="Reviewed"
+                                    control={
+                                        <Checkbox
+                                        checked={reviewed}
+                                        onChange={this.handleCheckChange('reviewed')}
+                                        value="reviewed"
+                                        color="primary"
+                                        />}
+                                    />
+                                <TextField
+                                    id="review_notes"
+                                    value={review_notes}
+                                    label="Review Notes"
+                                    className={classes.textField}
+                                    onChange={this.handleChange('review_notes')}
+                                    />
+                            </Grid>
+                        </form>
                     </Grid>
                     <Snackbar
                         anchorOrigin={{ 'vertical':'bottom', 'horizontal':'right' }}

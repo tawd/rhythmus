@@ -3,6 +3,15 @@ import TeamListRowCol from './TeamListRowCol';
 import '../../Rhythmus.css';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+
+    shadedRow: {
+        backgroundColor: 'rgba(0,0,0,0.1)',
+    },
+
+});
 
 class TeamListRow extends Component {
 
@@ -14,6 +23,7 @@ class TeamListRow extends Component {
     }
 
     render() {
+        let { classes } = this.props;
         let teammate = this.props.teammate;
         let year = this.props.year;
         let month = this.props.month;
@@ -36,14 +46,9 @@ class TeamListRow extends Component {
                                 onChooseTeammateKRA={this.onChooseTeammateKRA}
                                 userid={teammate.userid} month={currMonth} year={currYear} score={currScore} />);
         }
-
-        let style = {};
-        if (this.props.background) {
-            style.background = "#ccc"
-        }
         
-        return (<TableRow style={style} key={teammate.userid}>{scoreCols}</TableRow>);
+        return (<TableRow className={this.props.background && classes.shadedRow} key={teammate.userid}>{scoreCols}</TableRow>);
     }
 
 }
-export default TeamListRow;
+export default withStyles(styles)(TeamListRow);

@@ -3,32 +3,30 @@ import './Rhythmus.css';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+// import { ThemeProvider } from '@material-ui/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 import TeamListView from './views/TeamKRABrowser/TeamListView';
 import WRStatusList from './views/WeeklyReport/WRStatusList';
-
-
-function TabContainer(props) {
-  return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
-      {props.children}
-    </Typography>
-  );
-}
-
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+import TabContainer from './components/TabContainer';
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: '#eee',
   },
 });
+
+// const theme = createMuiTheme({
+//   overrides: {
+//       TableCell: { // Name of the component ⚛️ / style sheet
+//           root: { // Name of the rule
+//               padding: '4px 24px !important', // Some CSS
+//           },
+//       },
+//   },
+// });
 
 
 class Rhythmus extends React.Component {
@@ -51,7 +49,7 @@ class Rhythmus extends React.Component {
     this.setState({value:0});
   }
   viewWeeklyReports = () => {
-    this.setState({cvalue:1});
+    this.setState({value:1});
   }
   viewMyKRA = () => {
     this.setState({ value:2});
@@ -63,21 +61,21 @@ class Rhythmus extends React.Component {
     const { value } = this.state;
 
     return (
-    <React.Fragment>
-      <CssBaseline />
-      <div className={classes.root}>
-        <AppBar position="static">
-          <Tabs value={value} onChange={this.handleChange}>
-            <Tab label="KRA Reviews" />
-            <Tab label="Weekly Reports" />
-            <Tab label="My KRA" />
-          </Tabs>
-        </AppBar>
-        {value === 0 && <TabContainer><TeamListView /></TabContainer>}
-        {value === 1 && <TabContainer><WRStatusList /></TabContainer>}
-        {value === 2 && <TabContainer>My KRA</TabContainer>}
-      </div>
-      </React.Fragment>
+      <>
+        <CssBaseline />
+          <div className={classes.root}>
+            <AppBar position="static">
+              <Tabs value={value} onChange={this.handleChange}>
+                <Tab label="KRA Reviews" />
+                <Tab label="Weekly Reports" />
+                <Tab label="My KRA" />
+              </Tabs>
+            </AppBar>
+            {value === 0 && <TabContainer><TeamListView /></TabContainer>}
+            {value === 1 && <TabContainer><WRStatusList /></TabContainer>}
+            {value === 2 && <TabContainer>My KRA</TabContainer>}
+          </div>
+      </>
     );
   }
 }

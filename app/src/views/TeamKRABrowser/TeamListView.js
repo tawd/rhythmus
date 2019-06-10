@@ -16,6 +16,7 @@ const styles = theme => ({
         border: 0,
         borderRadius: 6,
         boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+        background: '#fff',
       },
 });
 
@@ -70,7 +71,6 @@ class TeamListView extends Component {
 
     getMonths(year, month, numCols){
         let m = Config.monthNames;
-
         let months = [];
         for (let i = 1; i <= numCols; i++) {
             let currMonth = month - i;
