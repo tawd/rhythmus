@@ -82,6 +82,9 @@ class WeeklyReport {
         $namespace = $this->plugin_slug . '/v' . $version;
         $endpoint = '/wr-status-list/';
 
+        /**
+         * Register GET route for see weekly report status
+         */
         register_rest_route( $namespace, $endpoint, array(
             array(
                 'methods'               => \WP_REST_Server::READABLE,
@@ -91,11 +94,18 @@ class WeeklyReport {
             ),
         ) );
 
+        /**
+         * Register POST route for updating weekly report status
+         */
         register_rest_route( $namespace, $endpoint, array(
             array(
                 'methods'               => \WP_REST_Server::EDITABLE,
                 'callback'              => array( $this, 'update_wr_status' ),
                 'permission_callback'   => array( $this->auth, 'permissions_check' ),
+                /**
+                 * These args are the params submitted to this endpoint.
+                 * Validating and sanitizing them this way is the proper WP REST API way.
+                 */
                 'args'                  => array(
                     'status' => array(
                         'description' => esc_html__( 'The status of the weekly report' ),
@@ -148,6 +158,13 @@ class WeeklyReport {
             return new WP_Error( 'invalid_param', 'Invalid status.');
         }
         
+        /**
+         * Only the following statuses will be allowed (from the args settings):
+         * - complete
+         * - late
+         * - out
+         * - incomplete
+         */
         $attributes = $request->get_attributes();
 
         if ( ! in_array( $value, $attributes['args'][ $param ]['enum'], true ) ) {
@@ -157,7 +174,7 @@ class WeeklyReport {
     }
 
     /**
-     * Validate any values that ought to be integers
+     * Validate any values that ought to be integers.
      *
      * @param mixed $value
      * @param WP_REST_Request $request
@@ -179,14 +196,21 @@ class WeeklyReport {
      */
     public function update_wr_status( $request ) {
         global $wpdb;
-                
+        
+        /**
+         * For now, simply set status to 1 if complete, 0 if anything else.
+         * TODO: This will be updated as we get more statuses
+         */
         $status = $request->get_param('status') === 'complete' ? 1 : 0;
         $teammate_id = $request->get_param('userid');
         $week_id = $request->get_param('week');
 
         $table_name = $wpdb->prefix . 'rhythmus_weekly_report';
 
-        // TODO: What data are we going to use as an update key?
+        /**
+         * Insert the updated data into the database
+         * base on the id of the teammate and the id of the week.
+         */
         $sql = $wpdb->prepare( "UPDATE $table_name SET status = %d WHERE teammate_id = %d AND week_id = %d", $status, $teammate_id, $week_id );
 
         if ( $wpdb->query($sql) ) {
