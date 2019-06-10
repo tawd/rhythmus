@@ -16,7 +16,7 @@
 const fs = require('fs');
 const { spawn } = require('child_process');
 
-const projectName = "Rhythmus";
+const projectName = "rhythmus";
 const node_moduleDir = "./app/node_modules";
 const buildDir = "./app/build"
 
@@ -56,14 +56,10 @@ try{
  */
 const filesToZip = ["./rhythmus.php",
     "./AppPageTemplate.php",
-    "./includes/Rhythmus.php",
-    "./includes/class-rhythmus-install.php",
-    "./includes/Endpoint/KRAReview.php",
-    "./includes/Endpoint/Teammate.php",
-    "./includes/Endpoint/Weeklyreport.php",
     "./app/public/index.html",
 ]
-const dirsToZip = ["./app/build/"]
+const dirsToZip = ["./app/build/**", "./includes/**"];
+const dirsToExclude = ["./includes/Endpoint/sample-data/**"];
 
 /** string: name of .zip file for upload
  *	currently create the zip file in the current directory of this script
@@ -110,9 +106,10 @@ archive.pipe(output)
 filesToZip.forEach(function (value) {
     archive.file(value);
 });
+
 // add all of the directories from dirsToZip to our archive
 dirsToZip.forEach(function (value) {
-    archive.directory(value)
+    archive.glob(value, { ignore: dirsToExclude });
 });
 
 // added all our files, time to do the zipping!
