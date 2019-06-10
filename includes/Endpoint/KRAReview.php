@@ -123,10 +123,9 @@ class KRAReview {
         global $wpdb;
         $teammate_id = $_GET["teammate_id"];
 
-        $sql = $wpdb->prepare( "SELECT rt.id, fname, lname, year, month, total, submitted, reviewed, topics, 
-        review_notes, submit_date, last_update_date 
-        from {$wpdb->prefix}rhythmus_teammate rt left outer join {$wpdb->prefix}rhythmus_kra_review rkr on rt.id = rkr.teammate_id 
-        where rt.id = %d order by year desc, month desc", $teammate_id );
+        $sql = $wpdb->prepare( "SELECT rt.id, fname, lname, year, month, total, submitted, reviewed, topics, review_notes, create_date, submit_date, last_update_date 
+        FROM {$wpdb->prefix}rhythmus_teammate rt LEFT OUTER JOIN {$wpdb->prefix}rhythmus_kra_review rkr ON rt.id = rkr.teammate_id 
+        WHERE rt.id = %d ORDER BY year DESC, month DESC", $teammate_id );
 
         $results = $wpdb->get_results($sql, OBJECT);
 
@@ -139,8 +138,9 @@ class KRAReview {
 
         foreach ( $results as $row ) 
         {
-            if(!$teammate["userid"]) {
-                $teammate["userid"] = $row->id;
+            // What's the goal of this conditional here?
+            if ( ! $teammate["teammate_id"]) {
+                $teammate["teammate_id"] = $row->id;
                 $teammate["name"] = $row->fname." ".$row->lname;
             }
             $key = $row->year."-".$row->month;
