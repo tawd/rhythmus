@@ -91,7 +91,7 @@ class Rhythmus {
 	 *
 	 * @since     1.0.0
 	 *
-	 * @return    object    A single instance of this class.
+	 * @return    $this    A single instance of this class.
 	 */
 	public static function get_instance() {
 
