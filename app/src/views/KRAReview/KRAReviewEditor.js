@@ -27,7 +27,7 @@ const styles = theme => ({
       marginTop: 19,
     },
     menu: {
-      width: 200,
+      width: 'auto',
     },
     paper: {
         padding: theme.spacing.unit * 2,
@@ -216,11 +216,15 @@ class KRAReviewEditor extends Component {
                     <Grid container>
                         <Grid item xs={12}>{closeBtn}</Grid>
                         <form className={classes.container} noValidate autoComplete="off">
-                            <Grid item xs={6}>
+                            <Grid item xs={12}>
+                                
                                 <Paper className={classes.paper}>
+                                    <Button>Prev Month</Button>
                                     <h2>{teammate.name} for {m[month-1]}, {year}</h2>
                                     <h3>Score: {score}</h3>
+                                    <Button>Next Month</Button>
                                 </Paper>
+                                
                             </Grid>
                             {topicJSX}
                             <Grid item xs={12}>
