@@ -1,15 +1,5 @@
 <?php
 
-
-/**
- * - Create an "Add new" button
- * - Button duplictaes the current KRA data into a new dataset
- * - Display employee name and version # 
- * - Button for previous versions
- *      - Sub menu with previous verions
- * 
- */
-
 namespace Rhythmus\Endpoint;
 
 use Rhythmus;
@@ -131,21 +121,27 @@ class KRAVersions {
  * @return WP_Error|WP_REST_Request
  */
 
-    public function get_kra( $request ) {
-/*
-* gettting current results 
-* create duplicate
-* save dup
-* return new id
-*/      
+    public function new_kra( $request ) {
+    /**
+     * Steps needed to complete
+     * 
+     * 1. recieve an id
+     * 2. make copy the records from that id
+     * 3. update old id to 'not current'
+     * 4. update new id to 'current'
+     * 5. return new version
+     */
+
         $id = $request->get_param('id');   
         $id = intval($id);
         global $wpdb;
-
-        $query = $wpdb->prepare( "SELECT id, teammate_id, is_current, create_date, last_update_date, position, kra FROM {$wpdb->prefix}rhythmus_kra WHERE id = %d", $id );
+        $tm_id = 
+        //$query = $wpdb->prepare( "SELECT id, teammate_id, is_current, create_date, last_update_date, position, kra FROM {$wpdb->prefix}rhythmus_kra WHERE id = %d", $id );
+        $query = $wpdb->prepare( "INSERT INTO wp_rhythmus_kra (teammate_id, is_current, position) VALUES (%d, 1, %s)", $tm_id, $position);
 
         $results = $wpdb->get_results($query, OBJECT);
-        $output = array();
+
+
 
 
          return new \WP_REST_Response( $results, 200 );
