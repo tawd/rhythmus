@@ -3,7 +3,11 @@ import KRAReviewEditor from '../KRAReview/KRAReviewEditor';
 import TeamListRow from './TeamListRow';
 import '../../Rhythmus.css';
 import Config from '../../config.js';
-
+// eslint-disable-next-line
+//import KRAViewer from '../KRA/ViewKRA';
+// eslint-disable-next-line
+import { withStyles } from '@material-ui/core/styles';
+import KRAEditor from '../KRA/KRAEditor';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,12 +15,23 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+const styles = theme => ({
+
+    underline: {
+        borderBottom: '2px solid white'
+    }
+
+});
+
+
+
 class TeamListView extends Component {
 
     constructor(){
         super();
         this.state = {
             teammates:false,
+            kar:false,
             isLoading:false
         };
     }
@@ -31,6 +46,17 @@ class TeamListView extends Component {
     }
     onChooseTeammateKRA = (userid) => {
         //TODO: Open the user KRA details, not review
+        //NOTE TO JUSTIN, this is the function to work on in this file. 
+        this.setState({
+            kra:true,
+            userid:userid
+        })
+    }
+
+    onCloseKRA = () => {
+        this.setState({
+            kra:false
+        });
     }
 
     onCloseTeammate = () => {
@@ -77,7 +103,7 @@ class TeamListView extends Component {
     }
 
     render() {
-        const{isLoading, error, teammates, viewTeammate, userid, month, year} = this.state;
+        const{isLoading, error, teammates, viewTeammate, kra, userid, month, year} = this.state;
         if(error)
         {
             return <p>{error.message}</p>
@@ -89,6 +115,11 @@ class TeamListView extends Component {
         if(viewTeammate){
             return(
                     <KRAReviewEditor userid={userid} month={month} year={year} onCloseTeammate={this.onCloseTeammate}/>
+            )
+        }
+        if(kra){
+            return(
+                <KRAEditor userid={userid} onChooseTeammateKRA={this.onChooseTeammateKRA} onCloseKRA={this.onCloseKRA}/>
             )
         }
         let today = new Date();
@@ -115,4 +146,4 @@ class TeamListView extends Component {
     }
 }
 
-export default TeamListView;
+export default withStyles(styles)(TeamListView);

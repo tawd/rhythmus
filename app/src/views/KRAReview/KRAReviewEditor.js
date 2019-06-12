@@ -166,7 +166,7 @@ class KRAReviewEditor extends Component {
                     }
                     this.setState({review:review});
                 }
-                this.setState({teammate:data,isLoading:false});
+                this.setState({teammate:data,isLoading:false}); 
             }
         ).catch(error => this.setState({error, isLoading:false}));
     
