@@ -134,10 +134,14 @@ class KRAVersions {
 
         $id = $request->get_param('id');   
         $id = intval($id);
+        $tm_id = $request->get_param('tm_id');
+        $position = $request->get_param('position');
+
         global $wpdb;
-        $tm_id = 
+    
+
         //$query = $wpdb->prepare( "SELECT id, teammate_id, is_current, create_date, last_update_date, position, kra FROM {$wpdb->prefix}rhythmus_kra WHERE id = %d", $id );
-        $query = $wpdb->prepare( "INSERT INTO wp_rhythmus_kra (teammate_id, is_current, position) VALUES (%d, 1, %s)", $tm_id, $position);
+        $query = $wpdb->prepare( "INSERT INTO {$wpdb->prefix}rhythmus_kra (teammate_id, is_current, position) VALUES (%d, 1, %s)", $tm_id, $position);
 
         $results = $wpdb->get_results($query, OBJECT);
 
