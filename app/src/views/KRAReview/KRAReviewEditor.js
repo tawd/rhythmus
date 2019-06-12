@@ -69,7 +69,7 @@ class KRAReviewEditor extends Component {
     onReviewTopicChange = (topicKey, key, val) => {
         let review = this.state.review;
         if(!review.topics) {
-            review.topics = {};
+            review.topics = !!{};
         }
         let topic = review.topics[topicKey];
         if(!topic) {
@@ -163,13 +163,13 @@ class KRAReviewEditor extends Component {
             .then(data => {
                 let teammate = data;
                 this.setState({teammate:teammate});
-                // if(teammate && teammate.months) {
-                //     //let review = teammate.months[year+"-"+month];
-                //     //if(!review){
-                //     //    review = {};
-                //     //}
-                //     //this.setState({review:review});
-                // }
+                if(teammate && teammate.months) {
+                    let review = teammate.months[year+"-"+month];
+                    if(!review){
+                       review = {};
+                    }
+                    this.setState({review:review});
+                }
                 this.setState({teammate:data,isLoading:false});
             }
         ).catch(error => this.setState({error, isLoading:false}));
