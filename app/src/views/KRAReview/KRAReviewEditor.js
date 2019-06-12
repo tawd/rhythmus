@@ -121,6 +121,7 @@ class KRAReviewEditor extends Component {
 
     }
 
+
     componentDidMount() {
         if(!Config.kraTopics) {
             fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-topics?'+Config.authKey,{
@@ -143,6 +144,7 @@ class KRAReviewEditor extends Component {
             this.loadKRAs();
         }
     }
+
     loadKRAs= () => {
         const{year, userid, month} = this.props;
         this.setState({isLoading:true, month:month, year:year});
@@ -161,21 +163,45 @@ class KRAReviewEditor extends Component {
             .then(data => {
                 let teammate = data;
                 this.setState({teammate:teammate});
-                if(teammate && teammate.months) {
-                    let review = teammate.months[year+"-"+month];
-                    if(!review){
-                        review = {};
-                    }
-                    this.setState({review:review});
-                }
+                // if(teammate && teammate.months) {
+                //     //let review = teammate.months[year+"-"+month];
+                //     //if(!review){
+                //     //    review = {};
+                //     //}
+                //     //this.setState({review:review});
+                // }
                 this.setState({teammate:data,isLoading:false});
             }
         ).catch(error => this.setState({error, isLoading:false}));
     
     }
+
+
+    onChooseTeammateNextMonth = () => {
+        let nextMonth = this.props.month + 1;
+        this.props.onChooseTeammateMonth(this.props.userid, nextMonth, this.props.year);
+    }
+
+    onChooseTeammatePrevMonth = () => {
+        let prevMonth = this.props.month - 1;
+        if(prevMonth) {
+            this.props.onChooseTeammateMonth(this.props.userid, prevMonth, this.props.year);
+        } else {
+            return '<div>Nothing to see</div>';
+        }
+    }
+
+
     render() {
-        const { classes, month, year } = this.props;
-        const{isLoading, error, teammate, review} = this.state;
+
+        let { classes, year, month } = this.props;
+        const{isLoading, error, teammate} = this.state;
+
+        let review = teammate && teammate.months && teammate.months[year+"-"+month];
+        if(!review){
+            review = {};
+        }
+        
         const closeBtn = <Button variant="outlined" onClick={this.props.onCloseTeammate}>Close</Button>;
         if(error)
         {
@@ -211,6 +237,7 @@ class KRAReviewEditor extends Component {
                     onReviewTopicChange={onReviewTopicChangeFunction}
                     review={review_topic}/>)
             });
+
             return(
                 <div>
                     <Grid container>
@@ -219,10 +246,10 @@ class KRAReviewEditor extends Component {
                             <Grid item xs={12}>
                                 
                                 <Paper className={classes.paper}>
-                                    <Button>Prev Month</Button>
+                                    <Button onClick={this.onChooseTeammatePrevMonth}>Prev Month</Button>
                                     <h2>{teammate.name} for {m[month-1]}, {year}</h2>
                                     <h3>Score: {score}</h3>
-                                    <Button>Next Month</Button>
+                                    <Button onClick={this.onChooseTeammateNextMonth}>Next Month</Button>
                                 </Paper>
                                 
                             </Grid>

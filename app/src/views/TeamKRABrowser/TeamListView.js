@@ -38,6 +38,7 @@ class TeamListView extends Component {
             year:year
         });
     }
+
     onChooseTeammateKRA = (userid) => {
         //TODO: Open the user KRA details, not review
     }
@@ -97,7 +98,7 @@ class TeamListView extends Component {
         }
         if(viewTeammate){
             return(
-                    <KRAReviewEditor userid={userid} month={month} year={year} onCloseTeammate={this.onCloseTeammate}/>
+                    <KRAReviewEditor userid={userid} month={month} year={year} onChooseTeammateMonth={this.onChooseTeammateMonth} onCloseTeammate={this.onCloseTeammate}/>
             )
         }
         let today = new Date();

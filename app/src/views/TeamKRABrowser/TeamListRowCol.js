@@ -94,8 +94,8 @@ class TeamListRowCol extends Component {
         }
 
         return (
-            <TableCell key={key} onClick={this.onChooseTeammateMonth} className={classes.scoreCell}>
-                <Button variant='contained' className={ classNames (classes.scoreBtn, scoreClass ) }>{scoreVal}</Button>
+            <TableCell key={key} className={classes.scoreCell}>
+                <Button variant='contained' onClick={this.onChooseTeammateMonth} className={ classNames (classes.scoreBtn, scoreClass ) }>{scoreVal}</Button>
             </TableCell>
         );
     }
