@@ -186,8 +186,6 @@ class KRAReviewEditor extends Component {
         let prevMonth = this.props.month - 1;
         if(prevMonth) {
             this.props.onChooseTeammateMonth(this.props.userid, prevMonth, this.props.year);
-        } else {
-            return '<div>Nothing to see</div>';
         }
     }
 

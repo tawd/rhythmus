@@ -33,8 +33,11 @@ class Rhythmus extends React.Component {
   constructor(){
     super();
     this.state = {
-      value: 0
+      value: 0,
+      width: 0
     };
+
+    window.addEventListener('resize', this.widthUpdate);
   }
 
   handleChange = (event, value) => {
@@ -42,8 +45,14 @@ class Rhythmus extends React.Component {
   };
 
   componentDidMount() {
-
+    this.widthUpdate();
   }
+
+  widthUpdate = () => {
+    this.setState({
+      width: window.innerWidth
+    });
+  };
 
   viewKRAReviews = () => {
     this.setState({value:0});
@@ -71,7 +80,7 @@ class Rhythmus extends React.Component {
                 <Tab label="My KRA" />
               </Tabs>
             </AppBar>
-            {value === 0 && <TabContainer><TeamListView /></TabContainer>}
+            {value === 0 && <TabContainer><TeamListView width={this.state.width} /></TabContainer>}
             {value === 1 && <TabContainer><WRStatusList /></TabContainer>}
             {value === 2 && <TabContainer>My KRA</TabContainer>}
           </div>

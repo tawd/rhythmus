@@ -104,7 +104,15 @@ class TeamListView extends Component {
         let today = new Date();
         let currYear = today.getFullYear();
         let currMonth = today.getMonth() + 1;
+        
         let numCols = 8;
+        
+        let width = this.props.width;
+
+        if(width < 1200) {
+            numCols = 7;
+        }
+        
         let shaded = true;
 
         let teammateRowss = teammates.map((teammate) => {
