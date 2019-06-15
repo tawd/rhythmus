@@ -105,12 +105,24 @@ class TeamListView extends Component {
         let currYear = today.getFullYear();
         let currMonth = today.getMonth() + 1;
         
-        let numCols = 8;
+        let numCols;
         
         let width = this.props.width;
 
-        if(width < 1200) {
-            numCols = 7;
+        if(width > 1200) {
+            numCols = 8;
+        } else if(width < 1200 && width > 1160) {
+           numCols = 7;
+        } else if(width < 1160 && width > 800) {
+            numCols = 5;
+        } else if(width < 800 && width > 690){
+            numCols = 4;
+        } else if(width < 690 && width > 580) {
+            numCols = 3;
+        } else if(width < 580 && width > 466) {
+            numCols = 2;
+        } else if(width < 466) {
+            numCols = 1;
         }
         
         let shaded = true;
