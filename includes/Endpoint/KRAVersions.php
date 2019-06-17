@@ -1,15 +1,5 @@
 <?php
 
-
-/**
- * - Create an "Add new" button
- * - Button duplictaes the current KRA data into a new dataset
- * - Display employee name and version # 
- * - Button for previous versions
- *      - Sub menu with previous verions
- * 
- */
-
 namespace Rhythmus\Endpoint;
 
 use Rhythmus;
@@ -86,7 +76,7 @@ class KRAVersions {
         register_rest_route( $namespace, $endpoint, array(
             array(
                 'methods'               => \WP_REST_Server::READABLE,
-                'callback'              => array( $this, 'get_kra_versions' ),
+                'callback'              => array( $this, 'get_kra' ),
                 'permission_callback'   => array( $this->auth, 'permissions_check' ),
                 'args'                  => array(),
             ),
@@ -124,51 +114,45 @@ class KRAVersions {
     public function update_kra_version( $request ) {
         
     }
+    /**
+ * Get current kra info from database
+ *
+ * @param WP_REST_Request $request Full data about the request.
+ * @return WP_Error|WP_REST_Request
+ */
+
+    public function new_kra( $request ) {
+    /**
+     * Steps needed to complete
+     * 
+     * 1. recieve an id
+     * 2. make copy the records from that id
+     * 3. update old id to 'not current'
+     * 4. update new id to 'current'
+     * 5. return new version
+     */
+
+        $id = $request->get_param('id');   
+        $id = intval($id);
+        $tm_id = $request->get_param('tm_id');
+        $position = $request->get_param('position');
+
+        global $wpdb;
+    
+
+        //$query = $wpdb->prepare( "SELECT id, teammate_id, is_current, create_date, last_update_date, position, kra FROM {$wpdb->prefix}rhythmus_kra WHERE id = %d", $id );
+        $query = $wpdb->prepare( "INSERT INTO {$wpdb->prefix}rhythmus_kra (teammate_id, is_current, position) VALUES (%d, 1, %s)", $tm_id, $position);
+
+        $results = $wpdb->get_results($query, OBJECT);
+
+
+
+
+         return new \WP_REST_Response( $results, 200 );
+
+    }
 }
 
    
-/**
- * Get current kra info from database
- */
 
-$results = $wpdb->get_results( "SELECT * FROM $wp_rhythmus_kra");
 
-if(!empty($results)) {
-
-    echo "<table width='100%' border='0'>"; // Adding <table> and <tbody> tag outside foreach loop so that it wont create again and again
-    echo "<tbody>";
-
-    foreach($results as $row){   
-        echo "<tr>";                           // Adding rows of table inside foreach loop
-        echo "<th>ID</th>" . "<td>" . $row->id . "</td>";
-        echo "</tr>";
-        echo "<td colspan='2'><hr size='1'></td>";
-        echo "<tr>";        
-        echo "<th>User IP</th>" . "<td>" . $row->teammate_id . "</td>";   //fetching data from teammate_id field
-        echo "</tr>";
-        echo "<td colspan='2'><hr size='1'></td>";
-        echo "<tr>";        
-        echo "<th>Post ID</th>" . "<td>" . $row->is_current . "</td>";  //fetching data from is_current field
-        echo "</tr>";
-        echo "<td colspan='2'><hr size='1'></td>";
-        echo "<tr>";        
-        echo "<th>Time</th>" . "<td>" . $row->create_date . "</td>";    //fetching data from create_date field
-        echo "</tr>";
-        echo "<td colspan='2'><hr size='1'></td>";
-        echo "<tr>";        
-        echo "<th>Time</th>" . "<td>" . $row->last_update_date . "</td>";   //fetching data from last_update_date field
-        echo "</tr>";
-        echo "<td colspan='2'><hr size='1'></td>";
-        echo "<tr>";        
-        echo "<th>Time</th>" . "<td>" . $row->position . "</td>";   //fetching data from position field
-        echo "</tr>";
-        echo "<td colspan='2'><hr size='1'></td>";
-        echo "<tr>";        
-        echo "<th>Time</th>" . "<td>" . $row->kra . "</td>";    //fetching data from kra field
-        echo "</tr>";
-        echo "<td colspan='2'><hr size='1'></td>";
-    }
-    echo "</tbody>";
-    echo "</table>"; 
-
-}
