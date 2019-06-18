@@ -188,7 +188,10 @@ class KRAReviewEditor extends Component {
             let m = Config.monthNames;
             let onReviewTopicChangeFunction = this.onReviewTopicChange;
             let topicJSX = [];
-            let { reviewed, review_notes,score} = review;
+            let { reviewed, submitted, review_notes, score} = review;
+            if ( ! submitted ) {
+                submitted = false;
+            }
             if( ! reviewed ) {
                 reviewed = false;
             }
@@ -221,6 +224,15 @@ class KRAReviewEditor extends Component {
                         </Grid>
                         {topicJSX}
                         <Grid item xs={12}>
+                            <FormControlLabel label="Submit for Review"
+                                control={
+                                    <Checkbox
+                                    checked={submitted}
+                                    onChange={this.handleCheckChange('submitted')}
+                                    value="submitted"
+                                    color="primary"
+                                    />}
+                                />
                             <FormControlLabel label="Reviewed"
                                 control={
                                     <Checkbox

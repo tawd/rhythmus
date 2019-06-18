@@ -211,10 +211,10 @@ class KRAReview {
 
         //TODO: Need to check that the teammate_id that is passed in is the current user or supervised or the current user is super admin
         $sql = $wpdb->prepare( "REPLACE INTO $table_name
-                (teammate_id, year, month, total, reviewed, review_notes, topics, last_update_date)
+                (teammate_id, year, month, total, submitted, reviewed, review_notes, topics, last_update_date)
                 VALUES
-                (%d, %d, %d, %d, %d, %s, %s, now())",
-                $data['userid'], $data['year'], $data['month'], $data['total'], 
+                (%d, %d, %d, %d, %d, %d, %s, %s, now())",
+                $data['userid'], $data['year'], $data['month'], $data['total'], $data['submitted'],
                 $data['reviewed'], $data['review_notes'], json_encode($data['topics'])
             );
 
