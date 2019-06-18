@@ -9,7 +9,6 @@ class TeamListRowCol extends Component {
     }
 
     render() {
-        console.log(this.props);
         let key = this.props.userid+"-"+this.props.year+"-"+this.props.month;
         let score = this.props.score;
         let scoreVal = "";
