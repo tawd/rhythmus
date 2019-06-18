@@ -85,17 +85,12 @@ class KRA {
 
     /**
      * Get Weekly Report Status List
+     * Endpoint: https://rhythmus.dev.cc/wp-json/rhythmus/v1/kra/
      *
      * @param WP_REST_Request $request Full data about the request.
      * @return WP_Error|WP_REST_Request
      */
     public function get_kra( $request ) {
-        /**
-         * 1. Get data.
-         * 2. Organize data.
-         * 3. Display data.
-         */
-
          /**
           * 1. Get a KRA record from the database (SQL)
           * - look at get_kra_topics for example
@@ -104,8 +99,24 @@ class KRA {
           */
 
         //Currently reading sample data from a file and returning
-        $sample = json_decode(file_get_contents(__DIR__.'/sample-data/kra.json'));        
-        return new \WP_REST_Response( $sample, 200 );
+        // $sample = json_decode(file_get_contents(__DIR__.'/sample-data/kra.json'));        
+
+         // allows you to request data using the url parameter '?id=XX'
+        // used as a placeholder for teammate_id
+        $id = $request->get_param('id');
+        $id = intval($id);
+
+        global $wpdb;
+
+        // database sql query converted into php
+        $query = $wpdb->prepare( "SELECT teammate_id, is_current, position, kra, create_date FROM {$wpdb->prefix}rhythmus_kra WHERE is_current=1 AND teammate_id = %d", $id );
+
+        //captures the results of the sql query
+        $results = $wpdb->get_results($query, OBJECT);
+        $output = array();
+
+        //returns the results as json
+        return new \WP_REST_Response( $results, 200 );
 
     }
 }
