@@ -33,7 +33,7 @@ class TeamListRowCol extends Component {
                 style["textDecoration"] = "underline";
             }
             if (score.submitted) {
-                style["font-weight"] = "bold";
+                style["fontWeight"] = "bold";
             }
         }
 
