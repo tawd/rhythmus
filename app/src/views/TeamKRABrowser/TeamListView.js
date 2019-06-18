@@ -109,6 +109,8 @@ class TeamListView extends Component {
         
         let width = this.props.width;
 
+        console.log(width);
+
         if(width > 1200) {
             numCols = 8;
         } else if(width < 1200 && width > 1160) {
