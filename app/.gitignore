@@ -4,12 +4,15 @@
 /node_modules
 /.pnp
 .pnp.js
+/.vs
+/.vscode
 
 # testing
 /coverage
 
 # production
 /build
+Rhythmus.zip
 
 # misc
 .DS_Store
