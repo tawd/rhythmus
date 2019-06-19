@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import TeammateKRAReview from './TeammateKRAReview';
-import TeamListRow from './TeamListRow';
+// import TeammateKRAReview from './TeammateKRAReview';
+import TeamListRow from '../TeamKRABrowser/TeamListRow';
 import '../../Rhythmus.css';
 import Config from '../../config.js';
 
-import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
+// import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
 import _ from 'lodash';
 
 
@@ -49,25 +49,26 @@ class KRAEditor extends Component {
     }
 
     render() {
-        const{isLoading, error, userid} = this.state;
-        if(error)
-        {
-            return <p>{error.message}</p>
-        }
-        if(isLoading)
-        {
-            return <p>Loading...</p>;
-        }
-        if(viewTeammate){
-            return(
-                <div>
-                    <button onClick={this.onCloseKRA}>Close</button>
-                </div>
-            )
-        }
+        // const{isLoading, error, userid} = this.state;
+        // if(error)
+        // {
+        //     return <p>{error.message}</p>
+        // }
+        // if(isLoading)
+        // {
+        //     return <p>Loading...</p>;
+        // }
+        // if(this.viewTeammate){
+        //     return(
+        //         <div>
+        //             <button onClick={this.onCloseKRA}>Close</button>
+        //         </div>
+        //     )
+        // }
 
         return(
             <div>
+                <p>test</p>
             </div>
         )
     }

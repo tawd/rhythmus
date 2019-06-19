@@ -10,6 +10,7 @@ import Tab from '@material-ui/core/Tab';
 import TeamListView from './views/TeamKRABrowser/TeamListView';
 import WRStatusList from './views/WeeklyReport/WRStatusList';
 import TabContainer from './components/TabContainer';
+import KRAEditor from './views/KRA/KRAEditor'
 
 const styles = theme => ({
   root: {
@@ -82,7 +83,7 @@ class Rhythmus extends React.Component {
             </AppBar>
             {value === 0 && <TabContainer><TeamListView width={this.state.width} /></TabContainer>}
             {value === 1 && <TabContainer><WRStatusList /></TabContainer>}
-            {value === 2 && <TabContainer>My KRA</TabContainer>}
+            {value === 2 && <TabContainer><KRAEditor /></TabContainer>}
           </div>
       </>
     );
