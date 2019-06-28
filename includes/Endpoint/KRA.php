@@ -112,11 +112,20 @@ class KRA {
         $query = $wpdb->prepare( "SELECT teammate_id, is_current, position, kra, create_date FROM {$wpdb->prefix}rhythmus_kra WHERE is_current=1 AND teammate_id = %d", $id );
 
         //captures the results of the sql query
-        $results = $wpdb->get_results($query, OBJECT);
-        $output = array();
+        $row = $wpdb->get_row($query, OBJECT);
 
+        $kra = array(
+            "app" => 'Rhythmus',
+            "version" => 1
+        );
+        if($row){
+            $kra["kra"] = json_decode($row->kra);    
+            $kra["position"] =$row->position;
+            $kra["teammate_id"] = $row->teammate_id;
+            $kra["create_date"] = $row->create_date;       
+        }
         //returns the results as json
-        return new \WP_REST_Response( $results, 200 );
+        return new \WP_REST_Response( $kra, 200 );
 
     }
 }

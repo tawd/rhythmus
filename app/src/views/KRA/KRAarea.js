@@ -40,21 +40,30 @@ const styles = theme => ({
     };
 
     render(){
-        const {classes, kra} = this.props;
+        const {classes, description, title, position, iscurrent, date} = this.props;
         //let {position, date, iscurrent} = kra;
        //let {name, position} = this.props.kra;
          //let {title, description} = KRAarea;
 
         return(
           <Grid item xs={12}><Paper className={classes.paper}>
-          <h3></h3>
+          <h3>{title}</h3>
           <TextField
-            id="kranotes"
-            value={kra.kra}
-            label={"Data field"}
+            id="kraTitle"
+            value={title}
+            label={"KRA Title"}
             className={classes.textField}
             onChange={this.handleChange}
           />
+          <br/>
+          <TextField
+            id="kraDescriptio"
+            value={description}
+            label={"KRA description"}
+            className={classes.textField}
+            onChange={this.handleChange}
+          />
+
           
           </Paper></Grid>
           //it works! 

@@ -53,11 +53,12 @@ class KRAEditor extends Component {
     constructor(){
         super();
         this.state = {
-            isLoading:false,
+            isLoading:true,
             teammates:false,
             kraLoaded:false,
             data:null,
-            kra:[],
+            kraData:[],
+
         };
     }
     
@@ -65,9 +66,9 @@ class KRAEditor extends Component {
 
 
     onAreaChange = () => {
-       let input = this.state.kra;
-       if(!input.kra){
-         input.kra = {};
+       let input = this.state.kraData;
+       if(!input.kraData){
+         input.kraData = {};
        }
        
     }
@@ -112,44 +113,44 @@ class KRAEditor extends Component {
             })  
             .then(data => {
             //const dataMap = data.map(function(dataIn) {return dataIn});
-            let DataReturn = [];
-                data.forEach(element => {
-                s = element;
-                console.log("DATA ELEMENT")
-                console.log(s);
-               // Config.kraTopics = element.kra;
-               DataReturn.push(s);
-               
-              return s;
-                
-              });               
-                this.setState({kra:DataReturn,isLoading:false});
+              let DataReturn = [];
+                 
+                              
+                this.setState({kraData:data,isLoading:false});
             }
         ).catch(error => this.setState({error, isLoading:false}));
-        this.setState({isLoading:false});
+        
     }
 
     render() {
-        const{isLoading, error, kraLoaded, kra, viewTeammate, userid} = this.state;
+        const{isLoading, error, kraLoaded, kraData, viewTeammate, userid} = this.state;
         const {classes, review} = this.props;
         const closeBtn = <Button variant="outlined" onClick={this.props.onCloseKRA}>Close</Button>;
         let topicJSX = [];
+        
         if(error)
         {
             return <p>{error.message}<br/>{closeBtn}</p>
         }
+        if(isLoading){
+          return <CircularProgress/>
+        }
         // if(kraLoaded)
         //justin is trying to understand how json works here and what's the best way to use it.
           console.log("next line is KRA Data")
-          let dataSTRING = JSON.stringify(kra);
+          let dataSTRING = JSON.stringify(kraData);
           console.log(dataSTRING);
           let dataJSON = JSON.parse(dataSTRING);
           console.log("this is a json object");
-          console.log(this.state.kra);
-          
-          this.state.kra.forEach(element => {
+          console.log(this.state.kraData);
+
+          console.log("this is the kra");
+          console.log(this.state.kraData.kra);
+
+          this.state.kraData.kra.forEach(element => {
             topicJSX.push(<KRAarea key={element.teammate_id} 
-              kra={element.kra}
+              title={element.title}
+              description={element.description}
               position={element.position}
               iscurrent={element.is_current}
               date={element.create_date}
