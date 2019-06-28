@@ -10,9 +10,15 @@ const styles = theme => ({
         textField: {
             marginLeft: theme.spacing.unit,
             marginRight: theme.spacing.unit,
-            width: 80,
         }
-    }
+    },
+    outOf: {
+        display: 'inline-flex',
+        padding: '10px',
+    },
+    inputWidth: {
+        width: '70px',
+    },
 });
 
 class KRAReviewOutOf extends Component {
@@ -63,24 +69,23 @@ class KRAReviewOutOf extends Component {
             scoreLabel = "Score: " + score;
         }
         return(
-            <div>
+            <div align="center">
                 <TextField
                     id="amount"
                     value={amount}
                     label="Amount"
-                    className={classes.textField}
+                    className={classes.textField, classes.inputWidth}
                     onChange={this.handleAmountChange('amount')}
-                    />
-                    out of 
-                    <TextField
+                />
+                    <p className={classes.outOf}>out of</p>
+                <TextField
                     id="outof"
                     value={outof}
                     label="Total"
-                    className={classes.textField}
-                    onChange={this.handleOutOfChange('outof')}
-                    />
-                    <br/>
-                    {scoreLabel}
+                    className={classes.textField, classes.inputWidth}
+                />
+                <br/>
+                <p>{scoreLabel}</p>
             </div>
         );
     }

@@ -14,11 +14,12 @@ const styles = theme => ({
     container: {
       display: 'flex',
       flexWrap: 'wrap',
+
     },
     textField: {
       marginLeft: theme.spacing.unit,
       marginRight: theme.spacing.unit,
-      width: 400,
+      width: '100%',      
     },
     dense: {
       marginTop: 19,
@@ -30,8 +31,21 @@ const styles = theme => ({
         padding: '22px 0px',
         width:300,
     },
+    headerStyles: {
+        backgroundColor: '#3F51B5',
+        padding: '20px',
+        color: 'white',
+        transform: 'translate()',
+    },
+    boxStyles: {
+        padding: '20px',
+    },
+    scoreStyles: {
+        [theme.breakpoints.down('sm')]: {
+          paddingTop: '50px',
+        },
+    },
   });
-
 
 class KRAReviewTopic extends Component {
 
@@ -65,34 +79,37 @@ class KRAReviewTopic extends Component {
         }
         
         return(
-            <Grid item xs={12}><Paper className={classes.paper}>
-                <h3>{title}</h3>
-                <Grid container>
-                    <Grid item xs={4}>
-                        <TextField
-                            id="goal"
-                            value={goal}
-                            label={title}
-                            className={classes.textField}
-                            helperText={description}
-                            onChange={this.handleChange('goal')}
+            <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                    <h3 className={classes.headerStyles}>{title}</h3>
+                    <Grid container className={classes.boxStyles}>
+                        <Grid item md={4} sm={12}>
+                            <TextField
+                                id="goal"
+                                value={goal}
+                                label={title}
+                                className={classes.textField}
+                                helperText={description}
+                                onChange={this.handleChange('goal')}
                             />
-                    </Grid>
-                    <Grid item xs={4}>
-                        {scoring}
-                    </Grid>
-                    <Grid item xs={4}>
-                        <TextField
-                            id="goal_notes"
-                            value={goal_notes}
-                            className={classes.textField}
-                            label={title + " Notes"}
-                            margin="normal"
-                            onChange={this.handleChange('goal_notes')}
+                        </Grid>
+                        <Grid item md={4} sm={12} className={classes.sliderStyles}>
+                            {scoring}
+                        </Grid>
+                        <Grid item md={4} sm={12}>
+                            <TextField
+                                id="goal_notes"
+                                width={1}
+                                value={goal_notes}
+                                className={classes.textField}
+                                label={title + " Notes"}
+                                margin="normal"
+                                onChange={this.handleChange('goal_notes')}
                             />
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Paper></Grid>
+                </Paper>
+            </Grid>
         )
     }
 }
