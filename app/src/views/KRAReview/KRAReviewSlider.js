@@ -8,8 +8,13 @@ import Slider from '@material-ui/lab/Slider';
 const styles = theme => ({
     slider: {
         padding: '22px 0px',
-        width:300,
+        width: '80%',
+        margin: 'auto',
     },
+    scoreLabel: {
+        margin: '0',
+        textAlign: 'center',
+    }
   });
 
 class KRAReviewSlider extends Component {
@@ -44,9 +49,9 @@ class KRAReviewSlider extends Component {
                     step={0.05}
                     aria-labelledby="scoring"
                     onChange={this.handleSliderChange}
+
                 />
-                <br/>
-                {scoreLabel}
+                <p className={classes.scoreLabel}>{scoreLabel}</p>
           </div>
         );
     }
