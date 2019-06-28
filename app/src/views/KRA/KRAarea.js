@@ -50,12 +50,12 @@ const styles = theme => ({
           <h3></h3>
           <TextField
             id="kranotes"
-            value={kra.position}
+            value={kra.kra}
             label={"Data field"}
             className={classes.textField}
             onChange={this.handleChange}
           />
-          <h3>test</h3>
+          
           </Paper></Grid>
           //it works! 
         )

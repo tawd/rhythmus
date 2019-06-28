@@ -45,32 +45,7 @@ const styles = theme => ({
     },
   });
 
-//   let test = {
-//     "app":"Rhythmus",
-//     "version":1,
-//     "name":"Aaron Griffy",
-//     "userid":"34  5",
-//     "is_current":"true",
-//     "revision_number":"5",
-//     "create-date":"2019-01-01 12:34",
-//     "last-update":"2019-02-12 16:34",
-//     "position":"CTO and Lead Developer",
-//     "kra":
-//         [
-//             {
-//                 "title":"Tech Lead",
-//                 "description":""
-//             },
-//             {
-//                 "title":"Tech Lead",
-//                 "description":""
-//             },
-//             {
-//                 "title":"Tech Lead",
-//                 "description":""
-//             }   
-//         ]
-// };
+
 let KRAjson='kra.json';
 
 class KRAEditor extends Component {
@@ -121,6 +96,7 @@ class KRAEditor extends Component {
         //   this.loadSampleKRA();
         // }
         let s = "";
+       
         fetch('http://rhythmus.dev.cc/wp-json/rhythmus/v1/kra/?id=17',{
             method: "GET",
             cache: "no-cache",
@@ -136,28 +112,21 @@ class KRAEditor extends Component {
             })  
             .then(data => {
             //const dataMap = data.map(function(dataIn) {return dataIn});
-
-              data.forEach(element => {
+            let DataReturn = [];
+                data.forEach(element => {
                 s = element;
                 console.log("DATA ELEMENT")
                 console.log(s);
                // Config.kraTopics = element.kra;
-                return s;
+               DataReturn.push(s);
+               
+              return s;
                 
-              });
-
-
-             // console.log(s)
-              
-              //Config.kraTopics = s.kra;
-                //let kraDATA = s;
-
-                
-                this.setState({kra:s,isLoading:false});
+              });               
+                this.setState({kra:DataReturn,isLoading:false});
             }
         ).catch(error => this.setState({error, isLoading:false}));
         this.setState({isLoading:false});
-    
     }
 
     render() {
@@ -170,76 +139,31 @@ class KRAEditor extends Component {
             return <p>{error.message}<br/>{closeBtn}</p>
         }
         // if(kraLoaded)
-
         //justin is trying to understand how json works here and what's the best way to use it.
           console.log("next line is KRA Data")
-        //console.log(this.state.kra[4]);
-          let jsonData = kra;
-          let dataSTRING = JSON.stringify(jsonData);
+          let dataSTRING = JSON.stringify(kra);
           console.log(dataSTRING);
           let dataJSON = JSON.parse(dataSTRING);
           console.log("this is a json object");
-          console.log(this.state.kra.kra);
+          console.log(this.state.kra);
           
-            topicJSX.push(<KRAarea key={this.state.kra.teammate_id} 
-              kra={this.state.kra}
-              position={this.state.kra.position}
-              iscurrent={this.state.kra.is_current}
-              date={this.state.kra.create_date}
-            />);
-        
-          
-          //console.log(dataJSON[date_created]);
-          //let kraCreateDate = dataJSON.create_date;
-          //   kraDATA.forEach(function(topic){
-          //   topicJSX.push(<KRAarea 
-            
-          //     />)
-          // });
+          this.state.kra.forEach(element => {
+            topicJSX.push(<KRAarea key={element.teammate_id} 
+              kra={element.kra}
+              position={element.position}
+              iscurrent={element.is_current}
+              date={element.create_date}
+            />);       
+          })
+           
          
           return(<div className="kra">
           
           <Grid container spacing={24}>
-                          <Grid item xs={12}>{closeBtn}</Grid>             
-                          
-                       
-                           
-                          {/* {this.state.kra.map((singleKRA) => 
-                           <div key={singleKRA.userid}>
-                              <p>
-                                {singleKRA.position}
-                              </p>
-                           </div>
-                          )} */}
+                          <Grid item xs={12}>{closeBtn}</Grid>                                 
                           {topicJSX}
                           </Grid> 
         </div>)
-        //   }
-        // if(isLoading)
-        // {
-        //     return <CircularProgress />;
-        // }
-        //if(viewTeammate){
-              // return(
-              //     <div>
-              //         <button onClick={this.onCloseKRA}>Close</button>
-              //         <Grid>
-              //             <h1>test</h1>
-              //            <KRAarea/>
-              //             </Grid> 
-              //     </div>)
-      //}
-//       if(kra){
-//         return(
-//             <div>
-//                 <button onClick={this.onCloseKRA}>Close</button>
-//                 <Grid>
-//                     <h1>test</h1>
-//                    <KRAarea/>
-//                     </Grid> 
-//             </div>)
-// }
-
     }
   }
 
