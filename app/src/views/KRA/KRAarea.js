@@ -32,7 +32,8 @@ const styles = theme => ({
 
   class KRAarea extends Component{
     handleChange = name => event => {
-        this.props.onKRADataChange(this.props.description, name, event.target.value);
+      console.log(this.props);
+        this.props.onKRADataChange(this.props.index, name, event.target.value);
     };
 
     handleScoreChange = (key, val) => {
@@ -58,11 +59,11 @@ const styles = theme => ({
           <br/>
           <br/>
           <TextField
-            id="kraDescriptio"
+            id="kraDescription"
             value={description}
             label={"KRA description"}
             className={classes.textField}
-            onChange={this.handleChange('kraDescription')}
+            onChange={this.handleChange('description')}
           />
 
           

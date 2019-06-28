@@ -60,13 +60,14 @@ class KRAEditor extends Component {
 
 
   onKRADataChange = (topicKey, key, val) => {
+    console.log("onKRADataChange:"+topicKey+"|"+key+"|"+val);
       let data = this.state.kraData;
       if(!data.kra){
         data.kra = {};
       }
       let descriptions = data.kra[topicKey];
       if(!descriptions){
-      descriptions = {};
+        descriptions = {};
       }
       descriptions[key] = val;
       data.kra[topicKey] = descriptions;
@@ -79,10 +80,10 @@ class KRAEditor extends Component {
     this.setState({isLoading:true, userid:userid});
     let params = "teammate_id="+userid;  
     let year = 2019;
-    if(!Config.kraData){
+      if(!Config.kraData){
       fetch('http://rhythmus.dev.cc/wp-json/rhythmus/v1/kra/?id=17',{
           method: "GET",
-          cache: "no-cache",   
+          cache: "no-cache",    
       })
       .then(response => {
       // console.log(response.json())
@@ -126,8 +127,10 @@ class KRAEditor extends Component {
     console.log("this is the kra");
     console.log(this.state.kraData.kra);
 
+    let i = 0;
     this.state.kraData.kra.forEach(element => {
-      topicJSX.push(<KRAarea key={element.teammate_id} 
+      topicJSX.push(<KRAarea key={i} 
+        index={i}
         title={element.title}
         description={element.description}
         position={element.position}
@@ -135,6 +138,7 @@ class KRAEditor extends Component {
         onKRADataChange={onKRADataChangeFunction}
         date={element.create_date}
       />);       
+      i++;
     })
       
     
