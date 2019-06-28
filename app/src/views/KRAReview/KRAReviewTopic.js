@@ -30,6 +30,13 @@ const styles = theme => ({
         padding: '22px 0px',
         width:300,
     },
+    headerStyles: {
+        backgroundColor: '#3F51B5',
+        padding: '20px',
+        color: 'white',
+        transform: 'translate()',
+    },
+
   });
 
 
@@ -66,7 +73,7 @@ class KRAReviewTopic extends Component {
         
         return(
             <Grid item xs={12}><Paper className={classes.paper}>
-                <h3>{title}</h3>
+                <h3 className={classes.headerStyles}>{title}</h3>
                 <Grid container>
                     <Grid item xs={4}>
                         <TextField
