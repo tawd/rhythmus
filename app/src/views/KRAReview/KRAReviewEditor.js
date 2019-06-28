@@ -93,6 +93,7 @@ class KRAReviewEditor extends Component {
 
     saveReview = () => {
         let review = this.state.review;
+        this.props.forceReload();
         review.userid = this.props.userid;
         review.month = this.props.month;
         review.year = this.props.year;

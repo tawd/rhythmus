@@ -26,7 +26,8 @@ class TeamListView extends Component {
         super();
         this.state = {
             teammates:false,
-            isLoading:false
+            isLoading:false,
+            forceReload: false
         };
     }
     
@@ -50,7 +51,15 @@ class TeamListView extends Component {
     }
   
     componentDidMount() {
-        this.setState({isLoading:true});
+        this.loadData();
+    }
+
+    forceReload = () => {
+        this.setState({forceReload: true});
+    }
+
+    loadData = () => {
+        this.setState({isLoading:true, forceReload: false});
 
         fetch(Config.baseURL + '/wp-json/rhythmus/v1/teammate-list?'+Config.authKey,{
             method: "GET",
@@ -87,7 +96,7 @@ class TeamListView extends Component {
 
     render() {
         let { classes } = this.props;
-        const{isLoading, error, teammates, viewTeammate, userid, month, year} = this.state;
+        const{isLoading, error, teammates, viewTeammate, userid, month, year, forceReload} = this.state;
         if(error)
         {
             return <p>{error.message}</p>
@@ -98,8 +107,12 @@ class TeamListView extends Component {
         }
         if(viewTeammate){
             return(
-                    <KRAReviewEditor userid={userid} month={month} year={year} onChooseTeammateMonth={this.onChooseTeammateMonth} onCloseTeammate={this.onCloseTeammate}/>
+                    <KRAReviewEditor forceReload={this.forceReload} userid={userid} month={month} year={year} onChooseTeammateMonth={this.onChooseTeammateMonth} onCloseTeammate={this.onCloseTeammate}/>
             )
+        }
+        if(forceReload){
+            this.loadData();
+            return <CircularProgress />;
         }
         let today = new Date();
         let currYear = today.getFullYear();
