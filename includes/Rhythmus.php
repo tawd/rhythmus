@@ -9,14 +9,11 @@
  * @link      https://showit.co
  * @copyright 2019 Showit, Inc
  */
-
 namespace Rhythmus;
-
 /**
  * @subpackage Rhythmus
  */
 class Rhythmus {
-
 	/**
 	 * The variable name is used as the text domain when internationalizing strings
 	 * of text. Its value should match the Text Domain file header in the main
@@ -27,7 +24,6 @@ class Rhythmus {
 	 * @var      string
 	 */
 	protected $plugin_slug = 'rhythmus';
-
 	/**
 	 * Instance of this class.
 	 *
@@ -36,7 +32,6 @@ class Rhythmus {
 	 * @var      object
 	 */
 	protected static $instance = null;
-
 	/**
 	 * Setup instance attributes
 	 *
@@ -44,7 +39,6 @@ class Rhythmus {
 	 */
 	private function __construct() {
 	}
-
 	/**
 	 * Return the plugin slug.
 	 *
@@ -55,7 +49,6 @@ class Rhythmus {
 	public function get_plugin_slug() {
 		return $this->plugin_slug;
 	}
-
 	/**
 	 * Return the plugin version.
 	 *
@@ -66,7 +59,6 @@ class Rhythmus {
 	public function get_plugin_version() {
 		return $this->plugin_version;
 	}
-
 	/**
 	 * Fired when the plugin is activated.
 	 *
@@ -76,7 +68,6 @@ class Rhythmus {
 		include_once dirname( __FILE__ ) . '/class-rhythmus-install.php';
 		Rhythmus_Install::rhythmus_install();
     }
-
 	/**
 	 * Fired when the plugin is deactivated.
 	 *
@@ -84,8 +75,6 @@ class Rhythmus {
 	 */
 	public static function deactivate() {
 	}
-
-
 	/**
 	 * Return an instance of this class.
 	 *
@@ -94,12 +83,10 @@ class Rhythmus {
 	 * @return    $this    A single instance of this class.
 	 */
 	public static function get_instance() {
-
 		// If the single instance hasn't been set, set it now.
 		if ( null == self::$instance ) {
 			self::$instance = new self;
 		}
-
 		return self::$instance;
 	}
 }

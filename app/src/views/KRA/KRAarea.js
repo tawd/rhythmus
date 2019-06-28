@@ -41,12 +41,21 @@ const styles = theme => ({
 
     render(){
         const {classes, kra} = this.props;
-       //  let {name, position} = this.props.kra;
-         let {title, description} = KRAarea;
+        //let {position, date, iscurrent} = kra;
+       //let {name, position} = this.props.kra;
+         //let {title, description} = KRAarea;
 
         return(
           <Grid item xs={12}><Paper className={classes.paper}>
-          <h3>test to see if it works</h3>
+          <h3></h3>
+          <TextField
+            id="kranotes"
+            value={kra.position}
+            label={"Data field"}
+            className={classes.textField}
+            onChange={this.handleChange}
+          />
+          <h3>test</h3>
           </Paper></Grid>
           //it works! 
         )

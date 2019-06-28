@@ -4,7 +4,7 @@ import React, {Component} from 'react';
 //import  './kra.json' 
 import '../../Rhythmus.css';
 import './KRAarea';
-import PropTypes from 'prop-types';
+import PropTypes, { func } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -14,7 +14,8 @@ import Paper from '@material-ui/core/Paper';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-//import Config from '../../config.js';
+import Config from '../../config.js';
+
 
 //import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
 import _ from 'lodash';
@@ -70,7 +71,7 @@ const styles = theme => ({
 //             }   
 //         ]
 // };
-
+let KRAjson='kra.json';
 
 class KRAEditor extends Component {
 
@@ -79,21 +80,36 @@ class KRAEditor extends Component {
         this.state = {
             isLoading:false,
             teammates:false,
-            data:null
+            kraLoaded:false,
+            data:null,
+            kra:[],
         };
     }
     
-      
+     
 
+
+    onAreaChange = () => {
+       let input = this.state.kra;
+       if(!input.kra){
+         input.kra = {};
+       }
+       
+    }
     // loadSampleKRA = () => ({
     //   return :'kra.json'
+    //   //this.setState({kraLoaded:true})
     // }.then( data => {
-    //   let kraLoaded = data;
-    //   this.setState({kra:kra});
+    //   this.setState({kraLoaded:true, isLoading:false});
+    //   Config.kraTopics = data.kra;
     // }).catch(error => this.setState({error, isLoading:false})));
 
     componentDidMount() {
         this.setState({isLoading:true});
+    //  const test = () => {return KRAjson}.then( data => {
+    //   // this.setState({kraLoaded:true, isLoading:false});
+    //   Config.kraTopics = data.kra;
+    // }).catch(error => this.setState({error, isLoading:false}));
 
         const{userid} = this.props;
         this.setState({isLoading:true, userid:userid});
@@ -104,14 +120,14 @@ class KRAEditor extends Component {
         // if(!kraLoaded){
         //   this.loadSampleKRA();
         // }
-        fetch('http://justintest1.wpengine.com/wp-content/kra.json',{
+        let s = "";
+        fetch('http://rhythmus.dev.cc/wp-json/rhythmus/v1/kra/?id=17',{
             method: "GET",
             cache: "no-cache",
-            mode:"no-cors",
-            
+         
         })
             .then(response => {
-              console.log(response)
+             // console.log(response.json())
                 if (response.ok) {
                   return response.json();
                 } else {
@@ -119,15 +135,33 @@ class KRAEditor extends Component {
                  }
             })  
             .then(data => {
-                let kra = data;
-                this.setState({kra:kra,isLoading:false});
+            //const dataMap = data.map(function(dataIn) {return dataIn});
+
+              data.forEach(element => {
+                s = element;
+                console.log("DATA ELEMENT")
+                console.log(s);
+               // Config.kraTopics = element.kra;
+                return s;
+                
+              });
+
+
+             // console.log(s)
+              
+              //Config.kraTopics = s.kra;
+                //let kraDATA = s;
+
+                
+                this.setState({kra:s,isLoading:false});
             }
         ).catch(error => this.setState({error, isLoading:false}));
         this.setState({isLoading:false});
+    
     }
 
     render() {
-        const{isLoading, error, kra, userid} = this.state;
+        const{isLoading, error, kraLoaded, kra, viewTeammate, userid} = this.state;
         const {classes, review} = this.props;
         const closeBtn = <Button variant="outlined" onClick={this.props.onCloseKRA}>Close</Button>;
         let topicJSX = [];
@@ -135,53 +169,79 @@ class KRAEditor extends Component {
         {
             return <p>{error.message}<br/>{closeBtn}</p>
         }
-        if(isLoading)
-        {
-            return <CircularProgress />;
-        }
-        // if(viewTeammate){
-        //     return(
-        //         <div>
-        //             <button onClick={this.onCloseKRA}>Close</button>
-        //         </div>
-        //     )
-        // }
-        // Config.kra.forEach(function(KRAarea){
+        // if(kraLoaded)
 
-        //     topicJSX.push(<KRAarea key={kra.title}  
-                
-        //         description={kra.description}
-                
-        //         />)
-        // });
-
-
-
-        return(
+        //justin is trying to understand how json works here and what's the best way to use it.
+          console.log("next line is KRA Data")
+        //console.log(this.state.kra[4]);
+          let jsonData = kra;
+          let dataSTRING = JSON.stringify(jsonData);
+          console.log(dataSTRING);
+          let dataJSON = JSON.parse(dataSTRING);
+          console.log("this is a json object");
+          console.log(this.state.kra.kra);
+          
+            topicJSX.push(<KRAarea key={this.state.kra.teammate_id} 
+              kra={this.state.kra}
+              position={this.state.kra.position}
+              iscurrent={this.state.kra.is_current}
+              date={this.state.kra.create_date}
+            />);
+        
+          
+          //console.log(dataJSON[date_created]);
+          //let kraCreateDate = dataJSON.create_date;
+          //   kraDATA.forEach(function(topic){
+          //   topicJSX.push(<KRAarea 
             
-            <div className="kra">
-        <header></header>
-        <Grid container spacing={24}>
-                        <Grid item xs={12}>{closeBtn}</Grid>             
-                        <Grid item xs={12}>
+          //     />)
+          // });
+         
+          return(<div className="kra">
+          
+          <Grid container spacing={24}>
+                          <Grid item xs={12}>{closeBtn}</Grid>             
+                          
+                       
                            
-                        </Grid>
-                       <KRAarea/>
-                        </Grid>
-
-        
-
-        
-      </div>
-        )
-        }
-        // else{
-        //     return(
-        //         <div>And error has occured.</div>
-        //     )
+                          {/* {this.state.kra.map((singleKRA) => 
+                           <div key={singleKRA.userid}>
+                              <p>
+                                {singleKRA.position}
+                              </p>
+                           </div>
+                          )} */}
+                          {topicJSX}
+                          </Grid> 
+        </div>)
+        //   }
+        // if(isLoading)
+        // {
+        //     return <CircularProgress />;
         // }
-    
-}
+        //if(viewTeammate){
+              // return(
+              //     <div>
+              //         <button onClick={this.onCloseKRA}>Close</button>
+              //         <Grid>
+              //             <h1>test</h1>
+              //            <KRAarea/>
+              //             </Grid> 
+              //     </div>)
+      //}
+//       if(kra){
+//         return(
+//             <div>
+//                 <button onClick={this.onCloseKRA}>Close</button>
+//                 <Grid>
+//                     <h1>test</h1>
+//                    <KRAarea/>
+//                     </Grid> 
+//             </div>)
+// }
+
+    }
+  }
 
 
 export default KRAEditor;
