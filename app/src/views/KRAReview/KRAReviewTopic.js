@@ -41,8 +41,10 @@ const styles = theme => ({
         padding: '20px',
     },
     scoreStyles: {
+        paddingTop: '0',
         [theme.breakpoints.down('sm')]: {
           paddingTop: '50px',
+          width: '100%',
         },
     },
   });
@@ -93,7 +95,7 @@ class KRAReviewTopic extends Component {
                                 onChange={this.handleChange('goal')}
                             />
                         </Grid>
-                        <Grid item md={4} sm={12} className={classes.sliderStyles}>
+                        <Grid item md={4} sm={12} className={classes.scoreStyles}>
                             {scoring}
                         </Grid>
                         <Grid item md={4} sm={12}>
