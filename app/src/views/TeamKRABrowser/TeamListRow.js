@@ -46,8 +46,11 @@ class TeamListRow extends Component {
                                 onChooseTeammateKRA={this.onChooseTeammateKRA}
                                 userid={teammate.userid} month={currMonth} year={currYear} score={currScore} />);
         }
-        
-        return (<TableRow className={this.props.background && classes.shadedRow} key={teammate.userid}>{scoreCols}</TableRow>);
+        let classesForThis = "";
+        if(this.props.background){
+            classesForThis = classes.shadedRow;
+        }
+        return (<TableRow className={classesForThis} key={teammate.userid}>{scoreCols}</TableRow>);
     }
 
 }

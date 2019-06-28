@@ -45,6 +45,9 @@ class TeamListView extends Component {
     }
 
     onCloseTeammate = () => {
+        if(this.state.forceReload){
+            this.loadData();
+        }
         this.setState({
             viewTeammate:false
         });
@@ -96,7 +99,7 @@ class TeamListView extends Component {
 
     render() {
         let { classes } = this.props;
-        const{isLoading, error, teammates, viewTeammate, userid, month, year, forceReload} = this.state;
+        const{isLoading, error, teammates, viewTeammate, userid, month, year} = this.state;
         if(error)
         {
             return <p>{error.message}</p>
@@ -110,10 +113,6 @@ class TeamListView extends Component {
                     <KRAReviewEditor forceReload={this.forceReload} userid={userid} month={month} year={year} onChooseTeammateMonth={this.onChooseTeammateMonth} onCloseTeammate={this.onCloseTeammate}/>
             )
         }
-        if(forceReload){
-            this.loadData();
-            return <CircularProgress />;
-        }
         let today = new Date();
         let currYear = today.getFullYear();
         let currMonth = today.getMonth() + 1;
@@ -121,8 +120,6 @@ class TeamListView extends Component {
         let numCols;
         
         let width = this.props.width;
-
-        console.log(width);
 
         if(width > 1200) {
             numCols = 8;
