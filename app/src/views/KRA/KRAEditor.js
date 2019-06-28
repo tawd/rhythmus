@@ -21,7 +21,6 @@ import Config from '../../config.js';
 import _ from 'lodash';
 import KRAarea from './KRAarea';
 
-
 const styles = theme => ({
     container: {
       display: 'flex',
@@ -46,133 +45,107 @@ const styles = theme => ({
   });
 
 
-let KRAjson='kra.json';
-
 class KRAEditor extends Component {
+  constructor(){
+      super();
+      this.state = {
+          isLoading:true,
+          teammates:false,
+          kraLoaded:false,
+          data:null,
+          kraData:[],
 
-    constructor(){
-        super();
-        this.state = {
-            isLoading:true,
-            teammates:false,
-            kraLoaded:false,
-            data:null,
-            kraData:[],
-
-        };
-    }
-    
-     
+      };
+  };
 
 
-    onKRADataChange = (topicKey, key, val) => {
-       let kra = this.state.kraData.kra;
-       if(!kra.title){
-         kra.title = {};
-       }
-       let title = kra.title[topicKey];
-       if(!title){
-         title = {};
-       }
-       title[key] = val;
-       kra.title[topicKey] = title;
-       this.setState({})
-    }
-    // loadSampleKRA = () => ({
-    //   return :'kra.json'
-    //   //this.setState({kraLoaded:true})
-    // }.then( data => {
-    //   this.setState({kraLoaded:true, isLoading:false});
-    //   Config.kraTopics = data.kra;
-    // }).catch(error => this.setState({error, isLoading:false})));
+  onKRADataChange = (topicKey, key, val) => {
+      let data = this.state.kraData;
+      if(!data.kra){
+        data.kra = {};
+      }
+      let descriptions = data.kra[topicKey];
+      if(!descriptions){
+      descriptions = {};
+      }
+      descriptions[key] = val;
+      data.kra[topicKey] = descriptions;
+      this.setState({kraData: data })
+  }
 
-    componentDidMount() {
-        this.setState({isLoading:true});
-    //  const test = () => {return KRAjson}.then( data => {
-    //   // this.setState({kraLoaded:true, isLoading:false});
-    //   Config.kraTopics = data.kra;
-    // }).catch(error => this.setState({error, isLoading:false}));
-
-        const{userid} = this.props;
-        this.setState({isLoading:true, userid:userid});
-        let params = "teammate_id="+userid;  
-
-        let year = 2019;
-
-        // if(!kraLoaded){
-        //   this.loadSampleKRA();
-        // }
-        let s = "";
-       
-        fetch('http://rhythmus.dev.cc/wp-json/rhythmus/v1/kra/?id=17',{
-            method: "GET",
-            cache: "no-cache",
-         
-        })
-            .then(response => {
-             // console.log(response.json())
-                if (response.ok) {
-                  return response.json();
-                } else {
-                  throw new Error('Something went wrong ...');
-                 }
-            })  
-            .then(data => {
-            //const dataMap = data.map(function(dataIn) {return dataIn});
-              let DataReturn = [];
-                 
-                              
-                this.setState({kraData:data,isLoading:false});
-            }
-        ).catch(error => this.setState({error, isLoading:false}));
-        
-    }
-
-    render() {
-        const{isLoading, error, kraLoaded, kraData, viewTeammate, userid} = this.state;
-        const {classes, review} = this.props;
-        const closeBtn = <Button variant="outlined" onClick={this.props.onCloseKRA}>Close</Button>;
-        let topicJSX = [];
-        
-        if(error)
-        {
-            return <p>{error.message}<br/>{closeBtn}</p>
-        }
-        if(isLoading){
-          return <CircularProgress/>
-        }
-        // if(kraLoaded)
-        //justin is trying to understand how json works here and what's the best way to use it.
-          console.log("next line is KRA Data")
-          let dataSTRING = JSON.stringify(kraData);
-          console.log(dataSTRING);
-          let dataJSON = JSON.parse(dataSTRING);
-          console.log("this is a json object");
-          console.log(this.state.kraData);
-
-          console.log("this is the kra");
-          console.log(this.state.kraData.kra);
-
-          this.state.kraData.kra.forEach(element => {
-            topicJSX.push(<KRAarea key={element.teammate_id} 
-              title={element.title}
-              description={element.description}
-              position={element.position}
-              iscurrent={element.is_current}
-              date={element.create_date}
-            />);       
-          })
-           
-         
-          return(<div className="kra">
-          
-          <Grid container spacing={24}>
-                          <Grid item xs={12}>{closeBtn}</Grid>                                 
-                          {topicJSX}
-                          </Grid> 
-        </div>)
+  componentDidMount() {
+    this.setState({isLoading:true});
+    const{userid} = this.props;
+    this.setState({isLoading:true, userid:userid});
+    let params = "teammate_id="+userid;  
+    let year = 2019;
+    if(!Config.kraData){
+      fetch('http://rhythmus.dev.cc/wp-json/rhythmus/v1/kra/?id=17',{
+          method: "GET",
+          cache: "no-cache",   
+      })
+      .then(response => {
+      // console.log(response.json())
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Something went wrong ...');
+          }
+      })  
+      .then(data => {
+        //const dataMap = data.map(function(dataIn) {return dataIn});
+        let DataReturn = [];
+        Config.kraData = data.kra;                  
+        this.setState({kraData:data,isLoading:false});
+      }
+      ).catch(error => this.setState({error, isLoading:false}));
     }
   }
 
+  render() {
+    const{isLoading, error, kraLoaded, kraData, viewTeammate, userid} = this.state;
+    const {classes, review} = this.props;
+    const closeBtn = <Button variant="outlined" onClick={this.props.onCloseKRA}>Close</Button>;
+    let topicJSX = [];
+    let onKRADataChangeFunction = this.onKRADataChange;
+    if(error)
+    {
+        return <p>{error.message}<br/>{closeBtn}</p>
+    }
+    if(isLoading){
+      return <CircularProgress/>
+    }
+    // if(kraLoaded)
+    //justin is trying to understand how json works here and what's the best way to use it.
+    console.log("next line is KRA Data")
+    let dataSTRING = JSON.stringify(kraData);
+    console.log(dataSTRING);
+    let dataJSON = JSON.parse(dataSTRING);
+    console.log("this is a json object");
+    console.log(this.state.kraData);
+    console.log("this is the kra");
+    console.log(this.state.kraData.kra);
+
+    this.state.kraData.kra.forEach(element => {
+      topicJSX.push(<KRAarea key={element.teammate_id} 
+        title={element.title}
+        description={element.description}
+        position={element.position}
+        iscurrent={element.is_current}
+        onKRADataChange={onKRADataChangeFunction}
+        date={element.create_date}
+      />);       
+    })
+      
+    
+    return(<div className="kra">
+    
+    <Grid container spacing={24}>
+                    <Grid item xs={12}>{closeBtn}</Grid>                                 
+                    {topicJSX}
+                      </Grid> 
+    </div>)
+  }
+}
 
 export default KRAEditor;
