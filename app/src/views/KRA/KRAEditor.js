@@ -65,12 +65,18 @@ class KRAEditor extends Component {
      
 
 
-    onAreaChange = () => {
-       let input = this.state.kraData;
-       if(!input.kraData){
-         input.kraData = {};
+    onKRADataChange = (topicKey, key, val) => {
+       let kra = this.state.kraData.kra;
+       if(!kra.title){
+         kra.title = {};
        }
-       
+       let title = kra.title[topicKey];
+       if(!title){
+         topic = {};
+       }
+       title[key] = val;
+       kra.title[topicKey] = title;
+       this.setState({})
     }
     // loadSampleKRA = () => ({
     //   return :'kra.json'

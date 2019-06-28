@@ -45,7 +45,7 @@ class KRAReviewTopic extends Component {
 
     render() {
         const { classes, review } = this.props;
-        let { title, description, type } = this.props.topic;
+        let { title, , type } = this.props.topic;
         let { score, amount, outof, goal, goal_notes } = review;
         if(typeof score != 'number')
         {

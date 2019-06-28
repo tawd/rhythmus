@@ -49,7 +49,7 @@ class KRAReviewEditor extends Component {
             review:false,
             isDirty:false,
             saving:false,
-            opent:false
+            open:false
         };
     }
     handleChange = name => event => {
