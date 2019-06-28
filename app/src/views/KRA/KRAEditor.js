@@ -72,7 +72,7 @@ class KRAEditor extends Component {
        }
        let title = kra.title[topicKey];
        if(!title){
-         topic = {};
+         title = {};
        }
        title[key] = val;
        kra.title[topicKey] = title;
