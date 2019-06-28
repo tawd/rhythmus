@@ -53,6 +53,7 @@ class KRAEditor extends Component {
           teammates:false,
           kraLoaded:false,
           data:null,
+          open:false,
           kraData:[],
 
       };
@@ -72,15 +73,46 @@ class KRAEditor extends Component {
       descriptions[key] = val;
       data.kra[topicKey] = descriptions;
       this.setState({kraData: data })
+
+      //if(userCanEDIT){markForSave();}
   }
 
+  markForSave = () => {
+    if(this.state.open){
+      this.state({open:true});
+    }
+  };
+
+  saveKRA = () => {
+    let KRA = this.state.kraData;
+    KRA.userid = this.props.userid;
+    console.log("Saving...")
+    this.setState({open:false});
+    //STILL WAITNING FOR ENDPOINT TO FINISH
+    // fetch(Config.baseURL+ 'WAITING FOR ENDPOINT',{
+    //   method:"POST",
+    //   cache:"no-cache",
+    //   "body": JSON.stringify(KRA)
+    // }).then(response => {
+    //   if(response.ok){
+    //     return response.json();
+    //   }else{
+    //     throw new Error('Something went wrong...');
+    //   }
+    // }).then(data => {
+    //   console.log(data);
+    //   if(!data.success){
+    //     throw new Error('Errir saving ot server ...');
+    //   }
+    // }).catch(error => this.setState({error}));
+  };
   componentDidMount() {
     this.setState({isLoading:true});
     const{userid} = this.props;
     this.setState({isLoading:true, userid:userid});
     let params = "teammate_id="+userid;  
     let year = 2019;
-      if(!Config.kraData){
+     // if(!Config.kraData){
       fetch('http://rhythmus.dev.cc/wp-json/rhythmus/v1/kra/?id=17',{
           method: "GET",
           cache: "no-cache",    
@@ -100,13 +132,14 @@ class KRAEditor extends Component {
         this.setState({kraData:data,isLoading:false});
       }
       ).catch(error => this.setState({error, isLoading:false}));
-    }
+    // }
   }
 
   render() {
     const{isLoading, error, kraLoaded, kraData, viewTeammate, userid} = this.state;
     const {classes, review} = this.props;
     const closeBtn = <Button variant="outlined" onClick={this.props.onCloseKRA}>Close</Button>;
+    const saveBtn = <Button variant="outlined" onClick={this.saveKRA}>Save</Button>;
     let topicJSX = [];
     let onKRADataChangeFunction = this.onKRADataChange;
     if(error)
@@ -148,6 +181,9 @@ class KRAEditor extends Component {
                     <Grid item xs={12}>{closeBtn}</Grid>                                 
                     {topicJSX}
                       </Grid> 
+                      <br/>
+                      <Grid item xs={12}>{saveBtn}</Grid>                                 
+
     </div>)
   }
 }
