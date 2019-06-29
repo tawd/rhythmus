@@ -35,7 +35,7 @@ class KRAReviewSlider extends Component {
                 score = parseFloat(score);
             }
             if(score >=0 ) {
-                scoreLabel = "Score: " + score;
+                scoreLabel =  score;
             }
         }
         return(
@@ -51,7 +51,7 @@ class KRAReviewSlider extends Component {
                     onChange={this.handleSliderChange}
 
                 />
-                <p className={classes.scoreLabel}>{scoreLabel}</p>
+                <p className={classes.scoreLabel}>Score: {scoreLabel}</p>
           </div>
         );
     }

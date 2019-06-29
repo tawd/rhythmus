@@ -47,6 +47,9 @@ const styles = theme => ({
           width: '100%',
         },
     },
+    gridStyles: {
+        width: '100%',
+    },
   });
 
 class KRAReviewTopic extends Component {
@@ -85,7 +88,7 @@ class KRAReviewTopic extends Component {
                 <Paper className={classes.paper}>
                     <h3 className={classes.headerStyles}>{title}</h3>
                     <Grid container className={classes.boxStyles}>
-                        <Grid item md={4} sm={12}>
+                        <Grid item md={4} sm={12} className={classes.gridStyles}>
                             <TextField
                                 id="goal"
                                 value={goal}
@@ -98,10 +101,9 @@ class KRAReviewTopic extends Component {
                         <Grid item md={4} sm={12} className={classes.scoreStyles}>
                             {scoring}
                         </Grid>
-                        <Grid item md={4} sm={12}>
+                        <Grid item md={4} sm={12} className={classes.gridStyles}>
                             <TextField
                                 id="goal_notes"
-                                width={1}
                                 value={goal_notes}
                                 className={classes.textField}
                                 label={title + " Notes"}
