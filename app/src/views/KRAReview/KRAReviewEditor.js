@@ -9,7 +9,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -39,6 +38,8 @@ const styles = theme => ({
 
 class KRAReviewEditor extends Component {
 
+    autoSaveTimer = false;
+
     constructor(){
         super();
         this.state = {
@@ -49,8 +50,7 @@ class KRAReviewEditor extends Component {
             year:"",
             review:false,
             isDirty:false,
-            saving:false,
-            opent:false
+            saving:false
         };
     }
 
@@ -82,14 +82,24 @@ class KRAReviewEditor extends Component {
         this.markForSave();
     }
 
-    handleMessageClose = () => {
-        this.setState({ open: false });
+    closeTeammate = () => {
+        if(!this.state.isDirty){
+            this.props.onCloseTeammate();
+        }
     }
 
     markForSave = () => {
-        if(!this.state.open || this.state.isDirty) {
-            this.setState( { open:true, isDirty:true } );
+        if(!this.state.isDirty) {
+            this.setState( { isDirty:true } );
         }
+        if(!this.autoSaveTimer) {
+            this.autoSaveTimer = setTimeout(this.handleAutoSave, 1000);
+        }
+    }
+
+    handleAutoSave = () => {
+        this.autoSaveTimer = false;
+        this.saveReview();
     }
 
     saveReview = () => {
@@ -98,7 +108,9 @@ class KRAReviewEditor extends Component {
         review.userid = this.props.userid;
         review.month = this.props.month;
         review.year = this.props.year;
-        this.setState( { open:false} );
+        if(!this.unmounting){
+            this.setState( { saving:true, isDirty:false} );
+        }
         fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-review?'+Config.authKey,{
             method: "POST",
             cache: "no-cache",
@@ -112,12 +124,10 @@ class KRAReviewEditor extends Component {
                 }
             })
             .then(data => {
-                console.log(data);
                 if( !data.success ) {
                     throw new Error('Error saving to server ...');
                 }
-                //TODO: Handle the dirty state better...
-                this.setState ( {isDirty:false});
+                this.setState ( {saving:false});
             }
         ).catch(error => this.setState({error}));
 
@@ -144,6 +154,12 @@ class KRAReviewEditor extends Component {
             ).catch(error => this.setState({error, isLoading:false}));
         } else {
             this.loadKRAs();
+        }
+    }
+    componentWillUnmount() {
+        if(this.autoSaveTimer){
+            clearTimeout(this.autoSaveTimer);
+            this.saveReview();
         }
     }
 
@@ -181,13 +197,23 @@ class KRAReviewEditor extends Component {
 
     onChooseTeammateNextMonth = () => {
         let nextMonth = this.props.month + 1;
-        this.props.onChooseTeammateMonth(this.props.userid, nextMonth, this.props.year);
+        let year = this.props.year;
+        if(nextMonth > 12){
+            nextMonth = 1;
+            year = year + 1;
+        }
+        this.props.onChooseTeammateMonth(this.props.userid, nextMonth, year);
     }
 
     onChooseTeammatePrevMonth = () => {
         let prevMonth = this.props.month - 1;
+        let year = this.props.year;
+        if(prevMonth < 1){
+            year = year - 1;
+            prevMonth = 12;
+        }
         if(prevMonth) {
-            this.props.onChooseTeammateMonth(this.props.userid, prevMonth, this.props.year);
+            this.props.onChooseTeammateMonth(this.props.userid, prevMonth, year);
         }
     }
 
@@ -202,7 +228,7 @@ class KRAReviewEditor extends Component {
             review = {};
         }
         
-        const closeBtn = <Button variant="outlined" onClick={this.props.onCloseTeammate}>Close</Button>;
+        const closeBtn = <Button variant="outlined" onClick={this.closeTeammate} disabled={this.state.isDirty}>Close</Button>;
         if(error)
         {
             return <p>{error.message}<br/>{closeBtn}</p>
@@ -274,20 +300,6 @@ class KRAReviewEditor extends Component {
                             </Grid>
                         </form>
                     </Grid>
-                    <Snackbar
-                        anchorOrigin={{ 'vertical':'bottom', 'horizontal':'right' }}
-                        key='save-msg'
-                        open={this.state.open}
-                        onClose={this.handleMessageClose}
-                        action={
-                            <Button color="primary" size="small" onClick={this.saveReview}>
-                              Save
-                            </Button>}
-                        ContentProps={{
-                        'aria-describedby': 'message-id',
-                        }}
-                        message={<span id="message-id">Changes to save</span>}
-                    />
                 </div>
             )
         }else {
