@@ -110,24 +110,6 @@ class KRA_Review extends Abstract_Endpoint {
 	}
 
 	/**
-	 * Create OR Update
-	 *
-	 * @param WP_REST_Request $request Full data about the request.
-	 *
-	 * @return WP_REST_Response
-	 */
-	public function update( $request ) {
-
-		$data = json_decode( file_get_contents( 'php://input' ), true );
-
-		if ( ! $this->create_or_update( $data ) ) {
-			return $this->endpoint_response( new WP_Error( 'kra_review_update', 'Could not replace the record for ' . $data['userid'] ) );
-		}
-
-		return $this->endpoint_response();
-	}
-
-	/**
 	 * @param array $data
 	 *
 	 * @return bool
@@ -150,5 +132,23 @@ class KRA_Review extends Abstract_Endpoint {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Create OR Update
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function update( $request ) {
+
+		$data = json_decode( file_get_contents( 'php://input' ), true );
+
+		if ( ! $this->create_or_update( $data ) ) {
+			return $this->endpoint_response( new WP_Error( 'kra_review_update', 'Could not replace the record for ' . $data['userid'] ) );
+		}
+
+		return $this->endpoint_response();
 	}
 }

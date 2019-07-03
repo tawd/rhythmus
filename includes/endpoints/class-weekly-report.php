@@ -32,38 +32,49 @@ class Weekly_Report extends Abstract_Endpoint {
 
 		$this->register_route( $route, array(
 			array(
-				'methods'               => WP_REST_Server::READABLE,
-				'callback'              => array( $this, 'get_status_summary' ),
-				'args'                  => array(),
+				'methods'  => WP_REST_Server::READABLE,
+				'callback' => array( $this, 'get_status_summary' ),
+				'args'     => array(),
 			),
 		) );
 
 		$this->register_route( $route, array(
 			array(
-				'methods'               => WP_REST_Server::EDITABLE,
-				'callback'              => array( $this, 'update' ),
-				'permission_callback'   => array( $this->auth, 'permissions_check' ),
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'update' ),
+				'permission_callback' => array(
+					$this->auth,
+					'permissions_check'
+				),
 				/**
 				 * These args are the params submitted to this endpoint.
 				 * Validating and sanitizing them this way is the proper WP REST API way.
 				 */
-				'args'                  => array(
+				'args'                => array(
 					'status' => array(
-						'description' => esc_html__( 'The status of the weekly report' ),
-						'required' => true,
-						'type' => 'string',
-						'enum' => array( 'complete', 'late', 'out', 'incomplete' ),
-						'validate_callback' => array( $this, 'validate_status' ),
+						'description'       => esc_html__( 'The status of the weekly report' ),
+						'required'          => true,
+						'type'              => 'string',
+						'enum'              => array(
+							'complete',
+							'late',
+							'out',
+							'incomplete'
+						),
+						'validate_callback' => array(
+							$this,
+							'validate_status'
+						),
 					),
 					'userid' => array(
-						'description' => esc_html__( 'The teammate id' ),
-						'required' => true,
+						'description'       => esc_html__( 'The teammate id' ),
+						'required'          => true,
 						'sanitize_callback' => 'absint',
 						'validate_callback' => array( $this, 'validate_int' )
 					),
-					'week' => array(
-						'description' => esc_html__( 'The week id' ),
-						'required' => true,
+					'week'   => array(
+						'description'       => esc_html__( 'The week id' ),
+						'required'          => true,
 						'sanitize_callback' => 'absint',
 						'validate_callback' => array( $this, 'validate_int' )
 					),
@@ -76,6 +87,7 @@ class Weekly_Report extends Abstract_Endpoint {
 	 * Get Weekly Report Status List
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
+	 *
 	 * @return WP_REST_Response
 	 */
 	public function get_status_summary( $request ) {
@@ -87,41 +99,41 @@ class Weekly_Report extends Abstract_Endpoint {
 		t.id as teammate_id, CONCAT(t.fname, ' ', t.lname) as name
 		FROM {$wpdb->prefix}rhythmus_weekly_report r
 		LEFT OUTER JOIN {$wpdb->prefix}rhythmus_weekly_report_week w ON w.id = r.week_id
-		JOIN {$wpdb->prefix}rhythmus_teammate t ON r.teammate_id = t.id;");
+		JOIN {$wpdb->prefix}rhythmus_teammate t ON r.teammate_id = t.id;" );
 
-		$weeks = array();
+		$weeks     = array();
 		$teammates = array();
 
 		foreach ( $results as $result ) {
 
 			if ( ! array_key_exists( $result->week_id, $weeks ) ) {
 				$weeks[ $result->week_id ] = array(
-					'id' => $result->week_id,
-					'start_date' => $result->start_date,
-					'end_date' => $result->end_date,
+					'id'            => $result->week_id,
+					'start_date'    => $result->start_date,
+					'end_date'      => $result->end_date,
 					'num_submitted' => $result->num_submitted,
-					'num_reviewed' => $result->num_reviewed,
+					'num_reviewed'  => $result->num_reviewed,
 				);
 			}
 
 			if ( ! array_key_exists( $result->name, $teammates ) ) {
 				$teammates[ $result->name ] = array(
-					'name' => $result->name,
+					'name'    => $result->name,
 					'user_id' => $result->teammate_id,
-					'weeks' => array(),
+					'weeks'   => array(),
 				);
 			}
 
 			$teammates[ $result->name ]['weeks'][ $result->week_id ] = array(
-				'id' => $result->report_id,
-				'status' => $result->status,
-				'reviewed' => (int) $result->reviewed === 1,
-				'submitted' => empty( $result->submit_date ) ? FALSE : TRUE,
+				'id'        => $result->report_id,
+				'status'    => $result->status,
+				'reviewed'  => (int) $result->reviewed === 1,
+				'submitted' => empty( $result->submit_date ) ? false : true,
 			);
 		}
 
 		$response_data = array(
-			'weeks' => array_values( $weeks ),
+			'weeks'     => array_values( $weeks ),
 			'teammates' => array_values( $teammates ),
 		);
 
@@ -131,15 +143,16 @@ class Weekly_Report extends Abstract_Endpoint {
 	/**
 	 * Validate the status reported when the weekly report is updated
 	 *
-	 * @param mixed $value
+	 * @param mixed           $value
 	 * @param WP_REST_Request $request
-	 * @param string $param
+	 * @param string          $param
+	 *
 	 * @return WP_Error
 	 */
 	public function validate_status( $value, $request, $param ) {
 
 		if ( ! is_string( $value ) ) {
-			return new WP_Error( 'invalid_param', 'Invalid status.');
+			return new WP_Error( 'invalid_param', 'Invalid status.' );
 		}
 
 		/**
@@ -152,7 +165,7 @@ class Weekly_Report extends Abstract_Endpoint {
 		$attributes = $request->get_attributes();
 
 		if ( ! in_array( $value, $attributes['args'][ $param ]['enum'], true ) ) {
-			return new WP_Error( 'rest_invalid_param', 'Invalid status.');
+			return new WP_Error( 'rest_invalid_param', 'Invalid status.' );
 		}
 
 	}
@@ -161,6 +174,7 @@ class Weekly_Report extends Abstract_Endpoint {
 	 * Create OR Update
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
+	 *
 	 * @return WP_REST_Response
 	 */
 	public function update( $request ) {
@@ -170,9 +184,9 @@ class Weekly_Report extends Abstract_Endpoint {
 		 * For now, simply set status to 1 if complete, 0 if anything else.
 		 * TODO: This will be updated as we get more statuses
 		 */
-		$status = $request->get_param('status') === 'complete' ? 1 : 0;
-		$teammate_id = $request->get_param('userid');
-		$week_id = $request->get_param('week');
+		$status      = $request->get_param( 'status' ) === 'complete' ? 1 : 0;
+		$teammate_id = $request->get_param( 'userid' );
+		$week_id     = $request->get_param( 'week' );
 
 		$table_name = $wpdb->prefix . 'rhythmus_weekly_report';
 
@@ -182,7 +196,7 @@ class Weekly_Report extends Abstract_Endpoint {
 		 */
 		$sql = $wpdb->prepare( "UPDATE $table_name SET status = %d WHERE teammate_id = %d AND week_id = %d", $status, $teammate_id, $week_id );
 
-		if ( ! $wpdb->query($sql) ) {
+		if ( ! $wpdb->query( $sql ) ) {
 			return $this->endpoint_response(
 				new WP_Error( 'rhythmus_kra_update', 'Could not update record #' . $request->get_param( 'id' ) )
 			);

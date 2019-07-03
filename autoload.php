@@ -21,9 +21,9 @@ class Rhythmus_Autoload {
 	 */
 	public static function wp_autoloader( $class ) {
 
-		$prefix = self::ROOT . '\\';
+		$prefix   = self::ROOT . '\\';
 		$base_dir = __DIR__ . '/includes/';
-		$len = strlen( $prefix );
+		$len      = strlen( $prefix );
 
 		if ( strncmp( $prefix, $class, $len ) !== 0 ) {
 			return;
