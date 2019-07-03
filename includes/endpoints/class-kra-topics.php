@@ -49,7 +49,7 @@ class KRA_Topics extends Abstract_Endpoint {
 		global $wpdb;
 
 		$results = $wpdb->get_results( "SELECT id, name, title, description, type, source 
-        FROM {$wpdb->prefix}rhythmus_kra_topic", OBJECT );
+        FROM {$wpdb->prefix}rhythmus_kra_topic" );
 
 		$topics = array();
 
