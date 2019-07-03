@@ -32,7 +32,60 @@ const styles = theme => ({
         padding: theme.spacing.unit * 2,
         textAlign: 'center',
         color: theme.palette.text.secondary,
-        marginTop: '10px',
+        position: 'relative',
+        [theme.breakpoints.down('xs')]: {
+            padding: '56px 0',
+        },
+    },
+    prevBtn: {
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        bottom: 0,
+        margin: 'auto',
+        width: '30px',
+        height: '100%',
+        color: 'white',
+        background: theme.palette.primary.main,
+        borderBottomLeftRadius: 0,
+        borderTopLeftRadius: 0,
+        [theme.breakpoints.down('xs')]: {
+            top: 'inherit',
+            width: '100%',
+            bottom: 0,
+            height: '40px',
+            margin: 0,
+            borderTopLeftRadius: 0,
+            borderBottomLeftRadius: 'inherit',
+            borderTopRightRadius: 0,
+        },
+    },
+    nextBtn: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        margin: 'auto',
+        width: '30px',
+        height: '100%',
+        color: 'white',
+        background: theme.palette.primary.main,
+        borderBottomRightRadius: 0,
+        borderTopRightRadius: 0,
+        [theme.breakpoints.down('xs')]: {
+            top: 0,
+            left: 0,
+            right: 0,
+            width: '100%',
+            height: '40px',
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+            borderTopRightRadius: 'inherit',
+            margin: 0,
+        },
+    },
+    closeBtn: {
+        marginBottom: '10px',
     },
   });
 
@@ -163,7 +216,7 @@ class KRAReviewEditor extends Component {
         }
     }
 
-    loadKRAs= () => {
+    loadKRAs = () => {
         const{year, userid, month} = this.props;
         this.setState({isLoading:true, month:month, year:year});
         let params = "teammate_id="+userid;
@@ -228,7 +281,7 @@ class KRAReviewEditor extends Component {
             review = {};
         }
         
-        const closeBtn = <Button variant="outlined" onClick={this.closeTeammate} disabled={this.state.isDirty}>Close</Button>;
+        const closeBtn = <Button variant="outlined" className={classes.closeBtn} onClick={this.closeTeammate} disabled={this.state.isDirty}>Close</Button>;
         if(error)
         {
             return <p>{error.message}<br/>{closeBtn}</p>
@@ -272,10 +325,10 @@ class KRAReviewEditor extends Component {
                             <Grid item xs={12}>
                                 
                                 <Paper className={classes.paper}>
-                                    <Button onClick={this.onChooseTeammatePrevMonth}>Prev Month</Button>
+                                    <Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth}>Next Month</Button>
                                     <h2>{teammate.name} for {m[month-1]}, {year}</h2>
                                     <h3>Score: {score}</h3>
-                                    <Button onClick={this.onChooseTeammateNextMonth}>Next Month</Button>
+                                    <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth}>Prev Month</Button>
                                 </Paper>
                                 
                             </Grid>

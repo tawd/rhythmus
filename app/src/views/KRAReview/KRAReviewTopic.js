@@ -32,7 +32,7 @@ const styles = theme => ({
         width:300,
     },
     headerStyles: {
-        backgroundColor: '#3F51B5',
+        backgroundColor: theme.palette.primary.main,
         padding: '20px',
         color: 'white',
         transform: 'translate()',
