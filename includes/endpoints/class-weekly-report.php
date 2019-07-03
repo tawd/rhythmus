@@ -160,6 +160,7 @@ class Weekly_Report extends Abstract_Endpoint {
 		}
 
 		// TODO: We should probably create a common response format.
+
 		return new WP_REST_Response( array(
 			'success'   => $updated
 		), 200 );

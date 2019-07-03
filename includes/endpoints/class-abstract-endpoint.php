@@ -4,6 +4,7 @@ namespace Rhythmus\Endpoints;
 
 use Rhythmus;
 use Rhythmus\EndpointAuthentication;
+use WP_REST_Response;
 use WP_REST_Server;
 
 
@@ -32,7 +33,7 @@ abstract class Abstract_Endpoint {
 	 *
 	 * @var string $api_version
 	 */
-	protected $api_version = '1';
+	protected $api_version = 1;
 
 	/**
 	 * Initialize the plugin by setting localization and loading public scripts
@@ -40,9 +41,9 @@ abstract class Abstract_Endpoint {
 	 *
 	 */
 	public function __construct() {
-		$plugin = Rhythmus\rhythmus::get_instance();
+		$plugin            = Rhythmus\rhythmus::get_instance();
 		$this->plugin_slug = $plugin->get_plugin_slug();
-		$this->auth = new Rhythmus\Endpoint_Authentication();
+		$this->auth        = new Rhythmus\Endpoint_Authentication();
 	}
 
 	/**
@@ -91,12 +92,48 @@ abstract class Abstract_Endpoint {
 		}
 
 		if ( ! array_key_exists( 'permission_callback', $route_data ) ) {
-			$route_data['permission_callback'] = array(
-				$this->auth,
-				'permissions_check'
-			);
+			$route_data['permission_callback'] = array( $this->auth, 'permissions_check' );
 		}
 
 		register_rest_route( $namespace, $route, $route_data );
+	}
+
+	/**
+	 * Take in some data and format the responses;
+	 *
+	 * @param $payload
+	 *
+	 * @return \WP_REST_Response
+	 */
+	protected function endpoint_response( $payload ) {
+
+		$response      = new WP_REST_Response();
+		$response_data = array(
+			'app'     => ucfirst( $this->plugin_slug ),
+			'version' => $this->api_version,
+		);
+
+		if ( is_wp_error( $payload ) ) {
+
+			$response_data['success'] = false;
+			$response_data['error']   = $payload->get_error_message();
+
+			$response->set_data( $response_data );
+			$response->set_status( 400 );
+
+			return $response;
+		}
+
+		if ( ! array( $payload ) ) {
+			$payload = array( $payload );
+		}
+
+		$response_data['success'] = true;
+		$response_data = array_merge( $response_data, $payload );
+
+		$response->set_data( $response_data );
+		$response->set_status( 200 );
+
+		return $response;
 	}
 }
