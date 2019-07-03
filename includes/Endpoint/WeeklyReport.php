@@ -44,7 +44,7 @@ class WeeklyReport {
 	 *
 	 */
 	private function __construct() {
-        $plugin = Rhythmus\Rhythmus::get_instance();
+        $plugin = Rhythmus\rhythmus::get_instance();
         $this->plugin_slug = $plugin->get_plugin_slug();
         $this->auth = new EndpointAuthentication();
 	}
@@ -139,7 +139,7 @@ class WeeklyReport {
      */
     public function get_wr_status_list( $request ) {
         //Currently reading sample data from a file and returning
-        $sample = json_decode(file_get_contents(__DIR__.'/sample-data/wr-status-list.json'));        
+        $sample = json_decode(file_get_contents(__DIR__.'/sample-data/wr-status-list.json'));
         return new \WP_REST_Response( $sample, 200 );
 
     }
@@ -157,7 +157,7 @@ class WeeklyReport {
         if ( ! is_string( $value ) ) {
             return new WP_Error( 'invalid_param', 'Invalid status.');
         }
-        
+
         /**
          * Only the following statuses will be allowed (from the args settings):
          * - complete
@@ -189,14 +189,14 @@ class WeeklyReport {
     }
 
     /**
-     * Create OR Update 
+     * Create OR Update
      *
      * @param WP_REST_Request $request Full data about the request.
      * @return WP_Error|WP_REST_Request
      */
     public function update_wr_status( $request ) {
         global $wpdb;
-        
+
         /**
          * For now, simply set status to 1 if complete, 0 if anything else.
          * TODO: This will be updated as we get more statuses

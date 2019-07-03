@@ -43,7 +43,7 @@ class Teammate {
 	 * @since     0.8.1
 	 */
 	private function __construct() {
-        $plugin = Rhythmus\Rhythmus::get_instance();
+        $plugin = Rhythmus\rhythmus::get_instance();
         $this->plugin_slug = $plugin->get_plugin_slug();
         $this->auth = new EndpointAuthentication();
 
@@ -111,7 +111,7 @@ class Teammate {
         $currUser = false;
         $currUserID = null;
         $currScores = array();
-        foreach ( $results as $row ) 
+        foreach ( $results as $row )
         {
             if($row->id != $currUserID) {
                 if($currUser) {
@@ -136,7 +136,7 @@ class Teammate {
             $currUser["months"] = $currScores;
             array_push($teammates, $currUser);
         }
-        
+
         $teamlist = array(
             "app" => 'Rhythmus',
             "version" => 1,

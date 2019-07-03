@@ -26,7 +26,7 @@ class KRAReview {
      * @var EndpointAuthentication $auth
      */
     protected $auth;
-    
+
     /**
 	 * Instance of this class.
 	 *
@@ -43,7 +43,7 @@ class KRAReview {
 	 * @since     0.1.1
 	 */
 	private function __construct() {
-        $plugin = Rhythmus\Rhythmus::get_instance();
+        $plugin = Rhythmus\rhythmus::get_instance();
         $this->plugin_slug = $plugin->get_plugin_slug();
         $this->auth = new EndpointAuthentication();
 	}
@@ -137,7 +137,7 @@ class KRAReview {
         );
         $months = array();
 
-        foreach ( $results as $row ) 
+        foreach ( $results as $row )
         {
             if(!$teammate["userid"]) {
                 $teammate["userid"] = $row->id;
@@ -156,7 +156,7 @@ class KRAReview {
             );
         }
         $teammate["months"] = $months;
-        
+
         return new \WP_REST_Response( $teammate, 200 );
     }
 
@@ -171,10 +171,10 @@ class KRAReview {
 
         $results = $wpdb->get_results( "SELECT id, name, title, description, type, source 
         FROM {$wpdb->prefix}rhythmus_kra_topic", OBJECT );
- 
+
         $topics = array();
 
-        foreach ( $results as $row ) 
+        foreach ( $results as $row )
         {
             $type="";
             if($row->type == 1) {
@@ -198,7 +198,7 @@ class KRAReview {
     }
 
     /**
-     * Create OR Update 
+     * Create OR Update
      *
      * @param WP_REST_Request $request Full data about the request.
      * @return WP_Error|WP_REST_Request
@@ -214,7 +214,7 @@ class KRAReview {
                 (teammate_id, year, month, total, reviewed, review_notes, topics, last_update_date)
                 VALUES
                 (%d, %d, %d, %d, %d, %s, %s, now())",
-                $data['userid'], $data['year'], $data['month'], $data['total'], 
+                $data['userid'], $data['year'], $data['month'], $data['total'],
                 $data['reviewed'], $data['review_notes'], json_encode($data['topics'])
             );
 

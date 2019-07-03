@@ -1,0 +1,102 @@
+<?php
+
+namespace Rhythmus\Endpoints;
+
+use Rhythmus;
+use Rhythmus\EndpointAuthentication;
+use WP_REST_Server;
+
+
+abstract class Abstract_Endpoint {
+
+	/**
+	 * Instance of this class.
+	 *
+	 * @var      object
+	 */
+	protected static $instance = null;
+	/**
+	 * Handle endpoint authentication
+	 *
+	 * @var EndpointAuthentication $auth
+	 */
+	protected $auth;
+	/**
+	 * The root path of this plugin
+	 *
+	 * @var string $plugin_slug
+	 */
+	protected $plugin_slug;
+	/**
+	 * Current version of the API
+	 *
+	 * @var string $api_version
+	 */
+	protected $api_version = '1';
+
+	/**
+	 * Initialize the plugin by setting localization and loading public scripts
+	 * and styles.
+	 *
+	 */
+	public function __construct() {
+		$plugin = Rhythmus\rhythmus::get_instance();
+		$this->plugin_slug = $plugin->get_plugin_slug();
+		$this->auth = new Rhythmus\Endpoint_Authentication();
+	}
+
+	/**
+	 * Return an instance of this class.
+	 *
+	 * @return    object    A single instance of this class.
+	 */
+	public static function get_instance() {
+
+		// If the single instance hasn't been set, set it now.
+		if ( null === self::$instance ) {
+			self::$instance = new static();
+			self::$instance->do_hooks();
+		}
+
+		return self::$instance;
+	}
+
+	/**
+	 * Set up WordPress hooks and filters
+	 *
+	 * @return void
+	 */
+	public function do_hooks() {
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+	}
+
+	/**
+	 * Register the routes for the objects of the controller.
+	 */
+	public function register_routes() {
+	}
+
+	/**
+	 * @param $route
+	 * @param $route_data
+	 */
+	protected function register_route( $route, $route_data ) {
+
+		$namespace = "$this->plugin_slug/v$this->api_version";
+
+		$route = trailingslashit( $route );
+
+		if ( ! array_key_exists( 'methods', $route_data ) ) {
+			$route_data['methods'] = WP_REST_Server::READABLE;
+		}
+
+		if ( ! array_key_exists( 'permission_callback', $route_data ) ) {
+			$route_data['permission_callback'] = array(
+				$this->auth,
+				'permissions_check'
+			);
+		}
+
+		register_rest_route( $namespace, $route, $route_data );
+	}
+}
