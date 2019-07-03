@@ -107,6 +107,8 @@ class Rhythmus {
 
 	public function initialize() {
 
+		( new Endpoints\Teammate() )->do_hooks();
 		( new Endpoints\Weekly_Report() )->do_hooks();
+		( new Endpoints\KRA_Review() )->do_hooks();
 	}
 }
