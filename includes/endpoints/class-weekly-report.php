@@ -182,16 +182,12 @@ class Weekly_Report extends Abstract_Endpoint {
 		 */
 		$sql = $wpdb->prepare( "UPDATE $table_name SET status = %d WHERE teammate_id = %d AND week_id = %d", $status, $teammate_id, $week_id );
 
-		if ( $wpdb->query($sql) ) {
-			$updated = true;
-		} else {
-			$updated = false;
+		if ( ! $wpdb->query($sql) ) {
+			return $this->endpoint_response(
+				new WP_Error( 'rhythmus_kra_update', 'Could not update record #' . $request->get_param( 'id' ) )
+			);
 		}
 
-		// TODO: We should probably create a common response format.
-
-		return new WP_REST_Response( array(
-			'success'   => $updated
-		), 200 );
+		return $this->endpoint_response();
 	}
 }
