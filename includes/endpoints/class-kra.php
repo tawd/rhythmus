@@ -24,7 +24,19 @@ class KRA extends Abstract_Endpoint {
 		$this->register_route( $route, array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => array( $this, 'read' ),
-			'args'     => array(),
+			'args'     => array(
+				'teammate_id' => array(
+					'description' => esc_html__( 'The teammate id' ),
+					'required' => true,
+					'sanitize_callback' => 'absint',
+					'validate_callback' => array( $this, 'validate_int' )
+				),
+				'revision' => array(
+					'description' => esc_html__( 'The revision number' ),
+					'sanitize_callback' => 'absint',
+					'validate_callback' => array( $this, 'validate_int' )
+				),
+			),
 		) );
 	}
 
@@ -55,33 +67,25 @@ class KRA extends Abstract_Endpoint {
 
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
-		if ( count( $results ) ===  1 ) {
+		if ( count( $results ) === 1 ) {
 
-			$kra = $this->parse_kra( $results[0] );
+			$kra                    = $this->parse_kra( $results[0] );
 			$kra['revision_number'] = 0;
-		} elseif ( count( $results ) > 1 && ! $request->get_param('revision') ) {
+		} elseif ( count( $results ) > 1 && ! $request->get_param( 'revision' ) ) {
 			$kra = $this->get_index( $results, 'current' );
-		} elseif ( count( $results ) >  1 && $request->get_param('revision') ) {
-			$kra = $this->get_index( $results, $request->get_param('revision' ) );
+		} elseif ( count( $results ) > 1 && $request->get_param( 'revision' ) ) {
+			$kra = $this->get_index( $results, $request->get_param( 'revision' ) );
 		}
 
 		return $this->endpoint_response( $kra );
 
 	}
 
-	public function update( $request ) {
-
-	}
-
-	public function create_revision( $request ) {
-
-	}
-
 	private function parse_kra( $row ) {
 
 		$row['teammate_id'] = (int) $row['teammate_id'];
-		$row['is_current'] = (int) $row['is_current'] === 1 ? TRUE : FALSE;
-		$row['kra'] = json_decode( $row['kra'] );
+		$row['is_current']  = (int) $row['is_current'] === 1 ? true : false;
+		$row['kra']         = json_decode( $row['kra'] );
 
 		return $row;
 	}
@@ -90,14 +94,24 @@ class KRA extends Abstract_Endpoint {
 
 		foreach ( $results as $index => $result ) {
 			if ( $position === 'current' && $result['is_current'] ) {
-				$kra = $this->parse_kra( $result );
+				$kra                    = $this->parse_kra( $result );
 				$kra['revision_number'] = $index;
+
 				return $kra;
 			} elseif ( is_int( $position ) && $position === $index ) {
-				$kra = $this->parse_kra( $result );
+				$kra                    = $this->parse_kra( $result );
 				$kra['revision_number'] = $index;
+
 				return $kra;
 			}
 		}
+	}
+
+	public function update( $request ) {
+
+	}
+
+	public function create_revision( $request ) {
+
 	}
 }

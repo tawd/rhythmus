@@ -3,7 +3,8 @@
 namespace Rhythmus\Endpoints;
 
 use Rhythmus;
-use Rhythmus\EndpointAuthentication;
+use WP_Error;
+use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 
@@ -15,11 +16,11 @@ abstract class Abstract_Endpoint {
 	 *
 	 * @var      object
 	 */
-	protected static $instance = null;
+	protected static $instance;
 	/**
 	 * Handle endpoint authentication
 	 *
-	 * @var EndpointAuthentication $auth
+	 * @var \Rhythmus\Endpoint_Authentication $auth
 	 */
 	protected $auth;
 	/**
@@ -96,6 +97,21 @@ abstract class Abstract_Endpoint {
 		}
 
 		register_rest_route( $namespace, $route, $route_data );
+	}
+
+	/**
+	 * Validate any values that ought to be integers.
+	 *
+	 * @param mixed $value
+	 * @param WP_REST_Request $request
+	 * @param string $param
+	 * @return WP_Error
+	 */
+	public function validate_int( $value, $request, $param ) {
+
+		if ( ! is_numeric( $value ) ) {
+			return new WP_Error( 'rest_invalid_param', 'This value needs to be a number.' );
+		}
 	}
 
 	/**
