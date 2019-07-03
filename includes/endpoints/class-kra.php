@@ -12,6 +12,7 @@
 
 namespace Rhythmus\Endpoints;
 
+use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
@@ -43,7 +44,7 @@ class KRA extends Abstract_Endpoint {
 			'methods'  => WP_REST_Server::EDITABLE,
 			'callback' => array( $this, 'update' ),
 			'args'     => array(
-				'id'      => array(
+				'id'          => array(
 					'description'       => esc_html__( 'The ID for the KRA form' ),
 					'required'          => true,
 					'sanitize_callback' => 'absint',
@@ -56,12 +57,44 @@ class KRA extends Abstract_Endpoint {
 				),
 				'is_current'  => array(
 					'description' => esc_html__( 'Whether or not this revision is current' ),
+					'enum'        => array( 'true', 'false' ),
 				),
 				'position'    => array(
 					'description' => esc_html__( 'The job title for this teammate' ),
 				),
 				'kra'         => array(
 					'description' => esc_html__( 'The teammates current responsibilities' ),
+				),
+			),
+		) );
+
+		$this->register_route( '/kra-revision', array(
+			'methods'  => WP_REST_Server::EDITABLE,
+			'callback' => array( $this, 'create_revision' ),
+			'args'     => array(
+				'id'          => array(
+					'description'       => esc_html__( 'The ID for the KRA form' ),
+					'required'          => true,
+					'sanitize_callback' => 'absint',
+					'validate_callback' => array( $this, 'validate_int' )
+				),
+				'teammate_id' => array(
+					'description'       => esc_html__( 'The teammate id' ),
+					'required'          => true,
+					'sanitize_callback' => 'absint',
+					'validate_callback' => array( $this, 'validate_int' )
+				),
+				'is_current'  => array(
+					'description' => esc_html__( 'Whether or not this revision is current' ),
+					'enum'        => array( 'true', 'false' ),
+				),
+				'position'    => array(
+					'description' => esc_html__( 'The job title for this teammate' ),
+					'required'    => true,
+				),
+				'kra'         => array(
+					'description' => esc_html__( 'The teammates current responsibilities' ),
+					'required'    => true,
 				),
 			),
 		) );
@@ -146,7 +179,9 @@ class KRA extends Abstract_Endpoint {
 		global $wpdb;
 
 		$table_name = $wpdb->prefix . 'rhythmus_kra';
-		$updates = array();
+		$updates    = array(
+			'last_update_time' => date( 'Y-m-d H:i:s' )
+		);
 
 		if ( ! empty( $request->get_param( 'is_current' ) ) ) {
 			$updates['is_current'] = $request->get_param( 'is_current' ) === 'true' ? 1 : 0;
@@ -175,7 +210,49 @@ class KRA extends Abstract_Endpoint {
 		return $this->endpoint_response();
 	}
 
+	/**
+	 * Update a KRA
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 *
+	 * @return WP_REST_Response
+	 */
 	public function create_revision( $request ) {
 
+		global $wpdb;
+		$table_name   = $wpdb->prefix . 'rhythmus_kra';
+		$current_time = date( 'Y-m-d H:i:s' );
+
+		$update_result = $wpdb->update(
+			$table_name,
+			array( 'is_current' => 0, 'last_update_date' => $current_time ),
+			array( 'id' => $request->get_param( 'id' ) )
+		);
+
+		if ( ! $update_result ) {
+			return $this->endpoint_response(
+				new WP_Error( 'rhythmus_kra_revision', 'Could not update record #' . $request->get_param( 'id' ) )
+			);
+		}
+
+		$insert_result = $wpdb->insert(
+			$table_name,
+			array(
+				'teammate_id'      => $request->get_param( 'teammate_id' ),
+				'is_current'       => 1,
+				'position'         => $request->get_param( 'position' ),
+				'kra'              => $request->get_param( 'kra' ),
+				'create_date'      => $current_time,
+				'last_update_date' => $current_time,
+			)
+		);
+
+		if ( ! $insert_result ) {
+			return $this->endpoint_response(
+				new WP_Error( 'rhythmus_kra_revision', 'Could not insert new record for ' . $request->get_param( 'id' ) )
+			);
+		}
+
+		return $this->endpoint_response();
 	}
 }
