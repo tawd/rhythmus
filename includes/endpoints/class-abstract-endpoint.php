@@ -105,7 +105,7 @@ abstract class Abstract_Endpoint {
 	 *
 	 * @return \WP_REST_Response
 	 */
-	protected function endpoint_response( $payload ) {
+	protected function endpoint_response( $payload = array() ) {
 
 		$response      = new WP_REST_Response();
 		$response_data = array(

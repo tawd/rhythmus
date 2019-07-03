@@ -28,12 +28,11 @@ class KRA_Review extends Abstract_Endpoint {
 	public function register_routes() {
 
 		$kra_review_route = '/kra-review';
-		$kra_topics_route = '/kra-topics';
 
 		$this->register_route( $kra_review_route, array(
 			array(
 				'methods'  => \WP_REST_Server::READABLE,
-				'callback' => array( $this, 'get_kra_review' ),
+				'callback' => array( $this, 'read' ),
 				'args'     => array(),
 			),
 		) );
@@ -41,15 +40,7 @@ class KRA_Review extends Abstract_Endpoint {
 		$this->register_route( $kra_review_route, array(
 			array(
 				'methods'  => \WP_REST_Server::EDITABLE,
-				'callback' => array( $this, 'update_kra_review' ),
-				'args'     => array(),
-			),
-		) );
-
-		$this->register_route( $kra_topics_route, array(
-			array(
-				'methods'  => \WP_REST_Server::READABLE,
-				'callback' => array( $this, 'get_kra_topics' ),
+				'callback' => array( $this, 'update' ),
 				'args'     => array(),
 			),
 		) );
@@ -62,7 +53,7 @@ class KRA_Review extends Abstract_Endpoint {
 	 *
 	 * @return WP_REST_Response
 	 */
-	public function get_kra_review( $request ) {
+	public function read( $request ) {
 		global $wpdb;
 
 		$teammate_id = $request->get_param( 'teammate_id' );
@@ -72,13 +63,10 @@ class KRA_Review extends Abstract_Endpoint {
         FROM {$wpdb->prefix}rhythmus_teammate rt LEFT OUTER JOIN {$wpdb->prefix}rhythmus_kra_review rkr on rt.id = rkr.teammate_id 
         WHERE rt.id = %d ORDER BY year DESC, month DESC", $teammate_id );
 
-		$results = $wpdb->get_results( $sql, OBJECT );
+		$results = $wpdb->get_results( $sql );
 
 
-		$teammate = array(
-			'app'     => 'Rhythmus',
-			'version' => 1
-		);
+		$teammate = array();
 		$months   = array();
 
 		foreach ( $results as $row ) {
@@ -100,45 +88,25 @@ class KRA_Review extends Abstract_Endpoint {
 		}
 		$teammate['months'] = $months;
 
-		return new WP_REST_Response( $teammate, 200 );
+		return $this->endpoint_response( $teammate );
 	}
 
 	/**
-	 * Get KRA topics
+	 * Create
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 *
 	 * @return WP_REST_Response
 	 */
-	public function get_kra_topics( $request ) {
-		global $wpdb;
+	public function create( $request ) {
 
-		$results = $wpdb->get_results( "SELECT id, name, title, description, type, source 
-        FROM {$wpdb->prefix}rhythmus_kra_topic", OBJECT );
+		$data = json_decode( file_get_contents( 'php://input' ), true );
 
-		$topics = array();
-
-		foreach ( $results as $row ) {
-			$type = '';
-			if ( $row->type === 1 ) {
-				$type = 'slider';
-			} elseif ( $row->type === 0 ) {
-				$type = 'outof';
-			}
-			$topic = array(
-				'name'        => $row->name,
-				'title'       => $row->title,
-				'type'        => $type,
-				'description' => $row->description
-			);
-			if ( $row->source === 1 ) {
-				$topic['source'] = 'kra-titles';
-			}
-
-			$topics[] = $topic;
+		if ( ! $this->create_or_update( $data ) ) {
+			return $this->endpoint_response( new WP_Error( 'kra_review_create', 'Could not insert the record for ' . $data['userid'] ) );
 		}
 
-		return new WP_REST_Response( array( 'topics' => $topics ), 200 );
+		return $this->endpoint_response();
 	}
 
 	/**
@@ -146,30 +114,41 @@ class KRA_Review extends Abstract_Endpoint {
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 *
-	 * @return WP_Error|WP_REST_Request
+	 * @return WP_REST_Response
 	 */
-	public function update_kra_review( $request ) {
-		global $wpdb;
+	public function update( $request ) {
+
 		$data = json_decode( file_get_contents( 'php://input' ), true );
 
-		$table_name = $wpdb->prefix . 'rhythmus_kra_review';
+		if ( ! $this->create_or_update( $data ) ) {
+			return $this->endpoint_response( new WP_Error( 'kra_review_update', 'Could not replace the record for ' . $data['userid'] ) );
+		}
 
+		return $this->endpoint_response();
+	}
+
+	/**
+	 * @param array $data
+	 *
+	 * @return bool
+	 */
+	protected function create_or_update( $data ) {
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . 'rhythmus_kra_review';
 		//TODO: Need to check that the teammate_id that is passed in is the current user or supervised or the current user is super admin
 		$sql = $wpdb->prepare( "REPLACE INTO $table_name
                 (teammate_id, year, month, total, reviewed, review_notes, topics, last_update_date)
                 VALUES
-                (%d, %d, %d, %d, %d, %s, %s, now())",
+                (%d, %d, %d, %d, %d, %s, %s, now() )",
 			$data['userid'], $data['year'], $data['month'], $data['total'],
 			$data['reviewed'], $data['review_notes'], json_encode( $data['topics'] )
 		);
 
-		$updated = false;
-		if ( $wpdb->query( $sql ) ) {
-			$updated = true;
+		if ( ! $wpdb->query( $sql ) ) {
+			return false;
 		}
 
-		return new WP_REST_Response( array(
-			'success' => $updated
-		), 200 );
+		return true;
 	}
 }

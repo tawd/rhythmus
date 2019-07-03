@@ -110,5 +110,7 @@ class Rhythmus {
 		( new Endpoints\Teammate() )->do_hooks();
 		( new Endpoints\Weekly_Report() )->do_hooks();
 		( new Endpoints\KRA_Review() )->do_hooks();
+		( new Endpoints\KRA_Topics() )->do_hooks();
+		( new Endpoints\KRA() )->do_hooks();
 	}
 }
