@@ -6,7 +6,11 @@
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
     "@material-ui/lab": "^3.0.0-alpha.30",
+<<<<<<< HEAD
     "@material-ui/styles": "^4.0.0-rc.0",
+=======
+    "archiver": "^3.0.0",
+>>>>>>> 4fddb408214267856b578bae3f83eeeea3aeb380
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.0"
