@@ -50,7 +50,12 @@ class KRAReviewEditor extends Component {
             year:"",
             review:false,
             isDirty:false,
+<<<<<<< HEAD
             saving:false
+=======
+            saving:false,
+            open:false
+>>>>>>> 7ba007e6f3588960dbb32bff39a8366781fd1f3e
         };
     }
 
@@ -188,7 +193,7 @@ class KRAReviewEditor extends Component {
                     }
                     this.setState({review:review});
                 }
-                this.setState({teammate:data,isLoading:false});
+                this.setState({teammate:data,isLoading:false}); 
             }
         ).catch(error => this.setState({error, isLoading:false}));
     

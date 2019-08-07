@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import TeamListRowCol from './TeamListRowCol';
+// eslint-disable-next-line
+import KRAEditor from '../KRA/KRAEditor'; 
+
 import '../../Rhythmus.css';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';

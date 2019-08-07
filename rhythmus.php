@@ -46,11 +46,20 @@ register_deactivation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'deactivate' 
  *
  * @since 1.0.0
  */
+<<<<<<< HEAD
 function rhythmus_init() {
 
 	$rhythmus = Rhythmus\Rhythmus::get_instance();
 	$rhythmus->initialize();
 
+=======
+function init() {
+  $rhythmus = Rhythmus::get_instance();  
+  $kra_review_rest = Endpoint\KRAReview::get_instance();
+  $teammate_rest = Endpoint\Teammate::get_instance();
+  $wr_rest = Endpoint\WeeklyReport::get_instance();
+  $kra = Endpoint\KRA::get_instance();
+>>>>>>> 7ba007e6f3588960dbb32bff39a8366781fd1f3e
 
 	$url = explode( '?', $_SERVER['REQUEST_URI'] );
 	$current_path = strtolower( trim( $url[0], '/' ) );
