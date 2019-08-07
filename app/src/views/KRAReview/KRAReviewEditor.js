@@ -50,12 +50,8 @@ class KRAReviewEditor extends Component {
             year:"",
             review:false,
             isDirty:false,
-<<<<<<< HEAD
-            saving:false
-=======
             saving:false,
             open:false
->>>>>>> 7ba007e6f3588960dbb32bff39a8366781fd1f3e
         };
     }
 

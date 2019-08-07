@@ -6,15 +6,13 @@ import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({
-    outof: {
+    outOf: {
+        display: 'inline-flex',
+        padding: '10px',
         textField: {
             marginLeft: theme.spacing.unit,
             marginRight: theme.spacing.unit,
         }
-    },
-    outOf: {
-        display: 'inline-flex',
-        padding: '10px',
     },
     inputWidth: {
         width: '70px',
@@ -74,7 +72,7 @@ class KRAReviewOutOf extends Component {
                     id="amount"
                     value={amount}
                     label="Amount"
-                    className={classes.textField, classes.inputWidth}
+                    className={`${classes.textField}` `${classes.inputWidth}`}
                     onChange={this.handleAmountChange('amount')}
                 />
                     <p className={classes.outOf}>out of</p>
@@ -82,7 +80,7 @@ class KRAReviewOutOf extends Component {
                     id="outof"
                     value={outof}
                     label="Total"
-                    className={classes.textField, classes.inputWidth}
+                    className={`${classes.textField}` `${classes.inputWidth}`}
                 />
                 <br/>
                 <p>{scoreLabel}</p>
