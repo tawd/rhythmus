@@ -32,43 +32,17 @@ if ( ! defined( 'WPINC' ) ) {
 
 define( 'RHYTHMUS_VERSION', '1.0.0' );
 
+if ( ! defined( 'RHYTHMUS_ENV' ) ) {
+	define( 'RHYTHMUS_ENV', 'development' );
+}
+
+require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 
 /**
- * Autoloader
- *
- * @param string $class The fully-qualified class name.
- * @return void
- *
- *  * @since 1.0.0
+ * Register activation and deactivation hooks
  */
-spl_autoload_register(function ($class) {
-
-    // project-specific namespace prefix
-    $prefix = __NAMESPACE__;
-
-    // base directory for the namespace prefix
-    $base_dir = __DIR__ . '/includes/';
-
-    // does the class use the namespace prefix?
-    $len = strlen($prefix);
-    if (strncmp($prefix, $class, $len) !== 0) {
-        // no, move to the next registered autoloader
-        return;
-    }
-
-    // get the relative class name
-    $relative_class = substr($class, $len);
-
-    // replace the namespace prefix with the base directory, replace namespace
-    // separators with directory separators in the relative class name, append
-    // with .php
-    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
-
-    // if the file exists, require it
-    if (file_exists($file)) {
-        require $file;
-    }
-});
+register_activation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'activate' ) );
+register_deactivation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'deactivate' ) );
 
 /**
  * Register activation and deactivation hooks
@@ -81,32 +55,21 @@ register_deactivation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'deactivate' 
  *
  * @since 1.0.0
  */
-function init() {
-  $rhythmus = Rhythmus::get_instance();
-  $kra_review_rest = Endpoint\KRAReview::get_instance();
-  $teammate_rest = Endpoint\Teammate::get_instance();
+function rhythmus_init() {
 
-  $url = explode( '?', $_SERVER['REQUEST_URI'] );
-  $current_path = strtolower( trim( $url[0], '/' ) );
+	$rhythmus = Rhythmus\Rhythmus::get_instance();
+	$rhythmus->initialize();
 
-  if("app" == $current_path) {
-    status_header( 200 );
-		include(__DIR__ . '/AppPageTemplate.php');
+	$url = explode( '?', $_SERVER['REQUEST_URI'] );
+	$current_path = strtolower( trim( $url[0], '/' ) );
+
+	if ( 'app' === $current_path ) {
+		status_header( 200 );
+		include( __DIR__ . '/AppPageTemplate.php' );
 		exit();
-  }
+	}
 
 }
-add_action( 'plugins_loaded', 'Rhythmus\\init' );
-
-//Allow CORS
-/*
-add_action( 'json_api', function( $controller, $method )
-{
-    header( "Access-Control-Allow-Origin: *" );
-    header ("Access-Control-Allow-Headers: *");
-    header ("Access-Control-Expose-Headers: Content-Length, X-JSON");
-    header ("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
-}, 10, 2 );
-*/
+add_action( 'plugins_loaded', 'rhythmus_init' );
 
 

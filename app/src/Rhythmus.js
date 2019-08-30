@@ -1,56 +1,131 @@
-import React, {Component}  from 'react';
+import React from 'react';
 import './Rhythmus.css';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+// import { ThemeProvider } from '@material-ui/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import TeamListView from './views/TeamKRABrowser/TeamListView';
+import WRStatusList from './views/WeeklyReport/WRStatusList';
+<<<<<<< HEAD
+import TabContainer from './components/TabContainer';
+import KRAEditor from './views/KRA/KRAEditor'
+=======
+import KRAEditor from './views/KRA/KRAEditor';
 
-import TeamList from './views/TeamList';
 
-class Rhythmus extends Component {
+function TabContainer(props) {
+  return (
+    <Typography component="div" style={{ padding: 8 * 3 }}>
+      {props.children}
+    </Typography>
+  );
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+>>>>>>> 7ba007e6f3588960dbb32bff39a8366781fd1f3e
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: '#eee',
+  },
+});
+
+// const theme = createMuiTheme({
+//   overrides: {
+//       TableCell: { // Name of the component ⚛️ / style sheet
+//           root: { // Name of the rule
+//               padding: '4px 24px !important', // Some CSS
+//           },
+//       },
+//   },
+// });
+
+
+class Rhythmus extends React.Component {
   constructor(){
     super();
     this.state = {
-        currentView:"teamlist",
-        isLoading:false
+      value: 0,
+      width: 0
     };
+
+    window.addEventListener('resize', this.widthUpdate);
   }
+
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
+
   componentDidMount() {
-
+    this.widthUpdate();
   }
 
-  viewMyKRA = () => {
-    this.setState({currentView:"kra"});
+  widthUpdate = () => {
+    this.setState({
+      width: window.innerWidth
+    });
+  };
+
+  viewKRAReviews = () => {
+    this.setState({value:0});
   }
   viewWeeklyReports = () => {
-    console.log(this);
-    this.setState({currentView:"weeklyreports"});
+    this.setState({value:1});
   }
-  viewKRAReviews = () => {
-    this.setState({currentView:"teamlist"});
+  viewMyKRA = () => {
+    this.setState({ value:2});
   }
 
-  onChooseTeammate = (userid) => {
-
-  }
 
   render() {
-    let appView = <p></p>;
-
-    if(this.state.currentView == "teamlist") {
-      appView = <TeamList onChooseTeammate={this.onChooseTeammate}/>;
-    }
+    const { classes } = this.props;
+    const { value } = this.state;
 
     return (
-      <div className="App">
-        <header className="App-header">
-          
-          <p>
-            Welcome to the Rhythmus!
-          </p>
-          <button onClick={this.viewKRAReviews}>KRA Reviews</button>
-          <button onClick={this.viewWeeklyReports}>Weekly Reports</button>
-          <button onClick={this.viewMyKRA}>My KRA</button>
-          {appView}
-        </header>
+<<<<<<< HEAD
+      <>
+        <CssBaseline />
+          <div className={classes.root}>
+            <AppBar position="static">
+              <Tabs value={value} onChange={this.handleChange}>
+                <Tab label="KRA Reviews" />
+                <Tab label="Weekly Reports" />
+                <Tab label="My KRA" />
+              </Tabs>
+            </AppBar>
+            {value === 0 && <TabContainer><TeamListView width={this.state.width} /></TabContainer>}
+            {value === 1 && <TabContainer><WRStatusList /></TabContainer>}
+            {value === 2 && <TabContainer><KRAEditor /></TabContainer>}
+          </div>
+      </>
+=======
+    <React.Fragment>
+      <CssBaseline />
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Tabs value={value} onChange={this.handleChange}>
+            <Tab label="KRA Reviews" />
+            <Tab label="Weekly Reports" />
+            <Tab label="My KRA" />
+          </Tabs>
+        </AppBar>
+        {value === 0 && <TabContainer><TeamListView /></TabContainer>}
+        {value === 1 && <TabContainer><WRStatusList /></TabContainer>}
+        {value === 2 && <TabContainer><KRAEditor/></TabContainer>}
       </div>
+      </React.Fragment>
+>>>>>>> 7ba007e6f3588960dbb32bff39a8366781fd1f3e
     );
   }
 }
-export default Rhythmus;
+
+Rhythmus.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+export default withStyles(styles)(Rhythmus);
