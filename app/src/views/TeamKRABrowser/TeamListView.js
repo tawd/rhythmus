@@ -3,15 +3,11 @@ import KRAReviewEditor from '../KRAReview/KRAReviewEditor';
 import TeamListRow from './TeamListRow';
 import '../../Rhythmus.css';
 import Config from '../../config.js';
-<<<<<<< HEAD
-import { withStyles } from '@material-ui/core/styles';
-=======
 // eslint-disable-next-line
 //import KRAViewer from '../KRA/ViewKRA';
 // eslint-disable-next-line
 import { withStyles } from '@material-ui/core/styles';
 import KRAEditor from '../KRA/KRAEditor';
->>>>>>> 7ba007e6f3588960dbb32bff39a8366781fd1f3e
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -20,16 +16,6 @@ import TableRow from '@material-ui/core/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = theme => ({
-<<<<<<< HEAD
-    mainTable: {
-        border: 0,
-        borderRadius: 6,
-        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-        background: '#fff',
-      },
-});
-
-=======
 
     underline: {
         borderBottom: '2px solid white'
@@ -38,24 +24,17 @@ const styles = theme => ({
 });
 
 
-
->>>>>>> 7ba007e6f3588960dbb32bff39a8366781fd1f3e
 class TeamListView extends Component {
 
     constructor(){
         super();
         this.state = {
             teammates:false,
-<<<<<<< HEAD
-            isLoading:false,
-            forceReload: false
-=======
             kar:false,
             isLoading:false
->>>>>>> 7ba007e6f3588960dbb32bff39a8366781fd1f3e
         };
     }
-    
+
     onChooseTeammateMonth = (userid, month, year) => {
         this.setState({
             viewTeammate:true,
@@ -67,7 +46,7 @@ class TeamListView extends Component {
 
     onChooseTeammateKRA = (userid) => {
         //TODO: Open the user KRA details, not review
-        //NOTE TO JUSTIN, this is the function to work on in this file. 
+        //NOTE TO JUSTIN, this is the function to work on in this file.
         this.setState({
             kra:true,
             userid:userid
@@ -88,7 +67,7 @@ class TeamListView extends Component {
             viewTeammate:false
         });
     }
-  
+
     componentDidMount() {
         this.loadData();
     }
@@ -134,12 +113,8 @@ class TeamListView extends Component {
     }
 
     render() {
-<<<<<<< HEAD
         let { classes } = this.props;
-        const{isLoading, error, teammates, viewTeammate, userid, month, year} = this.state;
-=======
         const{isLoading, error, teammates, viewTeammate, kra, userid, month, year} = this.state;
->>>>>>> 7ba007e6f3588960dbb32bff39a8366781fd1f3e
         if(error)
         {
             return <p>{error.message}</p>
@@ -161,9 +136,9 @@ class TeamListView extends Component {
         let today = new Date();
         let currYear = today.getFullYear();
         let currMonth = today.getMonth() + 1;
-        
+
         let numCols;
-        
+
         let width = this.props.width;
 
         if(width > 1200) {
@@ -181,13 +156,13 @@ class TeamListView extends Component {
         } else if(width < 466) {
             numCols = 1;
         }
-        
+
         let shaded = true;
 
         let teammateRowss = teammates.map((teammate) => {
             shaded = !shaded;
-            return (<TeamListRow background={shaded} key={teammate.userid} onChooseTeammateMonth={this.onChooseTeammateMonth} 
-                             onChooseTeammateKRA={this.onChooseTeammateKRA} 
+            return (<TeamListRow background={shaded} key={teammate.userid} onChooseTeammateMonth={this.onChooseTeammateMonth}
+                             onChooseTeammateKRA={this.onChooseTeammateKRA}
                              teammate={teammate} year={currYear} month={currMonth} numCols={numCols}/>);
         });
         let monthHeadings = this.getMonths(currYear, currMonth, numCols);

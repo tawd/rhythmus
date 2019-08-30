@@ -51,7 +51,7 @@ class KRAReviewOutOf extends Component {
             }
             this.props.onChange("score", score);
         }
-        
+
         this.props.onChange(name, event.target.value);
     };
 
@@ -74,7 +74,7 @@ class KRAReviewOutOf extends Component {
                     id="amount"
                     value={amount}
                     label="Amount"
-                    className={classes.textField, classes.inputWidth}
+                    className={[classes.textField, classes.inputWidth].join(' ')}
                     onChange={this.handleAmountChange('amount')}
                 />
                     <p className={classes.outOf}>out of</p>
@@ -82,7 +82,7 @@ class KRAReviewOutOf extends Component {
                     id="outof"
                     value={outof}
                     label="Total"
-                    className={classes.textField, classes.inputWidth}
+                    className={[classes.textField, classes.inputWidth].join(' ')}
                 />
                 <br/>
                 <p>{scoreLabel}</p>
@@ -90,9 +90,9 @@ class KRAReviewOutOf extends Component {
         );
     }
 }
-                
+
 KRAReviewOutOf.propTypes = {
     classes: PropTypes.object.isRequired
 };
-  
+
 export default withStyles(styles)(KRAReviewOutOf);

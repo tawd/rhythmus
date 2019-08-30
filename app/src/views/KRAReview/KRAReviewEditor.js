@@ -50,12 +50,8 @@ class KRAReviewEditor extends Component {
             year:"",
             review:false,
             isDirty:false,
-<<<<<<< HEAD
-            saving:false
-=======
             saving:false,
             open:false
->>>>>>> 7ba007e6f3588960dbb32bff39a8366781fd1f3e
         };
     }
 
@@ -193,10 +189,10 @@ class KRAReviewEditor extends Component {
                     }
                     this.setState({review:review});
                 }
-                this.setState({teammate:data,isLoading:false}); 
+                this.setState({teammate:data,isLoading:false});
             }
         ).catch(error => this.setState({error, isLoading:false}));
-    
+
     }
 
 
@@ -232,7 +228,7 @@ class KRAReviewEditor extends Component {
         if(!review){
             review = {};
         }
-        
+
         const closeBtn = <Button variant="outlined" className={classes.closeBtn} onClick={this.closeTeammate} disabled={this.state.isDirty}>Close</Button>;
         if(error)
         {
@@ -242,7 +238,7 @@ class KRAReviewEditor extends Component {
         {
             return <CircularProgress />;
         }
-        
+
         if(teammate && teammate.name && month && year) {
             let m = Config.monthNames;
             let onReviewTopicChangeFunction = this.onReviewTopicChange;
@@ -261,8 +257,8 @@ class KRAReviewEditor extends Component {
                 } else {
                     review_topic = {};
                 }
-                topicJSX.push(<KRAReviewTopic 
-                    key={topic.name}  
+                topicJSX.push(<KRAReviewTopic
+                    key={topic.name}
                     topic={topic}
                     propName={topic.name}
                     onReviewTopicChange={onReviewTopicChangeFunction}
@@ -275,14 +271,14 @@ class KRAReviewEditor extends Component {
                         <Grid item xs={12}>{closeBtn}</Grid>
                         <form className={classes.container} noValidate autoComplete="off">
                             <Grid item xs={12}>
-                                
+
                                 <Paper className={classes.paper}>
                                     <Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth}>Next Month</Button>
                                     <h2>{teammate.name} for {m[month-1]}, {year}</h2>
                                     <h3>Score: {score}</h3>
                                     <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth}>Prev Month</Button>
                                 </Paper>
-                                
+
                             </Grid>
                             {topicJSX}
                             <Grid item xs={12}>
@@ -316,5 +312,5 @@ class KRAReviewEditor extends Component {
 KRAReviewEditor.propTypes = {
     classes: PropTypes.object.isRequired
 };
-  
+
 export default withStyles(styles)(KRAReviewEditor);
