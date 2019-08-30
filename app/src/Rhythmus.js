@@ -9,10 +9,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TeamListView from './views/TeamKRABrowser/TeamListView';
 import WRStatusList from './views/WeeklyReport/WRStatusList';
-<<<<<<< HEAD
 import TabContainer from './components/TabContainer';
-import KRAEditor from './views/KRA/KRAEditor'
-=======
 import KRAEditor from './views/KRA/KRAEditor';
 
 
@@ -27,7 +24,6 @@ function TabContainer(props) {
 TabContainer.propTypes = {
   children: PropTypes.node.isRequired,
 };
->>>>>>> 7ba007e6f3588960dbb32bff39a8366781fd1f3e
 
 const styles = theme => ({
   root: {
@@ -88,23 +84,6 @@ class Rhythmus extends React.Component {
     const { value } = this.state;
 
     return (
-<<<<<<< HEAD
-      <>
-        <CssBaseline />
-          <div className={classes.root}>
-            <AppBar position="static">
-              <Tabs value={value} onChange={this.handleChange}>
-                <Tab label="KRA Reviews" />
-                <Tab label="Weekly Reports" />
-                <Tab label="My KRA" />
-              </Tabs>
-            </AppBar>
-            {value === 0 && <TabContainer><TeamListView width={this.state.width} /></TabContainer>}
-            {value === 1 && <TabContainer><WRStatusList /></TabContainer>}
-            {value === 2 && <TabContainer><KRAEditor /></TabContainer>}
-          </div>
-      </>
-=======
     <React.Fragment>
       <CssBaseline />
       <div className={classes.root}>
@@ -120,7 +99,6 @@ class Rhythmus extends React.Component {
         {value === 2 && <TabContainer><KRAEditor/></TabContainer>}
       </div>
       </React.Fragment>
->>>>>>> 7ba007e6f3588960dbb32bff39a8366781fd1f3e
     );
   }
 }
