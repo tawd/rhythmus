@@ -1,10 +1,8 @@
  import React, {Component} from 'react';
  import { withStyles } from '@material-ui/core/styles';
 import '../../Rhythmus.css';
-import classNames from 'classnames';
 import TableCell from '@material-ui/core/TableCell';
 import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
@@ -56,15 +54,6 @@ const styles = theme => ({
     },
 
 });
-
-
-
-const styles = theme => ({
-    reviewedIndicator: {textDecoration: "underline"},
-
-});
-
-
 
 class TeamListRowCol extends Component {
 
