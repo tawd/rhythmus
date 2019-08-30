@@ -54,12 +54,14 @@ try{
  *	./app/public/index.html
  *	./app/build/
  */
-const filesToZip = ["./rhythmus.php",
+const filesToZip = [
+    "./autoload.php",
+    "./rhythmus.php",
     "./AppPageTemplate.php",
     "./app/public/index.html",
-]
+];
 const dirsToZip = ["./app/build/**", "./includes/**"];
-const dirsToExclude = ["./includes/Endpoint/sample-data/**"];
+const dirsToExclude = ["./sample-data/**"];
 
 /** string: name of .zip file for upload
  *	currently create the zip file in the current directory of this script
