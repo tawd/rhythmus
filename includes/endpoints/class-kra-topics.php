@@ -54,9 +54,9 @@ class KRA_Topics extends Abstract_Endpoint {
 
 		foreach ( $results as $row ) {
 			$type = '';
-			if ( $row->type === 1 ) {
+			if ( $row->type == 1 ) {
 				$type = 'slider';
-			} elseif ( $row->type === 0 ) {
+			} elseif ( $row->type == 0 ) {
 				$type = 'outof';
 			}
 			$topic = array(

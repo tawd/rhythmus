@@ -76,9 +76,9 @@ class KRA_Review extends Abstract_Endpoint {
 			}
 			$key            = $row->year . '-' . $row->month;
 			$months[ $key ] = array(
-				'score'        => $row->total,
-				'reviewed'     => $row->reviewed === 1,
-				'submitted'    => $row->submitted === 1,
+				'total'        => $row->total,
+				'reviewed'     => $row->reviewed == 1 ,
+				'submitted'    => $row->submitted == 1,
 				'review_notes' => $row->review_notes,
 				'create-date'  => $row->create_date,
 				'last-update'  => $row->last_update_date,
@@ -122,7 +122,7 @@ class KRA_Review extends Abstract_Endpoint {
 		$sql = $wpdb->prepare( "REPLACE INTO $table_name
                 (teammate_id, year, month, total, reviewed, review_notes, topics, last_update_date)
                 VALUES
-                (%d, %d, %d, %d, %d, %s, %s, now() )",
+                (%d, %d, %d, %f, %d, %s, %s, now() )",
 			$data['userid'], $data['year'], $data['month'], $data['total'],
 			$data['reviewed'], $data['review_notes'], json_encode( $data['topics'] )
 		);
