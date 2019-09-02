@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import '../../Rhythmus.css';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -41,10 +40,7 @@ const styles = theme => ({
     };
 
     render(){
-        const {classes, description, title, position, iscurrent, date} = this.props;
-        //let {position, date, iscurrent} = kra;
-       //let {name, position} = this.props.kra;
-         //let {title, description} = KRAarea;
+        const {classes, description, title} = this.props;
 
         return(
           <Grid item xs={12}><Paper className={classes.paper}>
@@ -68,7 +64,6 @@ const styles = theme => ({
 
           
           </Paper></Grid>
-          //it works! 
         )
     }
 
