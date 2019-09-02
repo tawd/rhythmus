@@ -67,17 +67,35 @@ class KRAReviewEditor extends Component {
         this.setState({ review: review });
         this.markForSave();
     };
+    submitKRAReview = () => {
+        console.log("Submite KRA Review");
+
+        //TODO: Validate all fields filled out and submit or show errors
+    }
 
     onReviewTopicChange = (topicKey, key, val) => {
         let review = this.state.review;
         if(!review.topics) {
-            review.topics = !!{};
+            review.topics = {};
+            //TODO:Set topic in state
         }
         let topic = review.topics[topicKey];
         if(!topic) {
             topic = {};
         }
         topic[key] = val;
+        let total = 0;
+        Object.keys(review.topics).forEach(function(t){
+            let ts = review.topics[t]["score"];
+            if(typeof ts != 'number')
+            {
+                ts = parseFloat(ts);
+            }
+            if(ts > 0 ) {
+                total += ts;
+            }
+        });
+        review.total = total.toFixed(2);
         review.topics[topicKey] = topic;
         this.setState({ review: review });
         this.markForSave();
@@ -243,7 +261,7 @@ class KRAReviewEditor extends Component {
             let m = Config.monthNames;
             let onReviewTopicChangeFunction = this.onReviewTopicChange;
             let topicJSX = [];
-            let { reviewed, review_notes,score} = review;
+            let { reviewed, review_notes,total} = review;
             if( ! reviewed ) {
                 reviewed = false;
             }
@@ -268,17 +286,17 @@ class KRAReviewEditor extends Component {
             return(
                 <div>
                     <Grid container>
-                        <Grid item xs={12}>{closeBtn}</Grid>
+                        <Grid container>
+                            <Grid item xs={2}>{closeBtn}</Grid>
+                            <Grid item xs={8}><Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth}>Next Month</Button></Grid>
+                            <Grid item xs={2}><Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth}>Prev Month</Button></Grid>
+                        </Grid>
                         <form className={classes.container} noValidate autoComplete="off">
                             <Grid item xs={12}>
-
                                 <Paper className={classes.paper}>
-                                    <Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth}>Next Month</Button>
-                                    <h2>{teammate.name} for {m[month-1]}, {year}</h2>
-                                    <h3>Score: {score}</h3>
-                                    <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth}>Prev Month</Button>
+                                            <h2>{teammate.name} for {m[month-1]}, {year}</h2>
+                                            <h3>Total: {total}</h3>
                                 </Paper>
-
                             </Grid>
                             {topicJSX}
                             <Grid item xs={12}>
@@ -298,6 +316,9 @@ class KRAReviewEditor extends Component {
                                     className={classes.textField}
                                     onChange={this.handleChange('review_notes')}
                                     />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button onClick={this.submitKRAReview}>Submit KRA Review</Button>
                             </Grid>
                         </form>
                     </Grid>

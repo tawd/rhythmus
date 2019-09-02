@@ -43,7 +43,7 @@ class KRAReviewOutOf extends Component {
         if(event.target.value === "") {
             this.props.onChange(name, "");
             this.props.onChange("score", "");
-        } else if(!isNaN(outof) && outof > 0) {
+        } else if(!isNaN(outof) && outof >= 0) {
             let score = "";
             this.props.onChange(name, outof);
             if(!isNaN(this.props.amount) && this.props.amount >= 0 && this.props.amount <= outof) {
@@ -58,15 +58,25 @@ class KRAReviewOutOf extends Component {
     render() {
         let { classes, score, amount, outof } = this.props;
         let scoreLabel = "";
-        if(!score) {
+        if(score === undefined) {
             score = "";
         }
         if(typeof score != 'number')
         {
             score = parseFloat(score);
         }
+        let outOfError = false;
+        if(amount > outof ||(amount > 0 && !outof)){
+            outOfError = true;
+        }
         if(score >=0 ) {
             scoreLabel = "Score: " + score;
+        }
+        if(amount === undefined){
+            amount ="";
+        }
+        if(!outof){
+            outof="";
         }
         return(
             <div align="center">
@@ -74,15 +84,19 @@ class KRAReviewOutOf extends Component {
                     id="amount"
                     value={amount}
                     label="Amount"
+                    type="number"
                     className={[classes.textField, classes.inputWidth].join(' ')}
                     onChange={this.handleAmountChange('amount')}
                 />
                     <p className={classes.outOf}>out of</p>
                 <TextField
+                    error={outOfError}
                     id="outof"
                     value={outof}
+                    type="number"
                     label="Total"
                     className={[classes.textField, classes.inputWidth].join(' ')}
+                    onChange={this.handleOutOfChange('outof')}
                 />
                 <br/>
                 <p>{scoreLabel}</p>

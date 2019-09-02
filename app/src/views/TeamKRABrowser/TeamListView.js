@@ -137,13 +137,12 @@ class TeamListView extends Component {
         let currYear = today.getFullYear();
         let currMonth = today.getMonth() + 1;
 
-        let numCols;
+        let numCols = 8;
 
+        //TODO: This does not appear to be working
         let width = this.props.width;
 
-        if(width > 1200) {
-            numCols = 8;
-        } else if(width < 1200 && width > 1160) {
+        if(width < 1200 && width > 1160) {
            numCols = 7;
         } else if(width < 1160 && width > 800) {
             numCols = 5;
@@ -159,7 +158,7 @@ class TeamListView extends Component {
 
         let shaded = true;
 
-        let teammateRowss = teammates.map((teammate) => {
+        let teammateRows = teammates.map((teammate) => {
             shaded = !shaded;
             return (<TeamListRow background={shaded} key={teammate.userid} onChooseTeammateMonth={this.onChooseTeammateMonth}
                              onChooseTeammateKRA={this.onChooseTeammateKRA}
@@ -173,7 +172,7 @@ class TeamListView extends Component {
             <TableRow><TableCell>Name</TableCell>{monthHeadings}</TableRow>
             </TableHead>
             <TableBody>
-          {teammateRowss}
+          {teammateRows}
           </TableBody>
       </Table>
         )

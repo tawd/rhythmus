@@ -27,7 +27,7 @@ class KRAReviewSlider extends Component {
     render() {
         let { classes, score } = this.props;
         let scoreLabel = "";
-        if(!score) {
+        if(Number.isNaN(score)) {
             score = 0.5;
         } else {
             if(typeof score != 'number')

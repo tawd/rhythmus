@@ -32,9 +32,10 @@ class TeamListRow extends Component {
         let month = this.props.month;
         let scores = teammate.months;
         let scoreCols = [];
+        let numCols = this.props.numCols;
 
         scoreCols.push(<TableCell key={"name-"+teammate.userid} onClick={this.onChooseTeammateKRA}>{teammate.name}</TableCell>);
-        for (let i = 0; i < this.props.numCols; i++) {
+        for (let i = 0; i < numCols; i++) {
             let currMonth = month - i;
             let currYear = year;
             if(currMonth < 1) {

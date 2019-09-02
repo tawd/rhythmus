@@ -3,7 +3,6 @@
 import '../../Rhythmus.css';
 import TableCell from '@material-ui/core/TableCell';
 import classNames from 'classnames';
-import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
     scoreCell : {

@@ -65,7 +65,7 @@ class KRAReviewTopic extends Component {
     render() {
         const { classes, review } = this.props;
         let { title, description, type } = this.props.topic;
-        let { score, amount, outof, goal, goal_notes } = review;
+        let { score, amount, outof, goal, goal_notes, notes } = review;
         if(typeof score != 'number')
         {
             score = parseFloat(score);
@@ -97,11 +97,6 @@ class KRAReviewTopic extends Component {
                                 helperText={description}
                                 onChange={this.handleChange('goal')}
                             />
-                        </Grid>
-                        <Grid item md={4} sm={12} className={classes.scoreStyles}>
-                            {scoring}
-                        </Grid>
-                        <Grid item md={4} sm={12} className={classes.gridStyles}>
                             <TextField
                                 id="goal_notes"
                                 value={goal_notes}
@@ -110,6 +105,22 @@ class KRAReviewTopic extends Component {
                                 margin="normal"
                                 onChange={this.handleChange('goal_notes')}
                             />
+                        </Grid>
+                        <Grid item md={4} sm={12} className={classes.scoreStyles}>
+                            {scoring}
+                        </Grid>
+                        <Grid item md={4} sm={12} className={classes.gridStyles}>
+                            <TextField
+                                    id="notes"
+                                    value={notes}
+                                    label={"Score Notes"}
+                                    className={classes.textField}
+                                    onChange={this.handleChange('notes')}
+                                />
+                            
+                        </Grid>
+                        <Grid item md={4} sm={12} className={classes.gridStyles}>
+
                         </Grid>
                     </Grid>
                 </Paper>
