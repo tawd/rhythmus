@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import '../../Rhythmus.css';
 import Config from '../../config.js';
-import KRAReviewTopic from './KRAReviewTopic';
+import KRAReviewTopicEditor from './KRAReviewTopicEditor';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -18,8 +17,6 @@ const styles = theme => ({
       flexWrap: 'wrap',
     },
     textField: {
-      marginLeft: theme.spacing.unit,
-      marginRight: theme.spacing.unit,
       width: 200,
     },
     dense: {
@@ -29,7 +26,6 @@ const styles = theme => ({
       width: 'auto',
     },
     paper: {
-        padding: theme.spacing.unit * 2,
         textAlign: 'center',
         color: theme.palette.text.secondary,
         marginTop: '10px',
@@ -44,13 +40,8 @@ class KRAReviewEditor extends Component {
         super();
         this.state = {
             teammate:{},
-            isLoading:false,
-            userid:"",
-            month:"",
-            year:"",
             review:false,
             isDirty:false,
-            saving:false,
             open:false
         };
     }
@@ -68,7 +59,7 @@ class KRAReviewEditor extends Component {
         this.markForSave();
     };
     submitKRAReview = () => {
-        console.log("Submite KRA Review");
+        console.log("Submit KRA Review");
 
         //TODO: Validate all fields filled out and submit or show errors
     }
@@ -101,15 +92,11 @@ class KRAReviewEditor extends Component {
         this.markForSave();
     }
 
-    closeTeammate = () => {
-        if(!this.state.isDirty){
-            this.props.onCloseTeammate();
-        }
-    }
 
     markForSave = () => {
         if(!this.state.isDirty) {
             this.setState( { isDirty:true } );
+            this.props.onSaving(true);
         }
         if(!this.autoSaveTimer) {
             this.autoSaveTimer = setTimeout(this.handleAutoSave, 1000);
@@ -128,7 +115,8 @@ class KRAReviewEditor extends Component {
         review.month = this.props.month;
         review.year = this.props.year;
         if(!this.unmounting){
-            this.setState( { saving:true, isDirty:false} );
+            this.setState( {isDirty:false} );
+            this.props.onSaving(true);
         }
         fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-review?'+Config.authKey,{
             method: "POST",
@@ -146,35 +134,16 @@ class KRAReviewEditor extends Component {
                 if( !data.success ) {
                     throw new Error('Error saving to server ...');
                 }
-                this.setState ( {saving:false});
+                this.props.onSaving(false);
             }
         ).catch(error => this.setState({error}));
 
     }
 
-
     componentDidMount() {
-        if(!Config.kraTopics) {
-            fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-topics?'+Config.authKey,{
-                method: "GET",
-                cache: "no-cache"
-            })
-                .then(response => {
-                    if (response.ok) {
-                      return response.json();
-                    } else {
-                      throw new Error('Something went wrong ...');
-                    }
-                })
-                .then(data => {
-                    Config.kraTopics = data.topics;
-                    this.loadKRAs();
-                }
-            ).catch(error => this.setState({error, isLoading:false}));
-        } else {
-            this.loadKRAs();
-        }
+        this.setState({review: this.props.review});
     }
+
     componentWillUnmount() {
         if(this.autoSaveTimer){
             clearTimeout(this.autoSaveTimer);
@@ -182,86 +151,18 @@ class KRAReviewEditor extends Component {
         }
     }
 
-    loadKRAs = () => {
-        const{year, userid, month} = this.props;
-        this.setState({isLoading:true, month:month, year:year});
-        let params = "teammate_id="+userid;
-        fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-review?'+params+'&'+Config.authKey,{
-            method: "GET",
-            cache: "no-cache"
-        })
-            .then(response => {
-                if (response.ok) {
-                  return response.json();
-                } else {
-                  throw new Error('Something went wrong ...');
-                }
-            })
-            .then(data => {
-                let teammate = data;
-                this.setState({teammate:teammate});
-                if(teammate && teammate.months) {
-                    let review = teammate.months[year+"-"+month];
-                    if(!review){
-                       review = {};
-                    }
-                    this.setState({review:review});
-                }
-                this.setState({teammate:data,isLoading:false});
-            }
-        ).catch(error => this.setState({error, isLoading:false}));
-
-    }
-
-
-    onChooseTeammateNextMonth = () => {
-        let nextMonth = this.props.month + 1;
-        let year = this.props.year;
-        if(nextMonth > 12){
-            nextMonth = 1;
-            year = year + 1;
-        }
-        this.props.onChooseTeammateMonth(this.props.userid, nextMonth, year);
-    }
-
-    onChooseTeammatePrevMonth = () => {
-        let prevMonth = this.props.month - 1;
-        let year = this.props.year;
-        if(prevMonth < 1){
-            year = year - 1;
-            prevMonth = 12;
-        }
-        if(prevMonth) {
-            this.props.onChooseTeammateMonth(this.props.userid, prevMonth, year);
-        }
-    }
-
-
     render() {
 
-        let { classes, year, month } = this.props;
-        const{isLoading, error, teammate} = this.state;
-
+        let { classes, year, month, teammate, submitting } = this.props;
         let review = teammate && teammate.months && teammate.months[year+"-"+month];
         if(!review){
             review = {};
         }
 
-        const closeBtn = <Button variant="outlined" className={classes.closeBtn} onClick={this.closeTeammate} disabled={this.state.isDirty}>Close</Button>;
-        if(error)
-        {
-            return <p>{error.message}<br/>{closeBtn}</p>
-        }
-        if(isLoading)
-        {
-            return <CircularProgress />;
-        }
-
         if(teammate && teammate.name && month && year) {
-            let m = Config.monthNames;
             let onReviewTopicChangeFunction = this.onReviewTopicChange;
             let topicJSX = [];
-            let { reviewed, review_notes,total} = review;
+            let { reviewed, review_notes} = review;
             if( ! reviewed ) {
                 reviewed = false;
             }
@@ -275,55 +176,44 @@ class KRAReviewEditor extends Component {
                 } else {
                     review_topic = {};
                 }
-                topicJSX.push(<KRAReviewTopic
-                    key={topic.name}
-                    topic={topic}
-                    propName={topic.name}
-                    onReviewTopicChange={onReviewTopicChangeFunction}
-                    review={review_topic}/>)
+                //Don't edit topics that have a source value before submitting
+                if(!(topic.source === "kra-titles" && !submitting)) {
+                    topicJSX.push(<KRAReviewTopicEditor
+                        key={topic.name}
+                        topic={topic}
+                        submitting={submitting}
+                        propName={topic.name}
+                        onReviewTopicChange={onReviewTopicChangeFunction}
+                        review={review_topic}/>);
+                }
             });
 
             return(
                 <div>
-                    <Grid container>
-                        <Grid container>
-                            <Grid item xs={2}>{closeBtn}</Grid>
-                            <Grid item xs={8}><Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth}>Next Month</Button></Grid>
-                            <Grid item xs={2}><Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth}>Prev Month</Button></Grid>
-                        </Grid>
-                        <form className={classes.container} noValidate autoComplete="off">
-                            <Grid item xs={12}>
-                                <Paper className={classes.paper}>
-                                            <h2>{teammate.name} for {m[month-1]}, {year}</h2>
-                                            <h3>Total: {total}</h3>
-                                </Paper>
-                            </Grid>
-                            {topicJSX}
-                            <Grid item xs={12}>
-                                <FormControlLabel label="Reviewed"
-                                    control={
-                                        <Checkbox
-                                        checked={reviewed}
-                                        onChange={this.handleCheckChange('reviewed')}
-                                        value="reviewed"
-                                        color="primary"
-                                        />}
-                                    />
-                                <TextField
-                                    id="review_notes"
-                                    value={review_notes}
-                                    label="Review Notes"
-                                    className={classes.textField}
-                                    onChange={this.handleChange('review_notes')}
-                                    />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button onClick={this.submitKRAReview}>Submit KRA Review</Button>
-                            </Grid>
-                        </form>
+                    {topicJSX}
+                    <Grid item xs={12}>
+                        <FormControlLabel label="Reviewed"
+                            control={
+                                <Checkbox
+                                checked={reviewed}
+                                onChange={this.handleCheckChange('reviewed')}
+                                value="reviewed"
+                                color="primary"
+                                />}
+                            />
+                        <TextField
+                            id="review_notes"
+                            value={review_notes}
+                            label="Review Notes"
+                            className={classes.textField}
+                            onChange={this.handleChange('review_notes')}
+                            />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button onClick={this.submitKRAReview}>Submit KRA Review</Button>
                     </Grid>
                 </div>
-            )
+            );
         }else {
             return (<CircularProgress />);
         }

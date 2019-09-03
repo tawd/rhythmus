@@ -65,7 +65,7 @@ class KRA_Topics extends Abstract_Endpoint {
 				'type'        => $type,
 				'description' => $row->description
 			);
-			if ( $row->source === 1 ) {
+			if ( $row->source == 1 ) {
 				$topic['source'] = 'kra-titles';
 			}
 

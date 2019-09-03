@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import KRAReviewEditor from '../KRAReview/KRAReviewEditor';
+import KRAReview from '../KRAReview/KRAReview';
 import TeamListRow from './TeamListRow';
 import '../../Rhythmus.css';
 import Config from '../../config.js';
@@ -125,7 +125,7 @@ class TeamListView extends Component {
         }
         if(viewTeammate){
             return(
-                    <KRAReviewEditor forceReload={this.forceReload} userid={userid} month={month} year={year} onChooseTeammateMonth={this.onChooseTeammateMonth} onCloseTeammate={this.onCloseTeammate}/>
+                    <KRAReview forceReload={this.forceReload} userid={userid} month={month} year={year} onChooseTeammateMonth={this.onChooseTeammateMonth} onCloseTeammate={this.onCloseTeammate}/>
             )
         }
         if(kra){
