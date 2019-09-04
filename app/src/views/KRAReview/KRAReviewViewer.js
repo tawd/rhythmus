@@ -54,7 +54,7 @@ class KRAReviewViewer extends Component {
 
     return(
       <Paper className={classes.paper}>
-            <Grid className={classes.boxStyles} item xs={12}>
+            <Grid className={classes.container} item xs={12}>
                 {topicJSX}
             </Grid>
       </Paper>

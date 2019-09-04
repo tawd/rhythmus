@@ -110,26 +110,36 @@ class KRAReview extends Component {
     ).catch(error => this.setState({error, isLoading:false}));
   }
 
-  onChooseTeammateNextMonth = () => {
+onChooseTeammateNextMonth = () => {
+    let nextMonth = this.getNextMonth();
+    this.props.onChooseTeammateMonth(this.props.userid, nextMonth.month, nextMonth.year);
+}
+
+onChooseTeammatePrevMonth = () => {
+    let prevMonth = this.getPreviousMonth();
+      if(prevMonth) {
+          this.props.onChooseTeammateMonth(this.props.userid, prevMonth.month, prevMonth.year);
+      }
+  }
+
+  getNextMonth = () => {
     let nextMonth = this.props.month + 1;
     let year = this.props.year;
     if(nextMonth > 12){
         nextMonth = 1;
         year = year + 1;
     }
-    this.props.onChooseTeammateMonth(this.props.userid, nextMonth, year);
-}
+    return {"month":nextMonth, "year":year};
+  }
 
-  onChooseTeammatePrevMonth = () => {
-      let prevMonth = this.props.month - 1;
-      let year = this.props.year;
-      if(prevMonth < 1){
-          year = year - 1;
-          prevMonth = 12;
-      }
-      if(prevMonth) {
-          this.props.onChooseTeammateMonth(this.props.userid, prevMonth, year);
-      }
+  getPreviousMonth = () => {
+    let prevMonth = this.props.month - 1;
+    let year = this.props.year;
+    if(prevMonth < 1){
+        year = year - 1;
+        prevMonth = 12;
+    }
+    return {"month":prevMonth, "year":year};
   }
 
   onSaving = (saving) => {
@@ -165,6 +175,10 @@ class KRAReview extends Component {
         return <CircularProgress />;
     }
 
+    const style = {};
+
+    
+
     if(teammate && teammate.name && month && year) {
         let m = Config.monthNames;
         let { reviewed, review_notes,total} = review;
@@ -173,6 +187,17 @@ class KRAReview extends Component {
         }
         if( ! review_notes ) {
             review_notes = "";
+        }
+
+        let scoreVal = parseFloat(total);
+        if(scoreVal === 4 ){
+            style["background"] = "rgba(82, 158, 75, 0.5)";
+        }else if(scoreVal >=3 ){
+            style["background"] = "rgba(131, 201, 133, 0.5)";
+        }else if(scoreVal >=2 ){
+            style["background"] = "rgba(223, 220, 108, 0.5)";
+        }else if(scoreVal >=1 ){
+            style["background"] = "rgba(223, 129, 113, 0.5)";
         }
 
         let body = "";
@@ -193,16 +218,20 @@ class KRAReview extends Component {
             body = <KRAReviewEditor submitting={true} review={review} teammate={teammate} userid={this.props.userid} month={month} year={year} 
                             forceReload={this.props.forceReload}  onSaving={this.onSaving}></KRAReviewEditor>;
         }
+        const nextMonth = this.getNextMonth();
+        const nextMonthLabel = "<< " + m[nextMonth.month - 1] + " " + nextMonth.year;
+        const prevMonth = this.getPreviousMonth();
+        const prevMonthLabel = m[prevMonth.month - 1] + " " + prevMonth.year + " >>";
 
         return(
             <div>
                 <Grid container>
                     <Grid item xs={2}>{closeBtn}</Grid>
                     <Grid item xs={2}
-                        ><Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth} disabled={this.state.saving}>Next Month</Button>
+                        ><Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth} disabled={this.state.saving}>{nextMonthLabel}</Button>
                     </Grid>
                     <Grid item xs={2}>
-                        <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth} disabled={this.state.saving}>Prev Month</Button>
+                        <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth} disabled={this.state.saving}>{prevMonthLabel}</Button>
                     </Grid>
                     <Grid item xs={2}>
                         {editBtn}
@@ -218,7 +247,7 @@ class KRAReview extends Component {
                     <Grid item xs={12}>
                         <Paper className={classes.paper}>
                                     <h2>{teammate.name} for {m[month-1]}, {year}</h2>
-                                    <h3>Total: {total}</h3>
+                                    <h3 style={style}>Total: {total}</h3>
                         </Paper>
                     </Grid>
                 </form>

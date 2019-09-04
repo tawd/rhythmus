@@ -70,8 +70,8 @@ class TeamListRowCol extends Component {
         let scoreVal = "";
 
         let style = {
-            background: "white",
             textAlign: "center",
+            border:"solid 1px #aaa",
             cursor: "pointer"
         };
 
@@ -80,13 +80,13 @@ class TeamListRowCol extends Component {
 
             scoreVal = parseFloat(score.score);
             if(scoreVal === 4 ){
-                style["background"] = "#529e4b";
+                style["background"] = "rgba(82, 158, 75, 0.5)";//"#529e4b";
             }else if(scoreVal >=3 ){
-                style["background"] = "#83c985";
+                style["background"] = "rgba(131, 201, 133, 0.5)";//#83c985";
             }else if(scoreVal >=2 ){
-                style["background"] = "#dfdc6c";
+                style["background"] = "rgba(223, 220, 108, 0.5)";//#dfdc6c";
             }else if(scoreVal >=1 ){
-                style["background"] = "#df8171";
+                style["background"] = "rgba(223, 129, 113, 0.5)";//#df8171";
             }
                //console.log(classes.reviewedIndicator)
                 storeClass[classes.reviewedIndicator]=score.reviewed

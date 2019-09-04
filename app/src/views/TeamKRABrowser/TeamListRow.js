@@ -13,8 +13,16 @@ const styles = theme => ({
     shadedRow: {
         backgroundColor: 'rgba(0,0,0,0.1)',
     },
+    title:{
+        border:"solid 1px #aaa",
+    }
 
 });
+const nameStyle = {
+    textAlign: "center",
+    border:"solid 1px #aaa",
+    cursor: "pointer"
+};
 
 class TeamListRow extends Component {
 
@@ -34,7 +42,7 @@ class TeamListRow extends Component {
         let scoreCols = [];
         let numCols = this.props.numCols;
 
-        scoreCols.push(<TableCell key={"name-"+teammate.userid} onClick={this.onChooseTeammateKRA}>{teammate.name}</TableCell>);
+        scoreCols.push(<TableCell key={"name-"+teammate.userid} style={nameStyle} onClick={this.onChooseTeammateKRA}>{teammate.name}</TableCell>);
         for (let i = 0; i < numCols; i++) {
             let currMonth = month - i;
             let currYear = year;

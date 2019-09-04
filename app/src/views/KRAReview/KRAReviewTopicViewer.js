@@ -5,6 +5,11 @@ import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
 const styles = theme => ({
+    container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+  
+      }
 });
 
 class KRAReviewTopicViewer extends Component {
@@ -20,15 +25,23 @@ class KRAReviewTopicViewer extends Component {
         if(amount !== undefined && outof !== undefined){
             outofFormula = (<span>{amount} out of {outof}<br/></span>);
         }
+        var scoreColorClass = 'score score-';
+        if(score<0.3) {
+            scoreColorClass += "low";
+        } else if (score < 0.7) {
+            scoreColorClass += "mid";
+        } else {
+            scoreColorClass += "high";
+        }
 
         return(
-            <Grid item md={4} sm={12} className={classes.gridStyles}>
-                <b>{title}</b><br/>
-                {goal}<br/>
-                {goal_notes}<br/>
-                {score}<br/>
+            <Grid item md={3} sm={12} className={classes.gridStyles}>
+                <h3 className="topic-title">{title}</h3>
+                <div className="topic">{goal}</div>
+                <div className="notes">{goal_notes}</div>
+                <div className={scoreColorClass}>{score}</div>
                 {outofFormula}
-                {notes}<br/><br/>
+                <div className="notes">{notes}</div>
             </Grid>
         );
     }

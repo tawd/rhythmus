@@ -1,7 +1,7 @@
 export default {
     baseURL:"",
     apiKey:"",
-    uid:"",
+    my_teammate_id:"",
     authKey:"",
     kraTopics:false,
 
@@ -19,8 +19,8 @@ export default {
             if(parsedConfig && parsedConfig.apiKey) {
                 this.apiKey = parsedConfig.apiKey;
             }
-            if(parsedConfig && parsedConfig.uid) {
-                this.uid = parsedConfig.uid;
+            if(parsedConfig && parsedConfig.my_teammate_id) {
+                this.my_teammate_id = parsedConfig.my_teammate_id;
             }
             this.authKey="k="+Buffer.from(this.uid + ":" + this.apiKey).toString('base64');
         }
