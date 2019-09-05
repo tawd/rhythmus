@@ -33,15 +33,23 @@ class KRAReviewTopicViewer extends Component {
         } else {
             scoreColorClass += "high";
         }
+        let scoreContent = "";
+        if(score) {
+            scoreContent = <div className={scoreColorClass}>{score}</div>;
+        }
+        let scoreNotesContent = "";
+        if(score) {
+            scoreNotesContent = <div className="notes">{notes}</div>;
+        }
 
         return(
             <Grid item md={3} sm={12} className={classes.gridStyles}>
                 <h3 className="topic-title">{title}</h3>
                 <div className="topic">{goal}</div>
                 <div className="notes">{goal_notes}</div>
-                <div className={scoreColorClass}>{score}</div>
+                {scoreContent}
                 {outofFormula}
-                <div className="notes">{notes}</div>
+                {scoreNotesContent}
             </Grid>
         );
     }

@@ -70,7 +70,17 @@ class KRAReviewOutOf extends Component {
             outOfError = true;
         }
         if(score >=0 ) {
-            scoreLabel = "Score: " + score;
+            var scoreColorClass = 'score score-';
+            if(score<0.3) {
+                scoreColorClass += "low";
+            } else if (score < 0.7) {
+                scoreColorClass += "mid";
+            } else {
+                scoreColorClass += "high";
+            }
+            if(score) {
+                scoreLabel = <div className={scoreColorClass}>{score}</div>;
+            }
         }
         if(amount === undefined){
             amount ="";

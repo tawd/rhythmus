@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import '../../Rhythmus.css';
 import Config from '../../config.js';
 import KRAReviewViewer from '../KRAReview/KRAReviewViewer';
+import KRAReviewEditor from '../KRAReview/KRAReviewEditor';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = theme => ({
@@ -36,9 +38,72 @@ class Dashboard extends Component {
         this.state = {
             teammate:{},
             isLoading:true,
+            editingCurrent:false,
+            editingPrevious:false,
+            saving:false,
+            goalError:"",
+            scoreError:""
         };
     }
+    forceReload = () => {
+        //Don't need to reload list for Dashboard
+    }
+    onSaving = (saving) => {
+        this.setState({saving:saving});
+    }
+    onToggleEditCurr = () => {
+        this.setState({editingCurrent:!this.state.editingCurrent});
+    }
+    onToggleEditPrev = () => {
+        this.setState({editingPrevious:!this.state.editingPrevious});
+    }
 
+    checkGoalComplete = (review) => {
+        if( !review || !review.topics) {
+            return "INCOMPLETE - Not Started."
+        }
+        let retVal = "";
+        Config.kraTopics.forEach(function(topic){
+            if(!review.topics[topic.name] ) {
+                return "INCOMPLETE - Not Started on "+topic.name+".";
+            } 
+            let tp = review.topics[topic.name];
+            if(topic.source !== "kra-titles" && (tp.goal === undefined || tp.goal === "")) {
+                retVal = "INCOMPLETE - Unfinished "+topic.name+" goal.";
+                return;
+            }
+            if(topic.source !== "kra-titles" && (tp.goal_notes === undefined || tp.goal_notes === "")) {
+                retVal = "INCOMPLETE - Unfinished "+topic.name+" goal notes.";
+                return
+            }
+            if( topic.type === "outof" && (tp.outof === undefined || tp.outof === "")) {
+                retVal = "INCOMPLETE - Unfinished "+topic.name+" goal number.";
+                return;
+            }
+        });
+        return retVal;
+    }
+
+    checkScoreComplete = (review) => {
+        let goalStatus = this.checkGoalComplete(review);
+        if( goalStatus ) {
+            return goalStatus;
+        }
+        let retVal = "";
+        Config.kraTopics.forEach(function(topic){
+            let tp = review.topics[topic.name];
+            if( tp.notes  === undefined || tp.notes === "") {
+                retVal = "INCOMPLETE - Unfinished "+topic.name+" score notes.";
+                return;
+            }
+            if( tp.score  === undefined || tp.score === "" ) {
+                retVal = "INCOMPLETE - Unfinished "+topic.name+" score.";
+                return;
+            }
+        });
+        return retVal;
+    }
+          
     componentDidMount() {
         if(!Config.kraTopics) {
             fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-topics?'+Config.authKey,{
@@ -63,6 +128,11 @@ class Dashboard extends Component {
     }
 
     loadKRAs = () => {
+        //Don't load dashboard if user not connected
+        if(!Config.my_teammate_id) {
+            this.setState({isLoading:false});
+            return;
+        }
         this.setState({isLoading:true});
         let params = "teammate_id="+Config.my_teammate_id;
         fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-review?'+params+'&'+Config.authKey,{
@@ -82,7 +152,8 @@ class Dashboard extends Component {
         ).catch(error => this.setState({error, isLoading:false}));
     }
     render() {
-        const{isLoading, error, teammate} = this.state;
+        const { classes } = this.props;
+        const {isLoading, error, teammate} = this.state;
         let m = Config.monthNames;
 
         let today = new Date();
@@ -93,6 +164,9 @@ class Dashboard extends Component {
             review = {};
         }
     
+        if(!Config.my_teammate_id) {
+            return <div>Your account has not been setup. Please contact an admin to connect your account.</div>;
+        }
         if(error)
         {
             return <p>{error.message}</p>
@@ -117,29 +191,62 @@ class Dashboard extends Component {
         }
 
         const prevTotal = prevReview["total"];
-        let scoreVal = parseFloat(prevTotal);
-        if(scoreVal === 4 ){
-            style["background"] = "rgba(82, 158, 75, 0.5)";
-        }else if(scoreVal >=3 ){
-            style["background"] = "rgba(131, 201, 133, 0.5)";
-        }else if(scoreVal >=2 ){
-            style["background"] = "rgba(223, 220, 108, 0.5)";
-        }else if(scoreVal >=1 ){
-            style["background"] = "rgba(223, 129, 113, 0.5)";
+
+        let prevMonthContent=<KRAReviewViewer review={prevReview} ></KRAReviewViewer>;
+        let toggleEditPrevButton = <Button onClick={this.onToggleEditPrev} disabled={this.state.saving}>Reflect & Score</Button>;
+        if(this.state.editingPrevious) {
+            toggleEditPrevButton = <Button onClick={this.onToggleEditPrev} disabled={this.state.saving}>Back to View</Button>;
+            prevMonthContent = <KRAReviewEditor submitting={true} review={prevReview} teammate={teammate} userid={Config.my_teammate_id} month={prevMonth} year={prevYear} 
+                            forceReload={this.forceReload} onSaving={this.onSaving}></KRAReviewEditor>;
+        }
+
+        let currMonthContent = <KRAReviewViewer review={review} ></KRAReviewViewer>;
+        let toggleEditCurrButton = <Button onClick={this.onToggleEditCurr} disabled={this.state.saving}>Set Goals</Button>;
+        if(this.state.editingCurrent) {
+            toggleEditCurrButton = <Button onClick={this.onToggleEditCurr} disabled={this.state.saving}>Back to View</Button>;
+            currMonthContent = <KRAReviewEditor review={review} teammate={teammate} userid={Config.my_teammate_id} month={month} year={year} 
+                            forceReload={this.forceReload} onSaving={this.onSaving}></KRAReviewEditor>;
+        }
+
+
+        var scoreColorClass = 'score score-';
+        if(prevTotal<2) {
+            scoreColorClass += "low";
+        } else if (prevTotal < 3) {
+            scoreColorClass += "mid";
+        } else {
+            scoreColorClass += "high";
+        }
+
+        let scoreCompletionStatus = this.checkScoreComplete(prevReview);
+        if( scoreCompletionStatus ) {
+            scoreCompletionStatus = <div className={"error-message"}>{scoreCompletionStatus}</div>;
+        }
+
+
+        let goalCompletionStatus = this.checkGoalComplete(review);
+        if( goalCompletionStatus ) {
+            goalCompletionStatus = <div className={"error-message"}>{goalCompletionStatus}</div>;
         }
 
         return (
             <div>
-                <Paper>
+                <Paper className={classes.paper}>
                     <h2>My Assessment of {m[prevMonth-1]}, {prevYear}</h2>
-                    <h3 style={style}>Total: {prevTotal}</h3>
+                    <div className={scoreColorClass}>{prevTotal}</div>
+                    {toggleEditPrevButton} <br/>
+                    {scoreCompletionStatus}
                 </Paper>
+                {prevMonthContent}
 
-                <KRAReviewViewer review={prevReview} ></KRAReviewViewer>
-                <Paper>
+                
+                <Paper className={classes.paper}>
                     <h2>My Goals for {m[month-1]}, {year}</h2>
+                    {toggleEditCurrButton} <br/>
+                    {goalCompletionStatus}
                 </Paper>
-                <KRAReviewViewer review={review} ></KRAReviewViewer>
+                {currMonthContent}
+                
 
             </div>
         );

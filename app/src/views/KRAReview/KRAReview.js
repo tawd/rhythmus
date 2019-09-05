@@ -48,7 +48,8 @@ class KRAReview extends Component {
           saving:false,
           open:false,
           isSubmitting:false,
-          isEditing:false
+          isEditing:false,
+          canEdit:false
       };
   }
 
@@ -82,6 +83,7 @@ class KRAReview extends Component {
   }
   loadKRAs = () => {
     const{year, userid, month} = this.props;
+    
     this.setState({isLoading:true, month:month, year:year});
     let params = "teammate_id="+userid;
     fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-review?'+params+'&'+Config.authKey,{
@@ -103,9 +105,11 @@ class KRAReview extends Component {
                 if(!review){
                    review = {};
                 }
+                teammate.months[year+"-"+month] = review;
                 this.setState({review:review});
             }
-            this.setState({teammate:data,isLoading:false});
+            const canEdit = Config.is_admin || teammate.userid == Config.my_teammate_id;
+            this.setState({teammate:data,isLoading:false,canEdit:canEdit});
         }
     ).catch(error => this.setState({error, isLoading:false}));
   }
@@ -158,7 +162,7 @@ onChooseTeammatePrevMonth = () => {
   render() {
 
     let { classes, year, month } = this.props;
-    const{isLoading, error, teammate} = this.state;
+    const{isLoading, error, teammate, canEdit} = this.state;
 
     let review = teammate && teammate.months && teammate.months[year+"-"+month];
     if(!review){
@@ -177,8 +181,6 @@ onChooseTeammatePrevMonth = () => {
 
     const style = {};
 
-    
-
     if(teammate && teammate.name && month && year) {
         let m = Config.monthNames;
         let { reviewed, review_notes,total} = review;
@@ -189,35 +191,32 @@ onChooseTeammatePrevMonth = () => {
             review_notes = "";
         }
 
-        let scoreVal = parseFloat(total);
-        if(scoreVal === 4 ){
-            style["background"] = "rgba(82, 158, 75, 0.5)";
-        }else if(scoreVal >=3 ){
-            style["background"] = "rgba(131, 201, 133, 0.5)";
-        }else if(scoreVal >=2 ){
-            style["background"] = "rgba(223, 220, 108, 0.5)";
-        }else if(scoreVal >=1 ){
-            style["background"] = "rgba(223, 129, 113, 0.5)";
-        }
-
         let body = "";
         let viewBtn = <Button className={classes.prevBtn} onClick={this.onViewKRA} disabled={this.state.saving}>Back to Viewer</Button>;
         if(!this.state.isEditing && !this.state.isSubmitting){
             viewBtn = "";
             body = <KRAReviewViewer review={review} classes={classes}></KRAReviewViewer>;
         }
-        let editBtn = <Button className={classes.prevBtn} onClick={this.onEditKRA} disabled={this.state.saving}>Edit</Button>;
+
+        let editBtn = "";
         if(this.state.isEditing){
-            editBtn = "";
             body = <KRAReviewEditor review={review} teammate={teammate} userid={this.props.userid} month={month} year={year} 
                             forceReload={this.props.forceReload} onSaving={this.onSaving}></KRAReviewEditor>;
         }
-        let submitBtn = <Button className={classes.prevBtn} onClick={this.onSubmitKRA} disabled={this.state.saving}>Score</Button>;
+        else if(canEdit) {
+            editBtn = <Button className={classes.prevBtn} onClick={this.onEditKRA} disabled={this.state.saving}>Edit</Button>;
+        }
+
+        let submitBtn = "";
         if(this.state.isSubmitting){
             submitBtn = "";
             body = <KRAReviewEditor submitting={true} review={review} teammate={teammate} userid={this.props.userid} month={month} year={year} 
                             forceReload={this.props.forceReload}  onSaving={this.onSaving}></KRAReviewEditor>;
         }
+        if(canEdit) {
+            submitBtn = <Button className={classes.prevBtn} onClick={this.onSubmitKRA} disabled={this.state.saving}>Score</Button>;
+        }
+        
         const nextMonth = this.getNextMonth();
         const nextMonthLabel = "<< " + m[nextMonth.month - 1] + " " + nextMonth.year;
         const prevMonth = this.getPreviousMonth();
@@ -238,9 +237,7 @@ onChooseTeammatePrevMonth = () => {
                     <Grid item xs={2}
                         ><Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth} disabled={this.state.saving}>{nextMonthLabel}</Button>
                     </Grid>
-                    <Grid item xs={2}>
-                        <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth} disabled={this.state.saving}>{prevMonthLabel}</Button>
-                    </Grid>
+                    
                     <Grid item xs={2}>
                         {editBtn}
                     </Grid>
@@ -249,6 +246,9 @@ onChooseTeammatePrevMonth = () => {
                     </Grid>
                     <Grid item xs={2}>
                         {viewBtn}
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth} disabled={this.state.saving}>{prevMonthLabel}</Button>
                     </Grid>
                 </Grid>
                 <form className={classes.container} noValidate autoComplete="off">

@@ -61,7 +61,7 @@ class KRA_Review extends Abstract_Endpoint {
 		$sql = $wpdb->prepare( "SELECT rt.id, fname, lname, year, month, total, submitted, reviewed, topics, 
         review_notes, submit_date, last_update_date 
         FROM {$wpdb->prefix}rhythmus_teammate rt LEFT OUTER JOIN {$wpdb->prefix}rhythmus_kra_review rkr on rt.id = rkr.teammate_id 
-        WHERE rt.id = %d ORDER BY year DESC, month DESC", $teammate_id );
+        WHERE rt.id = %d and is_active = 1 ORDER BY year DESC, month DESC", $teammate_id );
 
 		$results = $wpdb->get_results( $sql );
 

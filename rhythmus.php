@@ -66,7 +66,30 @@ function rhythmus_init() {
 		exit();
 	}
 
+
 }
 add_action( 'plugins_loaded', 'rhythmus_init' );
 
+add_action( 'admin_menu', 'rhythmus_menu' );  
+function rhythmus_menu(){    
+	$page_title = 'Rhythmus Menu';   
+	$menu_title = 'Rhythmus';   
+	$capability = 'manage_options';   
+	$menu_slug  = 'rhythmus-admin';
+	$function   = 'rhythmus_admin_page';   
+	$icon_url   = 'dashicons-media-code';   
+	$position   = 1;    
+	add_menu_page( $page_title,                  
+		$menu_title,                   
+		$capability,                   
+		$menu_slug,                   
+		$function,                   
+		$icon_url,                   
+		$position 
+	); 
+}
 
+function rhythmus_admin_page(){
+	include( __DIR__ . '/includes/rhythmus-admin.php' );
+	rhythmus_show_admin();
+}

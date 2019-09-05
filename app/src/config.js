@@ -4,6 +4,7 @@ export default {
     my_teammate_id:"",
     authKey:"",
     kraTopics:false,
+    is_admin:false,
 
     monthNames: [ "January", "February", "March", "April", "May", "June", 
        "July", "August", "September", "October", "November", "December" ],
@@ -21,6 +22,9 @@ export default {
             }
             if(parsedConfig && parsedConfig.my_teammate_id) {
                 this.my_teammate_id = parsedConfig.my_teammate_id;
+            }
+            if(parsedConfig && parsedConfig.is_admin) {
+                this.is_admin = true;
             }
             this.authKey="k="+Buffer.from(this.uid + ":" + this.apiKey).toString('base64');
         }

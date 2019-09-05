@@ -152,6 +152,10 @@ class KRAReviewEditor extends Component {
         let review = teammate && teammate.months && teammate.months[year+"-"+month];
         if(!review){
             review = {};
+            if(!teammate.months){
+                teammate.months = {};
+            }
+            teammate.months[year+"-"+month] = review;
         }
 
         if(teammate && teammate.name && month && year) {

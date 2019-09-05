@@ -10,6 +10,11 @@
         $apiKEY = uniqid();
         add_user_meta($uid, 'rhythmus-key', $apiKEY, true);
     }
+
+    global $wpdb;
+
+	$table_name = $wpdb->prefix . 'rhythmus_teammate';
+    $my_teammate_id = $wpdb->get_var("select id from $table_name where wp_user_id=$uid");
 ?><!doctype html>
 <html lang="en">
 
@@ -33,7 +38,8 @@
     {
         "baseURL":"<?php echo $siteURL;?>",
         "apiKey":"<?php echo $apiKEY;?>",
-        "uid":"<?php echo $uid;?>"
+        "my_teammate_id":"<?php echo $my_teammate_id;?>",
+        "is_admin":"<?php echo is_super_admin();?>"
     }
     </script>
 </head>

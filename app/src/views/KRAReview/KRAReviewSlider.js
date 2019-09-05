@@ -35,7 +35,19 @@ class KRAReviewSlider extends Component {
                 score = parseFloat(score);
             }
             if(score >=0 ) {
-                scoreLabel =  score;
+                if(score >=0 ) {
+                    var scoreColorClass = 'score score-';
+                    if(score<0.3) {
+                        scoreColorClass += "low";
+                    } else if (score < 0.7) {
+                        scoreColorClass += "mid";
+                    } else {
+                        scoreColorClass += "high";
+                    }
+                    if(score) {
+                        scoreLabel = <div className={scoreColorClass}>{score}</div>;
+                    }
+                }
             }
         }
         return(

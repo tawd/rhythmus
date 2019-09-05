@@ -75,10 +75,18 @@ class KRAReviewTopic extends Component {
             goal_notes = "";
         }
         let scoring;
+        let amountGoal ="";
         if (type === "slider") {
             scoring = <KRAReviewSlider score={score} onChange={this.handleScoreChange} />
         } else if(type === "outof") {
             scoring = <KRAReviewOutOf score={score} amount={amount} outof={outof} onChange={this.handleScoreChange} />;
+            amountGoal =<TextField
+            id="outof"
+            value={outof}
+            type="number"
+            label="Total Steps in Goal"
+            onChange={this.handleChange('outof')}
+        />
         }
 
         if(submitting) {
@@ -97,6 +105,7 @@ class KRAReviewTopic extends Component {
                             <Grid item md={4} sm={12} className={classes.gridStyles}>
                                 <TextField
                                         id="notes"
+                                        multiline
                                         value={notes}
                                         label={"Notes"}
                                         className={classes.textField}
@@ -116,7 +125,7 @@ class KRAReviewTopic extends Component {
                     <Paper className={classes.paper}>
                         <h3 className={classes.headerStyles}>{title}</h3>
                         <Grid container className={classes.boxStyles}>
-                            <Grid item md={4} sm={12} className={classes.gridStyles}>
+                            <Grid item md={12} sm={12} className={classes.gridStyles}>
                                 <TextField
                                     id="goal"
                                     value={goal}
@@ -127,12 +136,14 @@ class KRAReviewTopic extends Component {
                                 />
                                 <TextField
                                     id="goal_notes"
+                                    multiline
                                     value={goal_notes}
                                     className={classes.textField}
                                     label={title + " Notes"}
                                     margin="normal"
                                     onChange={this.handleChange('goal_notes')}
                                 />
+                                {amountGoal}
                             </Grid>
                         </Grid>
                     </Paper>
