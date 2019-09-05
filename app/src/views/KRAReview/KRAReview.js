@@ -222,6 +222,14 @@ onChooseTeammatePrevMonth = () => {
         const nextMonthLabel = "<< " + m[nextMonth.month - 1] + " " + nextMonth.year;
         const prevMonth = this.getPreviousMonth();
         const prevMonthLabel = m[prevMonth.month - 1] + " " + prevMonth.year + " >>";
+        var scoreColorClass = 'score score-';
+        if(total<0.3) {
+            scoreColorClass += "low";
+        } else if (total < 0.7) {
+            scoreColorClass += "mid";
+        } else {
+            scoreColorClass += "high";
+        }
 
         return(
             <div>
@@ -247,7 +255,7 @@ onChooseTeammatePrevMonth = () => {
                     <Grid item xs={12}>
                         <Paper className={classes.paper}>
                                     <h2>{teammate.name} for {m[month-1]}, {year}</h2>
-                                    <h3 style={style}>Total: {total}</h3>
+                                    <div className={scoreColorClass}>{total}</div>
                         </Paper>
                     </Grid>
                 </form>

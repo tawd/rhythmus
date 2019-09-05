@@ -2,7 +2,7 @@ import React from 'react';
 import './Rhythmus.css';
 import CssBaseline from '@material-ui/core/CssBaseline';
 // import { makeStyles, createStyles } from '@material-ui/styles';
-import {purple, green} from '@material-ui/core/colors';
+import {purple, green, lightBlue, blueGrey} from '@material-ui/core/colors';
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -31,8 +31,8 @@ const styles = theme => ({
 
 const theme = createMuiTheme({
   palette: {
-    primary: purple,
-    secondary: green,
+    primary: blueGrey,
+    secondary: lightBlue,
   },
   status: {
     danger: 'orange',

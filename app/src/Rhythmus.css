@@ -49,26 +49,31 @@ h3.topic-title {
   font-size:0.8rem;
   color:#aaa;
 }
-.topic, .score {
+.topic {
   color:#222;
   font-size:1.2rem;
   font-weight: 500;
-  margin:1em 0;
+  margin:1em auto;
 }
 .score {
-  border:2px solid;
+  margin:1em auto;
   border-radius:50%;
   height:100px;
-  width:100px
+  width:100px;
+  text-align: center;
+  font-size:2rem;
+  color:#fff;
+  box-sizing: border-box;
+  padding-top:23px;
 }
 .score-low {
-  color:red;
+  background-color:#e53935;
 }
 .score-mid {
-  color:orange;
+  background-color:#fb8c00;
 }
 .score-high {
-  color:green;
+  background-color:#4caf50;
 }
 .notes {
   background:\rgba(0,0,0,0.05);
