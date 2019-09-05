@@ -25,8 +25,11 @@ import Dashboard from './views/Dashboard/Dashboard';
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    backgroundColor: '#eee',
+    backgroundColor: '#eceef0',
   },
+  appBar: {
+    backgroundColor: '#10232b'
+  }
 });
 
 const theme = createMuiTheme({
@@ -79,12 +82,16 @@ class Rhythmus extends React.Component {
     const { classes } = this.props;
     const { value } = this.state;
 
+    console.log('classes', classes)
+
+    console.log('theme', theme)
+
     return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className={classes.root}>
-        <AppBar position="static">
+        <AppBar position="static" className={classes.appBar}>
           <Tabs value={value} onChange={this.handleChange}>
             <Tab label="Dashboard" />
             <Tab label="KRA Reviews" />

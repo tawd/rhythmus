@@ -30,10 +30,14 @@ const styles = theme => ({
         width:300,
     },
     headerStyles: {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor:'#4e5f69', /*theme.palette.primary.main,*/
         padding: '20px',
         color: 'white',
         transform: 'translate()',
+        fontWeight:'500',
+        textTransform:'uppercase',
+        letterSpacing:'0.1em',
+        fontSize:'0.8rem'
     },
     boxStyles: {
         padding: '20px',
@@ -96,7 +100,7 @@ class KRAReviewTopic extends Component {
                         <h3 className={classes.headerStyles}>{title}</h3>
                         <Grid container className={classes.boxStyles}>
                             <Grid item md={4} sm={12} className={classes.gridStyles}>
-                                {title}: {goal}<br/>
+                                <div class="topic">{goal}</div>
                                 {goal_notes}
                             </Grid>
                             <Grid item md={4} sm={12} className={classes.scoreStyles}>

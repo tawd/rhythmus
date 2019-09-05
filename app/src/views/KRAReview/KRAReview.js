@@ -9,12 +9,29 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import IconClose from '@material-ui/icons/CloseRounded';
+import IconNext from '@material-ui/icons/ArrowForwardIosRounded';
+import IconBack from '@material-ui/icons/ArrowBackIosRounded';
+import IconEdit from '@material-ui/icons/EditRounded';
+import IconStar from '@material-ui/icons/StarsRounded';
+import { ButtonGroup } from '@material-ui/core';
 
 const styles = theme => ({
     container: {
       display: 'flex',
       flexWrap: 'wrap',
+      justifyContent: 'space-between'
     },
+    /*containerAlignLeft: {
+        display:'flex',
+        justifyContent: 'flex-start',
+        flexDirection:'row'
+    },
+    containerAlignRight: {
+        display:'flex',
+        justifyContent: 'flex-end',
+        flexDirection:'row'
+    },*/
     textField: {
       width: 200,
     },
@@ -169,7 +186,7 @@ onChooseTeammatePrevMonth = () => {
         review = {};
     }
 
-    const closeBtn = <Button variant="outlined" className={classes.closeBtn} onClick={this.closeTeammate} disabled={this.state.saving}>Close</Button>;
+    const closeBtn = <Button variant="outlined" className={classes.closeBtn} onClick={this.closeTeammate} disabled={this.state.saving} title="Close"><IconClose/></Button>;
     if(error)
     {
         return <p>{error.message}<br/>{closeBtn}</p>
@@ -192,7 +209,7 @@ onChooseTeammatePrevMonth = () => {
         }
 
         let body = "";
-        let viewBtn = <Button className={classes.prevBtn} onClick={this.onViewKRA} disabled={this.state.saving}>Back to Viewer</Button>;
+        let viewBtn = <Button className={classes.prevBtn} onClick={this.onViewKRA} disabled={this.state.saving}><IconBack/> Back</Button>;
         if(!this.state.isEditing && !this.state.isSubmitting){
             viewBtn = "";
             body = <KRAReviewViewer review={review} classes={classes}></KRAReviewViewer>;
@@ -204,7 +221,7 @@ onChooseTeammatePrevMonth = () => {
                             forceReload={this.props.forceReload} onSaving={this.onSaving}></KRAReviewEditor>;
         }
         else if(canEdit) {
-            editBtn = <Button className={classes.prevBtn} onClick={this.onEditKRA} disabled={this.state.saving}>Edit</Button>;
+            editBtn = <Button className={classes.prevBtn} onClick={this.onEditKRA} disabled={this.state.saving}><IconEdit/> Edit</Button>;
         }
 
         let submitBtn = "";
@@ -214,13 +231,13 @@ onChooseTeammatePrevMonth = () => {
                             forceReload={this.props.forceReload}  onSaving={this.onSaving}></KRAReviewEditor>;
         }
         if(canEdit) {
-            submitBtn = <Button className={classes.prevBtn} onClick={this.onSubmitKRA} disabled={this.state.saving}>Score</Button>;
+            submitBtn = <Button className={classes.prevBtn} onClick={this.onSubmitKRA} disabled={this.state.saving}><IconStar/> Score</Button>;
         }
         
         const nextMonth = this.getNextMonth();
-        const nextMonthLabel = "<< " + m[nextMonth.month - 1] + " " + nextMonth.year;
+        const nextMonthLabel = m[nextMonth.month - 1] + " " + nextMonth.year;
         const prevMonth = this.getPreviousMonth();
-        const prevMonthLabel = m[prevMonth.month - 1] + " " + prevMonth.year + " >>";
+        const prevMonthLabel = m[prevMonth.month - 1] + " " + prevMonth.year;
         var scoreColorClass = 'score score-';
         if(total<0.3) {
             scoreColorClass += "low";
@@ -233,22 +250,20 @@ onChooseTeammatePrevMonth = () => {
         return(
             <div>
                 <Grid container>
-                    <Grid item xs={2}>{closeBtn}</Grid>
-                    <Grid item xs={2}
-                        ><Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth} disabled={this.state.saving}>{nextMonthLabel}</Button>
-                    </Grid>
                     
-                    <Grid item xs={2}>
-                        {editBtn}
+                    <Grid container xs={6}>
+                        <ButtonGroup size="small" aria-label="small button group">
+                            {viewBtn}
+                            {editBtn}
+                            {submitBtn}
+                        </ButtonGroup>
                     </Grid>
-                    <Grid item xs={2}>
-                        {submitBtn}
-                    </Grid>
-                    <Grid item xs={2}>
-                        {viewBtn}
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth} disabled={this.state.saving}>{prevMonthLabel}</Button>
+                    <Grid container justify="flex-end" xs={6}>
+                        <ButtonGroup size="small" aria-label="small button group">
+                            <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth} disabled={this.state.saving} title={prevMonthLabel}><IconBack/></Button>
+                            <Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth} disabled={this.state.saving} title={nextMonthLabel}><IconNext/></Button>
+                            {closeBtn}
+                        </ButtonGroup>
                     </Grid>
                 </Grid>
                 <form className={classes.container} noValidate autoComplete="off">

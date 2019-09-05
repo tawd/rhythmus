@@ -76,8 +76,8 @@ h3.topic-title {
   background-color:#4caf50;
 }
 .notes {
-  background:\rgba(0,0,0,0.05);
-  border-radius:4px;
+  background:rgba(236, 238, 240, 0.5);
+  border-radius:2px;
   padding:0.75em;
   margin:0 0.5em 0.5em;
   font-style: italic;
