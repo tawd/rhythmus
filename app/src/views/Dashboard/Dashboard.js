@@ -8,6 +8,10 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import IconBack from '@material-ui/icons/ArrowBackIosRounded';
+import IconEdit from '@material-ui/icons/EditRounded';
+import IconStar from '@material-ui/icons/StarsRounded';
+import { ButtonGroup } from '@material-ui/core';
 
 const styles = theme => ({
     container: {
@@ -40,6 +44,7 @@ class Dashboard extends Component {
             isLoading:true,
             editingCurrent:false,
             editingPrevious:false,
+            scoringPrevious:false,
             saving:false,
             goalError:"",
             scoreError:""
@@ -56,6 +61,9 @@ class Dashboard extends Component {
     }
     onToggleEditPrev = () => {
         this.setState({editingPrevious:!this.state.editingPrevious});
+    }
+    onToggleScorePrev = () => {
+        this.setState({scoringPrevious:!this.state.scoringPrevious});
     }
 
     checkGoalComplete = (review) => {
@@ -125,6 +133,29 @@ class Dashboard extends Component {
         } else {
             this.loadKRAs();
         }
+
+        if(!Config.my_kra) {
+            let params = "teammate_id=" + Config.my_teammate_id;
+            fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra?'+params+'&'+Config.authKey,{
+                method: "GET",
+                cache: "no-cache"
+            })
+                .then(response => {
+                    if (response.ok) {
+                    return response.json();
+                    } else {
+                    throw new Error('Something went wrong ...');
+                    }
+                })
+                .then(data => {
+                    Config.my_kra = data;
+                    this.setState({kra:Config.my_kra});
+                }
+            ).catch(error => this.setState({error}));
+        }
+        else {
+            this.setState({kra:Config.my_kra});
+        }
     }
 
     loadKRAs = () => {
@@ -153,7 +184,7 @@ class Dashboard extends Component {
     }
     render() {
         const { classes } = this.props;
-        const {isLoading, error, teammate} = this.state;
+        const {isLoading, error, teammate, kra} = this.state;
         let m = Config.monthNames;
 
         let today = new Date();
@@ -176,8 +207,6 @@ class Dashboard extends Component {
             return <CircularProgress />;
         }
         
-        const style = {};
-    
         let prevMonth = month - 1;
         let prevYear = year;
         
@@ -192,19 +221,27 @@ class Dashboard extends Component {
 
         const prevTotal = prevReview["total"];
 
-        let prevMonthContent=<KRAReviewViewer review={prevReview} ></KRAReviewViewer>;
-        let toggleEditPrevButton = <Button onClick={this.onToggleEditPrev} disabled={this.state.saving}>Reflect & Score</Button>;
+        let prevMonthContent=<KRAReviewViewer review={prevReview} kra={kra} ></KRAReviewViewer>;
+        let toggleEditPrevButton = <ButtonGroup size="small" aria-label="small button group">
+            <Button className={classes.prevBtn} onClick={this.onToggleScorePrev} disabled={this.state.saving}><IconStar/> Reflect & Score</Button>
+            <Button className={classes.prevBtn} onClick={this.onToggleEditPrev} disabled={this.state.saving}><IconEdit/> Edit</Button>
+            </ButtonGroup>;
         if(this.state.editingPrevious) {
-            toggleEditPrevButton = <Button onClick={this.onToggleEditPrev} disabled={this.state.saving}>Back to View</Button>;
-            prevMonthContent = <KRAReviewEditor submitting={true} review={prevReview} teammate={teammate} userid={Config.my_teammate_id} month={prevMonth} year={prevYear} 
+            toggleEditPrevButton = <Button className={classes.prevBtn} onClick={this.onToggleEditPrev} disabled={this.state.saving}><IconBack/> Back to View</Button>;
+            prevMonthContent = <KRAReviewEditor kra={kra} review={prevReview} teammate={teammate} userid={Config.my_teammate_id} month={prevMonth} year={prevYear} 
+                            forceReload={this.forceReload} onSaving={this.onSaving}></KRAReviewEditor>;
+        }
+        if(this.state.scoringPrevious) {
+            toggleEditPrevButton = <Button className={classes.prevBtn} onClick={this.onToggleScorePrev} disabled={this.state.saving}><IconBack/> Back to View</Button>;
+            prevMonthContent = <KRAReviewEditor kra={kra} submitting={true} review={prevReview} teammate={teammate} userid={Config.my_teammate_id} month={prevMonth} year={prevYear} 
                             forceReload={this.forceReload} onSaving={this.onSaving}></KRAReviewEditor>;
         }
 
-        let currMonthContent = <KRAReviewViewer review={review} ></KRAReviewViewer>;
-        let toggleEditCurrButton = <Button onClick={this.onToggleEditCurr} disabled={this.state.saving}>Set Goals</Button>;
+        let currMonthContent = <KRAReviewViewer review={review} kra={kra} ></KRAReviewViewer>;
+        let toggleEditCurrButton = <Button className={classes.prevBtn} onClick={this.onToggleEditCurr} disabled={this.state.saving}><IconEdit/> Set Goals</Button>;
         if(this.state.editingCurrent) {
-            toggleEditCurrButton = <Button onClick={this.onToggleEditCurr} disabled={this.state.saving}>Back to View</Button>;
-            currMonthContent = <KRAReviewEditor review={review} teammate={teammate} userid={Config.my_teammate_id} month={month} year={year} 
+            toggleEditCurrButton = <Button className={classes.prevBtn} onClick={this.onToggleEditCurr} disabled={this.state.saving}><IconBack/> Back to View</Button>;
+            currMonthContent = <KRAReviewEditor kra={kra} review={review} teammate={teammate} userid={Config.my_teammate_id} month={month} year={year} 
                             forceReload={this.forceReload} onSaving={this.onSaving}></KRAReviewEditor>;
         }
 
@@ -234,18 +271,23 @@ class Dashboard extends Component {
                 <Paper className={classes.paper}>
                     <h2>My Assessment of {m[prevMonth-1]}, {prevYear}</h2>
                     <div className={scoreColorClass}>{prevTotal}</div>
-                    {toggleEditPrevButton} <br/>
+                        {toggleEditPrevButton} 
+                    <br/>
                     {scoreCompletionStatus}
+                    {prevMonthContent}
                 </Paper>
-                {prevMonthContent}
 
+<br/><br/>
                 
                 <Paper className={classes.paper}>
                     <h2>My Goals for {m[month-1]}, {year}</h2>
-                    {toggleEditCurrButton} <br/>
+                    <ButtonGroup size="small" aria-label="small button group">
+                        {toggleEditCurrButton} 
+                    </ButtonGroup>
+                    <br/>
                     {goalCompletionStatus}
+                    {currMonthContent}
                 </Paper>
-                {currMonthContent}
                 
 
             </div>

@@ -32,10 +32,9 @@ const styles = theme => ({
 class KRAReviewViewer extends Component {
 
   render() {
-    let { classes} = this.props;
+    let { classes, kra} = this.props;
     let review = this.props.review;
     let topicJSX = [];
-
 
     Config.kraTopics.forEach(function(topic){
       let review_topic = false;
@@ -47,6 +46,7 @@ class KRAReviewViewer extends Component {
       topicJSX.push(<KRAReviewTopicViewer
           key={topic.name}
           topic={topic}
+          kra={kra}
           propName={topic.name}
           review={review_topic}/>)
     });

@@ -58,13 +58,13 @@ h3.topic-title {
 .score {
   margin:1em auto;
   border-radius:50%;
-  height:100px;
-  width:100px;
+  height:50px;
+  width:50px;
   text-align: center;
-  font-size:2rem;
+  font-size:1rem;
   color:#fff;
   box-sizing: border-box;
-  padding-top:23px;
+  padding-top:14px;
 }
 .score-low {
   background-color:#e53935;

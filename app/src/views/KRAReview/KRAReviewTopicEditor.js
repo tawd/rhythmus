@@ -29,6 +29,9 @@ const styles = theme => ({
         padding: '22px 0px',
         width:300,
     },
+    paper: {
+        margin: '8px',
+    },
     headerStyles: {
         backgroundColor:'#4e5f69', /*theme.palette.primary.main,*/
         padding: '20px',
@@ -65,7 +68,7 @@ class KRAReviewTopic extends Component {
     };
 
     render() {
-        const { classes, review, submitting } = this.props;
+        const { classes, review, submitting, kra, topic} = this.props;
         let { title, description, type } = this.props.topic;
         let { score, amount, outof, goal, goal_notes, notes } = review;
         if(typeof score != 'number')
@@ -94,19 +97,31 @@ class KRAReviewTopic extends Component {
         }
 
         if(submitting) {
+
+            if(topic.source === "kra-titles") {
+                if(kra && kra.kra){
+                    goal = kra.position;
+                    goal_notes = [];
+                    for( let i = 0; i < 3; i++ ){
+                        let area = kra.kra[i];
+                        if(area) {
+                            goal_notes.push(<div>{area.title}<br/></div>);
+                        }
+                    }
+                }
+            }
+
             return(
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                     <Paper className={classes.paper}>
                         <h3 className={classes.headerStyles}>{title}</h3>
                         <Grid container className={classes.boxStyles}>
-                            <Grid item md={4} sm={12} className={classes.gridStyles}>
+                            <Grid item md={6} sm={12} className={classes.gridStyles}>
                                 <div class="topic">{goal}</div>
-                                {goal_notes}
+                                <div className="notes">{goal_notes}</div>
                             </Grid>
-                            <Grid item md={4} sm={12} className={classes.scoreStyles}>
+                            <Grid item md={6} sm={12} className={classes.scoreStyles}>
                                 {scoring}
-                            </Grid>
-                            <Grid item md={4} sm={12} className={classes.gridStyles}>
                                 <TextField
                                         id="notes"
                                         multiline
@@ -125,7 +140,7 @@ class KRAReviewTopic extends Component {
             )
         } else {
             return(
-                <Grid item xs={12}>
+                <Grid item xs={4}>
                     <Paper className={classes.paper}>
                         <h3 className={classes.headerStyles}>{title}</h3>
                         <Grid container className={classes.boxStyles}>

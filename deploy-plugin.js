@@ -58,7 +58,6 @@ const filesToZip = [
     "./autoload.php",
     "./rhythmus.php",
     "./AppPageTemplate.php",
-    "./app/public/index.html",
 ];
 const dirsToZip = ["./app/build/**", "./includes/**"];
 const dirsToExclude = ["./sample-data/**"];

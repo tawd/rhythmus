@@ -22,16 +22,6 @@ const styles = theme => ({
       flexWrap: 'wrap',
       justifyContent: 'space-between'
     },
-    /*containerAlignLeft: {
-        display:'flex',
-        justifyContent: 'flex-start',
-        flexDirection:'row'
-    },
-    containerAlignRight: {
-        display:'flex',
-        justifyContent: 'flex-end',
-        flexDirection:'row'
-    },*/
     textField: {
       width: 200,
     },
@@ -125,7 +115,7 @@ class KRAReview extends Component {
                 teammate.months[year+"-"+month] = review;
                 this.setState({review:review});
             }
-            const canEdit = Config.is_admin || teammate.userid == Config.my_teammate_id;
+            const canEdit = Config.is_admin || teammate.userid === Config.my_teammate_id;
             this.setState({teammate:data,isLoading:false,canEdit:canEdit});
         }
     ).catch(error => this.setState({error, isLoading:false}));
@@ -196,8 +186,6 @@ onChooseTeammatePrevMonth = () => {
         return <CircularProgress />;
     }
 
-    const style = {};
-
     if(teammate && teammate.name && month && year) {
         let m = Config.monthNames;
         let { reviewed, review_notes,total} = review;
@@ -260,8 +248,8 @@ onChooseTeammatePrevMonth = () => {
                     </Grid>
                     <Grid container justify="flex-end" xs={6}>
                         <ButtonGroup size="small" aria-label="small button group">
-                            <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth} disabled={this.state.saving} title={prevMonthLabel}><IconBack/></Button>
-                            <Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth} disabled={this.state.saving} title={nextMonthLabel}><IconNext/></Button>
+                            <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth} disabled={this.state.saving} title={prevMonthLabel}><IconBack/> {prevMonthLabel}</Button>
+                            <Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth} disabled={this.state.saving} title={nextMonthLabel}>{nextMonthLabel} <IconNext/></Button>
                             {closeBtn}
                         </ButtonGroup>
                     </Grid>

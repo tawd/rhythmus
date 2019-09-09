@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import Grid from '@material-ui/core/Grid';
+
 const styles = theme => ({
     container: {
       display: 'flex',
@@ -19,6 +21,9 @@ const styles = theme => ({
     },
     menu: {
       width: 'auto',
+    },
+    boxStyles: {
+        padding: '20px',
     },
     paper: {
         textAlign: 'center',
@@ -148,7 +153,7 @@ class KRAReviewEditor extends Component {
 
     render() {
 
-        let { year, month, teammate, submitting } = this.props;
+        let { year, month, teammate, submitting, kra, classes } = this.props;
         let review = teammate && teammate.months && teammate.months[year+"-"+month];
         if(!review){
             review = {};
@@ -180,6 +185,7 @@ class KRAReviewEditor extends Component {
                     topicJSX.push(<KRAReviewTopicEditor
                         key={topic.name}
                         topic={topic}
+                        kra={kra}
                         submitting={submitting}
                         propName={topic.name}
                         onReviewTopicChange={onReviewTopicChangeFunction}
@@ -189,7 +195,9 @@ class KRAReviewEditor extends Component {
 
             return(
                 <div>
-                    {topicJSX}
+                    <Grid container className={classes.boxStyles}>
+                        {topicJSX}
+                    </Grid>
                     </div>);
             //         <Grid item xs={12}>
             //             <FormControlLabel label="Reviewed"

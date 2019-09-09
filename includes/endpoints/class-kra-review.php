@@ -91,23 +91,6 @@ class KRA_Review extends Abstract_Endpoint {
 		return $this->endpoint_response( $teammate );
 	}
 
-	/**
-	 * Create
-	 *
-	 * @param WP_REST_Request $request Full data about the request.
-	 *
-	 * @return WP_REST_Response
-	 */
-	public function create( $request ) {
-
-		$data = json_decode( file_get_contents( 'php://input' ), true );
-
-		if ( ! $this->create_or_update( $data ) ) {
-			return $this->endpoint_response( new WP_Error( 'kra_review_create', 'Could not insert the record for ' . $data['userid'] ) );
-		}
-
-		return $this->endpoint_response();
-	}
 
 	/**
 	 * @param array $data
@@ -142,13 +125,23 @@ class KRA_Review extends Abstract_Endpoint {
 	 * @return WP_REST_Response
 	 */
 	public function update( $request ) {
+		global $wpdb;
 
 		$data = json_decode( file_get_contents( 'php://input' ), true );
 
-		if ( ! $this->create_or_update( $data ) ) {
+		$table_name = $wpdb->prefix . 'rhythmus_kra_review';
+		//TODO: Need to check that the teammate_id that is passed in is the current user or supervised or the current user is super admin
+		$sql = $wpdb->prepare( "REPLACE INTO $table_name
+                (teammate_id, year, month, total, reviewed, review_notes, topics, last_update_date)
+                VALUES
+                (%d, %d, %d, %f, %d, %s, %s, now() )",
+			$data['userid'], $data['year'], $data['month'], $data['total'],
+			$data['reviewed'], $data['review_notes'], json_encode( $data['topics'] )
+		);
+
+		if ( ! $wpdb->query( $sql ) ) {
 			return $this->endpoint_response( new WP_Error( 'kra_review_update', 'Could not replace the record for ' . $data['userid'] ) );
 		}
-
 		return $this->endpoint_response();
 	}
 }

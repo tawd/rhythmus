@@ -2,7 +2,7 @@ import React from 'react';
 import './Rhythmus.css';
 import CssBaseline from '@material-ui/core/CssBaseline';
 // import { makeStyles, createStyles } from '@material-ui/styles';
-import {purple, green, lightBlue, blueGrey} from '@material-ui/core/colors';
+import { lightBlue, blueGrey } from '@material-ui/core/colors';
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -13,7 +13,7 @@ import Tab from '@material-ui/core/Tab';
 import TeamListView from './views/TeamKRABrowser/TeamListView';
 import WRStatusList from './views/WeeklyReport/WRStatusList';
 import TabContainer from './components/TabContainer';
-import KRAEditor from './views/KRA/KRAEditor';
+import KRA from './views/KRA/KRA';
 import Dashboard from './views/Dashboard/Dashboard';
 
 // const useStyles = makeStyles((theme) => createStyles({
@@ -82,10 +82,6 @@ class Rhythmus extends React.Component {
     const { classes } = this.props;
     const { value } = this.state;
 
-    console.log('classes', classes)
-
-    console.log('theme', theme)
-
     return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
@@ -95,14 +91,12 @@ class Rhythmus extends React.Component {
           <Tabs value={value} onChange={this.handleChange}>
             <Tab label="Dashboard" />
             <Tab label="KRA Reviews" />
-            <Tab label="Weekly Reports" />
             <Tab label="My KRA" />
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer><Dashboard></Dashboard></TabContainer>}
         {value === 1 && <TabContainer><TeamListView /></TabContainer>}
-        {value === 2 && <TabContainer><WRStatusList /></TabContainer>}
-        {value === 3 && <TabContainer><KRAEditor/></TabContainer>}
+        {value === 2 && <TabContainer><KRA/></TabContainer>}
       </div>  
       </ThemeProvider>
       

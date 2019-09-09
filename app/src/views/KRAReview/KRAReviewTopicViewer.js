@@ -16,7 +16,7 @@ class KRAReviewTopicViewer extends Component {
 
 
     render() {
-        const { classes, review } = this.props;
+        const { classes, review, kra, topic} = this.props;
         let { title} = this.props.topic;
         let { score, amount, outof, goal, goal_notes, notes } = review;
 
@@ -44,6 +44,19 @@ class KRAReviewTopicViewer extends Component {
         let scoreNotesContent = "";
         if(score && notes) {
             scoreNotesContent = <div className="notes">{notes}</div>;
+        }
+
+        if(topic.source === "kra-titles") {
+            if(kra && kra.kra){
+                goal = kra.position;
+                goalNotesContent = [];
+                for( let i = 0; i < 3; i++ ){
+                    let area = kra.kra[i];
+                    if(area) {
+                        goalNotesContent.push(<div className="notes">{area.title}<br/></div>);
+                    }
+                }
+            }
         }
 
         return(
