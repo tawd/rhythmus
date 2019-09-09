@@ -52,7 +52,7 @@ class KRAReviewTopicViewer extends Component {
                 goalNotesContent = [];
                 for( let i = 0; i < 3; i++ ){
                     let area = kra.kra[i];
-                    if(area) {
+                    if(area && area.title) {
                         goalNotesContent.push(<div className="notes">{area.title}<br/></div>);
                     }
                 }

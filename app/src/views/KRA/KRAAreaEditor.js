@@ -56,7 +56,7 @@ const styles = theme => ({
                 <TextField
                   id="kraTitle"
                   value={title}
-                  label={"Area "+(index+1)}
+                  label={"Key Results Area "+(index+1)+":"}
                   className={classes.headerTextField}
                   onChange={this.handleChange('title')}
                 />
@@ -65,7 +65,7 @@ const styles = theme => ({
                 <TextField
                   id="kraDescription"
                   value={description}
-                  label={"Area description"}
+                  label={"Performance Standards for "+(index+1)+":"}
                   multiline
                   className={classes.textField}
                   onChange={this.handleChange('description')}

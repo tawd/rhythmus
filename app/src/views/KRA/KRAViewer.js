@@ -28,11 +28,13 @@ class KRAViewer extends Component {
             area = {};
             kra[i] = area;
           }
-          areas.push(<KRAAreaViewer key={i}
-            index={i}
-            title={area.title}
-            description={area.description}
-            />);
+          if(area.title && area.description){
+            areas.push(<KRAAreaViewer key={i}
+                index={i}
+                title={area.title}
+                description={area.description}
+                />);    
+          }
         }
         return( 
           <div className="kra" >

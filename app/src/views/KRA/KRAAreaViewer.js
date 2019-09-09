@@ -39,7 +39,8 @@ const styles = theme => ({
 
         return(
             <div>
-                <h4>{(index + 1)}. {title}</h4>
+                <h4>Key Results Area #{(index + 1)}: {title}</h4>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Performance Standards:<br/>
                 <ul>
                     {descBullets}
                 </ul>
