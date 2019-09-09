@@ -26,13 +26,16 @@ const styles = theme => ({
 
     render(){
         const {description, title, index} = this.props;
-        let descriptionArr = description.split("\n");
         let descBullets = [];
-        let d=1;
-        descriptionArr.forEach(element => {
-            descBullets.push(<li key={d}>{element}</li>);
-            d++;
-        });
+
+        if(description) {
+            let descriptionArr = description.split("\n");
+            let d=1;
+            descriptionArr.forEach(element => {
+                descBullets.push(<li key={d}>{element}</li>);
+                d++;
+            });
+        }
 
         return(
             <div>
