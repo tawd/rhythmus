@@ -93,3 +93,9 @@ function rhythmus_admin_page(){
 	include( __DIR__ . '/includes/rhythmus-admin.php' );
 	rhythmus_show_admin();
 }
+
+function rhythmus_login_redirect( $redirect_to, $request, $user  ) {
+	  return site_url("/app");
+}
+add_filter( 'login_redirect', 'rhythmus_login_redirect', 10, 3 );
+	
