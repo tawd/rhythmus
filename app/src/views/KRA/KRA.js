@@ -12,6 +12,7 @@ import KRAEditor from './KRAEditor.js';
 import KRAViewer from './KRAViewer.js';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import IconClose from '@material-ui/icons/CloseRounded';
 
 
 const styles = theme => ({
@@ -108,6 +109,10 @@ class KRA extends Component {
       this.setState({isEditing:false});
     }
 
+    closeTeammate = () => {
+        this.props.onCloseKRA();
+    }
+
     render() {
         const{ isLoading, error, canEdit, kra} = this.state;
 
@@ -122,6 +127,11 @@ class KRA extends Component {
         if(isLoading)
         {
             return <CircularProgress />;
+        }
+
+        let closeBtn = "";
+        if(this.props.onCloseKRA) {
+            closeBtn = <Button variant="outlined" className={classes.closeBtn} onClick={this.closeTeammate} disabled={this.state.saving} title="Close"><IconClose/></Button>;
         }
 
         let viewBtn = <Button onClick={this.onViewKRA} disabled={this.state.saving}><IconBack/> Back</Button>;
@@ -147,6 +157,7 @@ class KRA extends Component {
                         <ButtonGroup size="small" aria-label="small button group">
                             {viewBtn}
                             {editBtn}
+                            {closeBtn}
                         </ButtonGroup>
                     </Grid>
                 </Grid>

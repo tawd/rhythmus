@@ -59,12 +59,12 @@ class KRA_Review extends Abstract_Endpoint {
 		$teammate_id = $request->get_param( 'teammate_id' );
 
 		$sql = $wpdb->prepare( "SELECT rt.id, fname, lname, year, month, total, submitted, reviewed, topics, 
-        review_notes, submit_date, last_update_date 
+        review_notes, submit_date, rkr.last_update_date, rk.position, rk.kra 
         FROM {$wpdb->prefix}rhythmus_teammate rt LEFT OUTER JOIN {$wpdb->prefix}rhythmus_kra_review rkr on rt.id = rkr.teammate_id 
+		LEFT OUTER JOIN {$wpdb->prefix}rhythmus_kra rk on rt.id = rk.teammate_id and rk.is_current = 1 
         WHERE rt.id = %d and is_active = 1 ORDER BY year DESC, month DESC", $teammate_id );
 
 		$results = $wpdb->get_results( $sql );
-
 
 		$teammate = array();
 		$months   = array();
@@ -73,6 +73,8 @@ class KRA_Review extends Abstract_Endpoint {
 			if ( ! $teammate['userid'] ) {
 				$teammate['userid'] = $row->id;
 				$teammate['name']   = $row->fname . ' ' . $row->lname;
+				$teammate['position'] = $row->position;
+				$teammate['kra'] = json_decode( $row->kra);
 			}
 			$key            = $row->year . '-' . $row->month;
 			$months[ $key ] = array(
@@ -91,31 +93,6 @@ class KRA_Review extends Abstract_Endpoint {
 		return $this->endpoint_response( $teammate );
 	}
 
-
-	/**
-	 * @param array $data
-	 *
-	 * @return bool
-	 */
-	protected function create_or_update( $data ) {
-		global $wpdb;
-
-		$table_name = $wpdb->prefix . 'rhythmus_kra_review';
-		//TODO: Need to check that the teammate_id that is passed in is the current user or supervised or the current user is super admin
-		$sql = $wpdb->prepare( "REPLACE INTO $table_name
-                (teammate_id, year, month, total, reviewed, review_notes, topics, last_update_date)
-                VALUES
-                (%d, %d, %d, %f, %d, %s, %s, now() )",
-			$data['userid'], $data['year'], $data['month'], $data['total'],
-			$data['reviewed'], $data['review_notes'], json_encode( $data['topics'] )
-		);
-
-		if ( ! $wpdb->query( $sql ) ) {
-			return false;
-		}
-
-		return true;
-	}
 
 	/**
 	 * Create OR Update

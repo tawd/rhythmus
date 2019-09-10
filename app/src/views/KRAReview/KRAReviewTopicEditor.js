@@ -57,7 +57,7 @@ const styles = theme => ({
     },
   });
 
-class KRAReviewTopic extends Component {
+class KRAReviewTopicEditor extends Component {
 
     handleChange = name => event => {
         this.props.onReviewTopicChange(this.props.topic.name, name, event.target.value);
@@ -68,7 +68,7 @@ class KRAReviewTopic extends Component {
     };
 
     render() {
-        const { classes, review, submitting, kra, topic} = this.props;
+        const { classes, review, submitting, teammate, topic} = this.props;
         let { title, description, type } = this.props.topic;
         let { score, amount, outof, goal, goal_notes, notes } = review;
         if(typeof score != 'number')
@@ -99,13 +99,13 @@ class KRAReviewTopic extends Component {
         if(submitting) {
 
             if(topic.source === "kra-titles") {
-                if(kra && kra.kra){
-                    goal = kra.position;
+                if(teammate && teammate.kra){
+                    goal = teammate.position;
                     goal_notes = [];
                     for( let i = 0; i < 3; i++ ){
-                        let area = kra.kra[i];
+                        let area = teammate.kra[i];
                         if(area) {
-                            goal_notes.push(<div>{area.title}<br/></div>);
+                            goal_notes.push(<div key={i}>{area.title}<br/></div>);
                         }
                     }
                 }
@@ -117,7 +117,7 @@ class KRAReviewTopic extends Component {
                         <h3 className={classes.headerStyles}>{title}</h3>
                         <Grid container className={classes.boxStyles}>
                             <Grid item md={6} sm={12} className={classes.gridStyles}>
-                                <div class="topic">{goal}</div>
+                                <div className="topic">{goal}</div>
                                 <div className="notes">{goal_notes}</div>
                             </Grid>
                             <Grid item md={6} sm={12} className={classes.scoreStyles}>
@@ -158,7 +158,7 @@ class KRAReviewTopic extends Component {
                                     multiline
                                     value={goal_notes}
                                     className={classes.textField}
-                                    label={title + " Notes"}
+                                    label={title + " Description"}
                                     margin="normal"
                                     onChange={this.handleChange('goal_notes')}
                                 />
@@ -171,8 +171,8 @@ class KRAReviewTopic extends Component {
         }
     }
 }
-KRAReviewTopic.propTypes = {
+KRAReviewTopicEditor.propTypes = {
     classes: PropTypes.object.isRequired
 };
   
-export default withStyles(styles)(KRAReviewTopic);
+export default withStyles(styles)(KRAReviewTopicEditor);

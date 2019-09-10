@@ -8,8 +8,8 @@ import TextField from '@material-ui/core/TextField';
 const styles = theme => ({
     outof: {
         textField: {
-            marginLeft: theme.spacing.unit,
-            marginRight: theme.spacing.unit,
+            marginLeft: "20px",//theme.spacing.unit,
+            marginRight: "20px",//theme.spacing.unit,
         }
     },
     outOf: {
@@ -109,7 +109,7 @@ class KRAReviewOutOf extends Component {
                     onChange={this.handleOutOfChange('outof')}
                 />
                 <br/>
-                <p>{scoreLabel}</p>
+                <div>{scoreLabel}</div>
             </div>
         );
     }

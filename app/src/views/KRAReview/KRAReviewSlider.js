@@ -63,7 +63,7 @@ class KRAReviewSlider extends Component {
                     onChange={this.handleSliderChange}
 
                 />
-                <p className={classes.scoreLabel}>Score: {scoreLabel}</p>
+                <div className={classes.scoreLabel}>Score: {scoreLabel}</div>
           </div>
         );
     }

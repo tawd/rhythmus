@@ -11,7 +11,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TeamListView from './views/TeamKRABrowser/TeamListView';
-import WRStatusList from './views/WeeklyReport/WRStatusList';
+//import WRStatusList from './views/WeeklyReport/WRStatusList';
 import TabContainer from './components/TabContainer';
 import KRA from './views/KRA/KRA';
 import Dashboard from './views/Dashboard/Dashboard';

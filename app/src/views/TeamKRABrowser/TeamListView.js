@@ -7,7 +7,7 @@ import Config from '../../config.js';
 //import KRAViewer from '../KRA/ViewKRA';
 // eslint-disable-next-line
 import { withStyles } from '@material-ui/core/styles';
-import KRAEditor from '../KRA/KRAEditor';
+import KRA from '../KRA/KRA';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -30,32 +30,54 @@ class TeamListView extends Component {
         super();
         this.state = {
             teammates:false,
-            kar:false,
-            isLoading:false
+            viewKRA:false,
+            isLoading:false,
+            teammate_id:false,
+            kra:false,
+            canEdit:false,
         };
     }
 
-    onChooseTeammateMonth = (userid, month, year) => {
+    onChooseTeammateMonth = (teammate_id, month, year) => {
         this.setState({
             viewTeammate:true,
-            userid:userid,
+            teammate_id:teammate_id,
             month:month,
             year:year
         });
     }
 
-    onChooseTeammateKRA = (userid) => {
-        //TODO: Open the user KRA details, not review
-        //NOTE TO JUSTIN, this is the function to work on in this file.
+    onChooseTeammateKRA = (teammate_id) => {
         this.setState({
-            kra:true,
-            userid:userid
+            viewKRA:true,
+            teammate_id:teammate_id,
+            isLoading:true
+        });
+
+        let params = "teammate_id=" + teammate_id;
+ 
+        fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra?'+params+'&'+Config.authKey,{
+            method: "GET",
+            cache: "no-cache"
         })
+            .then(response => {
+                if (response.ok) {
+                  return response.json();
+                } else {
+                  throw new Error('Something went wrong ...');
+                }
+            })
+            .then(data => {
+                let kra = data;
+                const canEdit = Config.is_admin || kra.teammate_id === Config.my_teammate_id;
+                this.setState({kra:kra, isLoading:false, canEdit:canEdit });
+            }
+        ).catch(error => this.setState({error, isLoading:false}));
     }
 
     onCloseKRA = () => {
         this.setState({
-            kra:false
+            viewKRA:false
         });
     }
 
@@ -114,7 +136,7 @@ class TeamListView extends Component {
 
     render() {
         let { classes } = this.props;
-        const{isLoading, error, teammates, viewTeammate, kra, userid, month, year} = this.state;
+        const{isLoading, error, teammates, viewTeammate,viewKRA, kra, teammate_id, month, year, canEdit} = this.state;
         if(error)
         {
             return <p>{error.message}</p>
@@ -125,12 +147,12 @@ class TeamListView extends Component {
         }
         if(viewTeammate){
             return(
-                    <KRAReview forceReload={this.forceReload} userid={userid} month={month} year={year} onChooseTeammateMonth={this.onChooseTeammateMonth} onCloseTeammate={this.onCloseTeammate}/>
+                    <KRAReview forceReload={this.forceReload} userid={teammate_id} month={month} year={year} onChooseTeammateMonth={this.onChooseTeammateMonth} onCloseTeammate={this.onCloseTeammate}/>
             )
         }
-        if(kra){
+        if(viewKRA){
             return(
-                <KRAEditor userid={userid} onChooseTeammateKRA={this.onChooseTeammateKRA} onCloseKRA={this.onCloseKRA}/>
+                <KRA teammate_id={teammate_id} kra={kra} canEdit={canEdit} onCloseKRA={this.onCloseKRA}/>
             )
         }
         let today = new Date();

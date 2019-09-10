@@ -47,7 +47,11 @@ class Dashboard extends Component {
             scoringPrevious:false,
             saving:false,
             goalError:"",
-            scoreError:""
+            scoreError:"",
+            review:false,
+            prevReview:false,
+            position:"",
+            kra:{}
         };
     }
     forceReload = () => {
@@ -64,6 +68,10 @@ class Dashboard extends Component {
     }
     onToggleScorePrev = () => {
         this.setState({scoringPrevious:!this.state.scoringPrevious});
+    }
+
+    submitPrevKRA = () => {
+        
     }
 
     checkGoalComplete = (review) => {
@@ -133,29 +141,6 @@ class Dashboard extends Component {
         } else {
             this.loadKRAs();
         }
-
-        if(!Config.my_kra) {
-            let params = "teammate_id=" + Config.my_teammate_id;
-            fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra?'+params+'&'+Config.authKey,{
-                method: "GET",
-                cache: "no-cache"
-            })
-                .then(response => {
-                    if (response.ok) {
-                    return response.json();
-                    } else {
-                    throw new Error('Something went wrong ...');
-                    }
-                })
-                .then(data => {
-                    Config.my_kra = data;
-                    this.setState({kra:Config.my_kra});
-                }
-            ).catch(error => this.setState({error}));
-        }
-        else {
-            this.setState({kra:Config.my_kra});
-        }
     }
 
     loadKRAs = () => {
@@ -178,23 +163,82 @@ class Dashboard extends Component {
                 }
             })
             .then(data => {
+                this.loadReviews(data);
                 this.setState({teammate:data,isLoading:false});
             }
         ).catch(error => this.setState({error, isLoading:false}));
     }
-    render() {
-        const { classes } = this.props;
-        const {isLoading, error, teammate, kra} = this.state;
-        let m = Config.monthNames;
 
+    loadReviews = (teammate) => {
         let today = new Date();
         let year = today.getFullYear();
         let month = today.getMonth() + 1;
         let review = teammate && teammate.months && teammate.months[year+"-"+month];
         if(!review){
-            review = {};
+            review = {month:month, year:year};
         }
-    
+        let prevMonth = month - 1;
+        let prevYear = year;
+        
+        if(prevMonth < 1){
+            prevYear = prevYear - 1;
+            prevMonth = 12;
+        }
+        let prevReview = teammate && teammate.months && teammate.months[prevYear+"-"+prevMonth];
+        if(!prevReview){
+            prevReview = {month:prevMonth, year:prevYear};
+        }
+        let position = teammate && teammate.position;
+        let kra = teammate && teammate.kra;
+        this.setState({review:review, prevReview:prevReview, position:position, kra:kra});
+    }
+
+    markSubmitted = () => {
+        let review = this.state.review;
+        review.submitted = 1;
+        this.saveReviewStatus(review);
+    }
+    markScored = () => {
+        let prevReview = this.state.prevReview;
+        prevReview.submitted = 2;
+        this.saveReviewStatus(prevReview);
+    }
+    saveReviewStatus = (review) => {
+        fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-review?'+Config.authKey,{
+            method: "POST",
+            cache: "no-cache",
+            body: JSON.stringify(review)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong ...');
+                }
+            })
+            .then(data => {
+                if( !data.success ) {
+                    throw new Error('Error saving to server ...');
+                }
+            }
+        ).catch(error => this.setState({error}));
+    }
+
+    render() {
+        const { classes } = this.props;
+        const {isLoading, error, teammate, kra} = this.state;
+        let {review, prevReview} = this.state;
+        let m = Config.monthNames;
+        let today = new Date();
+        let year = today.getFullYear();
+        let month = today.getMonth() + 1;
+        let prevMonth = month - 1;
+        let prevYear = year;
+        if(prevMonth < 1){
+            prevYear = prevYear - 1;
+            prevMonth = 12;
+        }
+
         if(!Config.my_teammate_id) {
             return <div>Your account has not been setup. Please contact an admin to connect your account.</div>;
         }
@@ -206,22 +250,24 @@ class Dashboard extends Component {
         {
             return <CircularProgress />;
         }
-        
-        let prevMonth = month - 1;
-        let prevYear = year;
-        
-        if(prevMonth < 1){
-            prevYear = prevYear - 1;
-            prevMonth = 12;
+        if(!review || !prevReview){
+            return "Reviews not loaded.";
         }
-        let prevReview = teammate && teammate.months && teammate.months[prevYear+"-"+prevMonth];
-        if(!prevReview){
-            prevReview = {};
-        }
+        console.log(review);
 
         const prevTotal = prevReview["total"];
 
-        let prevMonthContent=<KRAReviewViewer review={prevReview} kra={kra} ></KRAReviewViewer>;
+        let readyToScore = false;
+        let scoreCompletionStatus = this.checkScoreComplete(prevReview);
+        if( scoreCompletionStatus ) {
+            scoreCompletionStatus = <div className={"error-message"}>{scoreCompletionStatus}</div>;
+        }
+        else if(prevReview.submitted !==2 ) {
+            readyToScore = true;
+        } else {
+            scoreCompletionStatus = "Submitted " + prevReview["submit-date"];
+        }
+        let prevMonthContent=<KRAReviewViewer review={prevReview} teammate={teammate} ></KRAReviewViewer>;
         let toggleEditPrevButton = <ButtonGroup size="small" aria-label="small button group">
             <Button className={classes.prevBtn} onClick={this.onToggleScorePrev} disabled={this.state.saving}><IconStar/> Reflect & Score</Button>
             <Button className={classes.prevBtn} onClick={this.onToggleEditPrev} disabled={this.state.saving}><IconEdit/> Edit</Button>
@@ -237,7 +283,18 @@ class Dashboard extends Component {
                             forceReload={this.forceReload} onSaving={this.onSaving}></KRAReviewEditor>;
         }
 
-        let currMonthContent = <KRAReviewViewer review={review} kra={kra} ></KRAReviewViewer>;
+        let readyToSubmit = false;
+        let goalCompletionStatus = this.checkGoalComplete(review);
+        if( goalCompletionStatus ) {
+            goalCompletionStatus = <div className={"error-message"}>{goalCompletionStatus}</div>;
+        }
+        else if(review.submitted !== 1 ) {
+            goalCompletionStatus = <Button className={classes.prevBtn} onClick={this.markSubmitted} ><IconStar/> Submit Goals</Button>;
+        } else {
+            goalCompletionStatus = "Submitted " + review["submit-date"];
+        }
+
+        let currMonthContent = <KRAReviewViewer review={review} teammate={teammate} ></KRAReviewViewer>;
         let toggleEditCurrButton = <Button className={classes.prevBtn} onClick={this.onToggleEditCurr} disabled={this.state.saving}><IconEdit/> Set Goals</Button>;
         if(this.state.editingCurrent) {
             toggleEditCurrButton = <Button className={classes.prevBtn} onClick={this.onToggleEditCurr} disabled={this.state.saving}><IconBack/> Back to View</Button>;
@@ -254,17 +311,14 @@ class Dashboard extends Component {
         } else {
             scoreColorClass += "high";
         }
+        
+        //let submitDate = new Date(prevReview["submit-date"]);
+        //console.log(submitDate);
+        // if(submitDate) {
+        //     console.log(submitDate.toLocalDateString("en-US"));
+        // }
 
-        let scoreCompletionStatus = this.checkScoreComplete(prevReview);
-        if( scoreCompletionStatus ) {
-            scoreCompletionStatus = <div className={"error-message"}>{scoreCompletionStatus}</div>;
-        }
-
-
-        let goalCompletionStatus = this.checkGoalComplete(review);
-        if( goalCompletionStatus ) {
-            goalCompletionStatus = <div className={"error-message"}>{goalCompletionStatus}</div>;
-        }
+        
 
         return (
             <div>

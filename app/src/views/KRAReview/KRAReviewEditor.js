@@ -193,6 +193,7 @@ class KRAReviewEditor extends Component {
                 }
             });
 
+            
             return(
                 <div>
                     <Grid container className={classes.boxStyles}>

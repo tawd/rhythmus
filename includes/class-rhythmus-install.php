@@ -129,7 +129,7 @@ class Rhythmus_Install
             ) $charset_collate;";
         dbDelta( $sql );
 
-        $db_version = get_option('wr_db_version');
+        $db_version = get_option('rhythmus_db_version');
         if(!$db_version) {
 
             $table_name = $wpdb->prefix . 'rhythmus_kra_topic';
