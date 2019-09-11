@@ -5,6 +5,10 @@ import KRAReviewTopicEditor from './KRAReviewTopicEditor';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import TextField from '@material-ui/core/TextField';
+
 
 import Grid from '@material-ui/core/Grid';
 
@@ -193,36 +197,38 @@ class KRAReviewEditor extends Component {
                 }
             });
 
+            let reviewedBtns = "";
+            if(Config.is_admin) {
+                reviewedBtns =
+                    <div>
+                        <Grid item xs={12}>
+                            <FormControlLabel label="Reviewed"
+                                control={
+                                    <Checkbox
+                                    checked={reviewed}
+                                    onChange={this.handleCheckChange('reviewed')}
+                                    value="reviewed"
+                                    color="primary"
+                                    />}
+                                />
+                            <TextField
+                                id="review_notes"
+                                value={review_notes}
+                                label="Review Notes"
+                                className={classes.textField}
+                                onChange={this.handleChange('review_notes')}
+                                />
+                        </Grid>
+                    </div>  
+            }
             
             return(
                 <div>
                     <Grid container className={classes.boxStyles}>
                         {topicJSX}
+                        {reviewedBtns}
                     </Grid>
                     </div>);
-            //         <Grid item xs={12}>
-            //             <FormControlLabel label="Reviewed"
-            //                 control={
-            //                     <Checkbox
-            //                     checked={reviewed}
-            //                     onChange={this.handleCheckChange('reviewed')}
-            //                     value="reviewed"
-            //                     color="primary"
-            //                     />}
-            //                 />
-            //             <TextField
-            //                 id="review_notes"
-            //                 value={review_notes}
-            //                 label="Review Notes"
-            //                 className={classes.textField}
-            //                 onChange={this.handleChange('review_notes')}
-            //                 />
-            //         </Grid>
-            //         <Grid item xs={12}>
-            //             <Button onClick={this.submitKRAReview}>Submit KRA Review</Button>
-            //         </Grid>
-            //     </div>
-            // );
         }else {
             return (<CircularProgress />);
         }

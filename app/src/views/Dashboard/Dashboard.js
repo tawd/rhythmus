@@ -11,6 +11,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import IconBack from '@material-ui/icons/ArrowBackIosRounded';
 import IconEdit from '@material-ui/icons/EditRounded';
 import IconStar from '@material-ui/icons/StarsRounded';
+import PublishIcon from '@material-ui/icons/Publish';
 import { ButtonGroup } from '@material-ui/core';
 
 const styles = theme => ({
@@ -26,6 +27,9 @@ const styles = theme => ({
     },
     menu: {
       width: 'auto',
+    },
+    submitBtn: {
+        backgroundColor: '#61dafb',
     },
     paper: {
         padding: theme.spacing(2),
@@ -70,10 +74,6 @@ class Dashboard extends Component {
         this.setState({scoringPrevious:!this.state.scoringPrevious});
     }
 
-    submitPrevKRA = () => {
-        
-    }
-
     checkGoalComplete = (review) => {
         if( !review || !review.topics) {
             return "INCOMPLETE - Not Started."
@@ -90,7 +90,7 @@ class Dashboard extends Component {
             }
             if(topic.source !== "kra-titles" && (tp.goal_notes === undefined || tp.goal_notes === "")) {
                 retVal = "INCOMPLETE - Unfinished "+topic.name+" goal notes.";
-                return
+                return;
             }
             if( topic.type === "outof" && (tp.outof === undefined || tp.outof === "")) {
                 retVal = "INCOMPLETE - Unfinished "+topic.name+" goal number.";
@@ -108,11 +108,11 @@ class Dashboard extends Component {
         let retVal = "";
         Config.kraTopics.forEach(function(topic){
             let tp = review.topics[topic.name];
-            if( tp.notes  === undefined || tp.notes === "") {
+            if( tp && (tp.notes  === undefined || tp.notes === "")) {
                 retVal = "INCOMPLETE - Unfinished "+topic.name+" score notes.";
                 return;
             }
-            if( tp.score  === undefined || tp.score === "" ) {
+            if( tp && (tp.score  === undefined || tp.score === "" )) {
                 retVal = "INCOMPLETE - Unfinished "+topic.name+" score.";
                 return;
             }
@@ -175,7 +175,7 @@ class Dashboard extends Component {
         let month = today.getMonth() + 1;
         let review = teammate && teammate.months && teammate.months[year+"-"+month];
         if(!review){
-            review = {month:month, year:year};
+            review = {month:month, year:year, teammate_id:Config.my_teammate_id};
         }
         let prevMonth = month - 1;
         let prevYear = year;
@@ -186,24 +186,22 @@ class Dashboard extends Component {
         }
         let prevReview = teammate && teammate.months && teammate.months[prevYear+"-"+prevMonth];
         if(!prevReview){
-            prevReview = {month:prevMonth, year:prevYear};
+            prevReview = {month:prevMonth, year:prevYear, teammate_id:Config.my_teammate_id};
         }
         let position = teammate && teammate.position;
         let kra = teammate && teammate.kra;
-        this.setState({review:review, prevReview:prevReview, position:position, kra:kra});
+        this.setState({review:review, prevReview:prevReview, position:position, kra:kra, prevMonth:prevMonth, prevYear:prevYear});
     }
 
     markSubmitted = () => {
-        let review = this.state.review;
-        review.submitted = 1;
-        this.saveReviewStatus(review);
-    }
-    markScored = () => {
-        let prevReview = this.state.prevReview;
-        prevReview.submitted = 2;
-        this.saveReviewStatus(prevReview);
-    }
-    saveReviewStatus = (review) => {
+        let review = this.state.prevReview;
+        var time = new Date().getTime() / 1000;
+        review["submit-date"] = time;
+        review.userid = Config.my_teammate_id;
+        review.month = this.state.prevMonth;
+        review.year = this.state.prevYear;
+        review.submitted = true;        
+        this.setState({prevReview:review});
         fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-review?'+Config.authKey,{
             method: "POST",
             cache: "no-cache",
@@ -253,21 +251,23 @@ class Dashboard extends Component {
         if(!review || !prevReview){
             return "Reviews not loaded.";
         }
-        console.log(review);
 
         const prevTotal = prevReview["total"];
 
-        let readyToScore = false;
-        let scoreCompletionStatus = this.checkScoreComplete(prevReview);
-        if( scoreCompletionStatus ) {
-            scoreCompletionStatus = <div className={"error-message"}>{scoreCompletionStatus}</div>;
+        let completionStatus = this.checkScoreComplete(prevReview);
+        let goalCompletionStatus = this.checkGoalComplete(review);
+        if( completionStatus || goalCompletionStatus) {
+            completionStatus = <div className={"error-message"}>INCOMPLETE - Not ready to submit.</div>;
         }
-        else if(prevReview.submitted !==2 ) {
-            readyToScore = true;
+        else if(!prevReview.submitted) {
+            completionStatus = <Button className={classes.submitBtn} onClick={this.markSubmitted} ><PublishIcon/> Submit {m[prevMonth-1]} Review & Goals</Button>;
         } else {
-            scoreCompletionStatus = "Submitted " + prevReview["submit-date"];
+            //TODO: Show date
+            completionStatus = "KRA Review Submitted";
         }
-        let prevMonthContent=<KRAReviewViewer review={prevReview} teammate={teammate} ></KRAReviewViewer>;
+
+
+        let prevMonthContent=<KRAReviewViewer review={prevReview} teammate={teammate} showMissingScores={true}></KRAReviewViewer>;
         let toggleEditPrevButton = <ButtonGroup size="small" aria-label="small button group">
             <Button className={classes.prevBtn} onClick={this.onToggleScorePrev} disabled={this.state.saving}><IconStar/> Reflect & Score</Button>
             <Button className={classes.prevBtn} onClick={this.onToggleEditPrev} disabled={this.state.saving}><IconEdit/> Edit</Button>
@@ -283,18 +283,7 @@ class Dashboard extends Component {
                             forceReload={this.forceReload} onSaving={this.onSaving}></KRAReviewEditor>;
         }
 
-        let readyToSubmit = false;
-        let goalCompletionStatus = this.checkGoalComplete(review);
-        if( goalCompletionStatus ) {
-            goalCompletionStatus = <div className={"error-message"}>{goalCompletionStatus}</div>;
-        }
-        else if(review.submitted !== 1 ) {
-            goalCompletionStatus = <Button className={classes.prevBtn} onClick={this.markSubmitted} ><IconStar/> Submit Goals</Button>;
-        } else {
-            goalCompletionStatus = "Submitted " + review["submit-date"];
-        }
-
-        let currMonthContent = <KRAReviewViewer review={review} teammate={teammate} ></KRAReviewViewer>;
+        let currMonthContent = <KRAReviewViewer review={review} teammate={teammate} showMissingGoals={true}></KRAReviewViewer>;
         let toggleEditCurrButton = <Button className={classes.prevBtn} onClick={this.onToggleEditCurr} disabled={this.state.saving}><IconEdit/> Set Goals</Button>;
         if(this.state.editingCurrent) {
             toggleEditCurrButton = <Button className={classes.prevBtn} onClick={this.onToggleEditCurr} disabled={this.state.saving}><IconBack/> Back to View</Button>;
@@ -312,11 +301,6 @@ class Dashboard extends Component {
             scoreColorClass += "high";
         }
         
-        //let submitDate = new Date(prevReview["submit-date"]);
-        //console.log(submitDate);
-        // if(submitDate) {
-        //     console.log(submitDate.toLocalDateString("en-US"));
-        // }
 
         
 
@@ -324,10 +308,10 @@ class Dashboard extends Component {
             <div>
                 <Paper className={classes.paper}>
                     <h2>My Assessment of {m[prevMonth-1]}, {prevYear}</h2>
+                    {completionStatus}
                     <div className={scoreColorClass}>{prevTotal}</div>
                         {toggleEditPrevButton} 
                     <br/>
-                    {scoreCompletionStatus}
                     {prevMonthContent}
                 </Paper>
 
@@ -339,7 +323,6 @@ class Dashboard extends Component {
                         {toggleEditCurrButton} 
                     </ButtonGroup>
                     <br/>
-                    {goalCompletionStatus}
                     {currMonthContent}
                 </Paper>
                 

@@ -105,20 +105,23 @@ class KRA_Review extends Abstract_Endpoint {
 		global $wpdb;
 
 		$data = json_decode( file_get_contents( 'php://input' ), true );
-
 		$table_name = $wpdb->prefix . 'rhythmus_kra_review';
+
+		$submit_date = gmdate('H:i:s', $data['submit_date']);
+		
 		//TODO: Need to check that the teammate_id that is passed in is the current user or supervised or the current user is super admin
 		$sql = $wpdb->prepare( "REPLACE INTO $table_name
-                (teammate_id, year, month, total, reviewed, review_notes, topics, last_update_date)
-                VALUES
-                (%d, %d, %d, %f, %d, %s, %s, now() )",
-			$data['userid'], $data['year'], $data['month'], $data['total'],
-			$data['reviewed'], $data['review_notes'], json_encode( $data['topics'] )
-		);
-
+				(teammate_id, year, month, total, reviewed, review_notes, topics, submitted, submit_date, last_update_date)
+				VALUES
+				(%d, %d, %d, %f, %d, %s, %s, %d, %s, now() )",
+				$data['userid'], $data['year'], $data['month'], $data['total'],
+				$data['reviewed'], $data['review_notes'], json_encode( $data['topics']), $data['submitted'], $submit_date
+			);
 		if ( ! $wpdb->query( $sql ) ) {
 			return $this->endpoint_response( new WP_Error( 'kra_review_update', 'Could not replace the record for ' . $data['userid'] ) );
 		}
+		
 		return $this->endpoint_response();
 	}
+	
 }

@@ -32,7 +32,7 @@ const styles = theme => ({
 class KRAReviewViewer extends Component {
 
   render() {
-    let { classes, teammate} = this.props;
+    let { classes, teammate, showMissingScores, showMissingGoals} = this.props;
     let review = this.props.review;
     let topicJSX = [];
 
@@ -48,6 +48,8 @@ class KRAReviewViewer extends Component {
           topic={topic}
           teammate={teammate}
           propName={topic.name}
+          showMissingScores={showMissingScores}
+          showMissingGoals={showMissingGoals}
           review={review_topic}/>)
     });
 

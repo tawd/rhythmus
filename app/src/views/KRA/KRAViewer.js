@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import '../../Rhythmus.css';
 import KRAAreaViewer from './KRAAreaViewer';
 import Grid from '@material-ui/core/Grid';
+import config from '../../config';
 
 const viewerStyle = {
     textAlign: "left",
@@ -22,7 +23,7 @@ class KRAViewer extends Component {
           return "Need KRA...";
         }
         let areas = [];
-        for( let i = 0; i < 3; i++ ){
+        for( let i = 0; i < config.kraSections; i++ ){
           let area = kra.kra[i];
           if(!area) {
             area = {};

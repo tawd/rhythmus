@@ -21,6 +21,20 @@ const styles = theme => ({
 const nameStyle = {
     textAlign: "center",
     border:"solid 1px #aaa",
+    cursor: "pointer",
+    backgroundColor: "#e37f7f"
+};
+
+const nameStyleSubmitted = {
+    textAlign: "center",
+    border:"solid 1px #aaa",
+    cursor: "pointer",
+    backgroundColor: "#d6d979"
+};
+
+const nameStyleReviewed = {
+    textAlign: "center",
+    border:"solid 1px #aaa",
     cursor: "pointer"
 };
 
@@ -42,7 +56,24 @@ class TeamListRow extends Component {
         let scoreCols = [];
         let numCols = this.props.numCols;
 
-        scoreCols.push(<TableCell key={"name-"+teammate.userid} style={nameStyle} onClick={this.onChooseTeammateKRA}>{teammate.name}</TableCell>);
+        let prevMonth = month - 1;
+        let prevYear = year;
+        if(prevMonth < 1){
+            prevYear = prevYear - 1;
+            prevMonth = 12;
+        }
+        let prevScore = scores[prevYear+"-"+prevMonth];
+        let reviewed = (prevScore && prevScore.reviewed);
+        let submitted = (prevScore && prevScore.submitted);
+
+        let style = nameStyle;
+        if(reviewed){
+            style = nameStyleReviewed;
+        } else if(submitted) {
+            style = nameStyleSubmitted;
+        }
+
+        scoreCols.push(<TableCell key={"name-"+teammate.userid} style={style} onClick={this.onChooseTeammateKRA}>{teammate.name}</TableCell>);
         for (let i = 0; i < numCols; i++) {
             let currMonth = month - i;
             let currYear = year;

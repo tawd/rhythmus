@@ -75,8 +75,8 @@ class Teammate extends Abstract_Endpoint {
 			$key                    = $row->year . '-' . $row->month;
 			$current_scores[ $key ] = array(
 				'score'     => $row->total,
-				'reviewed'  => $row->reviewed === 1,
-				'submitted' => $row->submitted === 1,
+				'reviewed'  => $row->reviewed == 1,
+				'submitted' => $row->submitted == 1,
 			);
 		}
 		if ( $current_user ) {

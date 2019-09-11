@@ -200,7 +200,7 @@ onChooseTeammatePrevMonth = () => {
         let viewBtn = <Button className={classes.prevBtn} onClick={this.onViewKRA} disabled={this.state.saving}><IconBack/> Back</Button>;
         if(!this.state.isEditing && !this.state.isSubmitting){
             viewBtn = "";
-            body = <KRAReviewViewer review={review} classes={classes}></KRAReviewViewer>;
+            body = <KRAReviewViewer review={review} classes={classes} teammate={teammate}></KRAReviewViewer>;
         }
 
         let editBtn = "";
@@ -226,15 +226,15 @@ onChooseTeammatePrevMonth = () => {
         const nextMonthLabel = m[nextMonth.month - 1] + " " + nextMonth.year;
         const prevMonth = this.getPreviousMonth();
         const prevMonthLabel = m[prevMonth.month - 1] + " " + prevMonth.year;
-        var scoreColorClass = 'score score-';
-        if(total<0.3) {
-            scoreColorClass += "low";
-        } else if (total < 0.7) {
-            scoreColorClass += "mid";
-        } else {
-            scoreColorClass += "high";
+        var totalContent = '';
+        if( total > 3) {
+            totalContent = <div className={"score score-high"}>{total}</div>;
+        } else if (total > 2) {
+            totalContent = <div className={"score score-low"}>{total}</div>;
+        } else if (total > 1) {
+            totalContent = <div className={"score score-mid"}>{total}</div>;
         }
-
+        
         return(
             <div>
                 <Grid container>
@@ -258,7 +258,7 @@ onChooseTeammatePrevMonth = () => {
                     <Grid item xs={12}>
                         <Paper className={classes.paper}>
                                     <h2>{teammate.name} for {m[month-1]}, {year}</h2>
-                                    <div className={scoreColorClass}>{total}</div>
+                                    {totalContent}
                         </Paper>
                     </Grid>
                 </form>

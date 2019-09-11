@@ -109,7 +109,7 @@ class KRAEditor extends Component {
     }
     let areas = [];
     let i = 0;
-    for( i = 0; i < 3; i++ ){
+    for( i = 0; i < Config.kraSections; i++ ){
       let area = kra.kra[i];
       if(!area) {
         area = {};

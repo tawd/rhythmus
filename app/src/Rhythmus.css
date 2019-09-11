@@ -87,4 +87,5 @@ h3.topic-title {
 .error-message {
   color:#fff;
   background-color:#e53935;
+  margin: 5px;
 }

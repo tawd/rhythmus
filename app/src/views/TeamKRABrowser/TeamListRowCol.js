@@ -88,7 +88,6 @@ class TeamListRowCol extends Component {
             }else if(scoreVal >=1 ){
                 style["background"] = "rgba(223, 129, 113, 0.5)";//#df8171";
             }
-               //console.log(classes.reviewedIndicator)
                 storeClass[classes.reviewedIndicator]=score.reviewed
         }
 
