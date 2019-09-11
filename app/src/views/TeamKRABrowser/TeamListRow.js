@@ -56,15 +56,9 @@ class TeamListRow extends Component {
         let scoreCols = [];
         let numCols = this.props.numCols;
 
-        let prevMonth = month - 1;
-        let prevYear = year;
-        if(prevMonth < 1){
-            prevYear = prevYear - 1;
-            prevMonth = 12;
-        }
-        let prevScore = scores[prevYear+"-"+prevMonth];
-        let reviewed = (prevScore && prevScore.reviewed);
-        let submitted = (prevScore && prevScore.submitted);
+        let currScore = scores[year+"-"+month];
+        let reviewed = (currScore && currScore.reviewed);
+        let submitted = (currScore && currScore.submitted);
 
         let style = nameStyle;
         if(reviewed){

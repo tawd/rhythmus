@@ -158,6 +158,14 @@ class TeamListView extends Component {
         let today = new Date();
         let currYear = today.getFullYear();
         let currMonth = today.getMonth() + 1;
+        let prevMonth = currMonth - 1;
+        let prevYear = currYear;
+        if(prevMonth < 1){
+            prevYear = prevYear - 1;
+            prevMonth = 12;
+        }
+        currMonth = prevMonth;
+        currYear = prevYear;
 
         let numCols = 8;
 
