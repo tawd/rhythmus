@@ -189,7 +189,7 @@ class KRAReviewEditor extends Component {
                     topicJSX.push(<KRAReviewTopicEditor
                         key={topic.name}
                         topic={topic}
-                        kra={kra}
+                        teammate={teammate}
                         submitting={submitting}
                         propName={topic.name}
                         onReviewTopicChange={onReviewTopicChangeFunction}
