@@ -70,6 +70,29 @@ class Rhythmus_Install
             ) $charset_collate;";
         dbDelta( $sql );
 
+        $table_name = $wpdb->prefix . "rhythmus_goal_topic";
+        $sql = "CREATE TABLE $table_name (
+          id mediumint(9) NOT NULL AUTO_INCREMENT,
+          name varchar(50),
+          title varchar(100),
+          description varchar(255),
+          PRIMARY KEY  (id)
+            ) $charset_collate;";
+        dbDelta( $sql );
+
+        $table_name = $wpdb->prefix . "rhythmus_goal";
+        $sql = "CREATE TABLE $table_name (
+          id mediumint(9) NOT NULL AUTO_INCREMENT,
+          teammate_id bigint(20),
+          is_current tinyint(1) default 0,
+          create_date date,
+          last_update_date datetime ON UPDATE CURRENT_TIMESTAMP,
+          mission text,
+          goals longtext,
+          PRIMARY KEY  (id)
+            ) $charset_collate;";
+        dbDelta( $sql );
+
         $table_name = $wpdb->prefix . "rhythmus_weekly_report_question";
         $sql = "CREATE TABLE $table_name (
           id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -91,9 +114,8 @@ class Rhythmus_Install
 
         $table_name = $wpdb->prefix . "rhythmus_weekly_report";
         $sql = "CREATE TABLE $table_name (
-          id mediumint(9) NOT NULL AUTO_INCREMENT,
-          teammate_id mediumint(9),
-          week_id mediumint(9),
+          teammate_id mediumint(9) not null,
+          week_id mediumint(9) not null,
           report_data text,
           notes text,
           stress tinyint(1),
@@ -101,13 +123,13 @@ class Rhythmus_Install
           workload tinyint(1),
           last_save_date datetime ON UPDATE CURRENT_TIMESTAMP,
           submit_date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-          status tinyint(1) DEFAULT 1,
+          status tinyint(1) DEFAULT 0,
           type tinyint(1) DEFAULT 1,
           reviewed tinyint(1),
-          PRIMARY KEY  (id)
+          PRIMARY KEY  (teammate_id, week_id)
             ) $charset_collate;";
         dbDelta( $sql );
-
+        
         $table_name = $wpdb->prefix . "rhythmus_weekly_report_week";
         $sql = "CREATE TABLE $table_name (
           id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -237,12 +259,12 @@ class Rhythmus_Install
             );
             $wpdb->insert($table_name,
                 array(
-                    'field_type' => "text",
+                    'field_type' => "recognize",
                     'field_name' => "high5",
                     'row_height' => 5,
                     'max_length' => 0,
                     'question' => "Low",
-                    'tooltip' => "Gratitude makes life better, do it frequently, even more than once a week.",
+                    'tooltip' => "Who do you want to recognize this week for doing an awesome job and why?",
                     'placeholder' => "",
                     'position' => 6,
                     'required' => 1
@@ -263,7 +285,54 @@ class Rhythmus_Install
             );
 
         }
-        add_option( "rhythmus_db_version", "1.0" );
+        if(!$db_version || $db_version == "1.0") {
+            $table_name = $wpdb->prefix . 'rhythmus_goal_topic';
+
+            $wpdb->insert($table_name,
+                array(
+                    'name' => "Career",
+                    'title' => "Career",
+                )
+            );
+            $wpdb->insert($table_name,
+                array(
+                    'name' => "Financial",
+                    'title' => "Financial",
+                )
+            );
+            $wpdb->insert($table_name,
+                array(
+                    'name' => "Spiritual",
+                    'title' => "Spiritual",
+                )
+            );
+            $wpdb->insert($table_name,
+                array(
+                    'name' => "Physical",
+                    'title' => "Physical",
+                )
+            );
+            $wpdb->insert($table_name,
+                array(
+                    'name' => "Intellectual",
+                    'title' => "Intellectual",
+                )
+            );
+            $wpdb->insert($table_name,
+                array(
+                    'name' => "Family",
+                    'title' => "Family",
+                )
+            );
+            $wpdb->insert($table_name,
+                array(
+                    'name' => "Social",
+                    'title' => "Social",
+                )
+            );
+
+        }
+        add_option( "rhythmus_db_version", "1.1" );
 
     }
 }

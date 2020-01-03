@@ -4,12 +4,16 @@ export default {
     my_teammate_id:"",
     authKey:"",
     kraTopics:false,
+    goalTopics:false,
+    goalHelp:"",
     is_admin:false,
     my_kra:false,
     kraSections:3,
 
     monthNames: [ "January", "February", "March", "April", "May", "June", 
        "July", "August", "September", "October", "November", "December" ],
+
+    weeklyReportStatus: ["Missing", "Done", "Out", "Late"],
 
     load: function() {
         const appConfig = document.getElementById('app-config');

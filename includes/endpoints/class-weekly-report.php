@@ -38,6 +38,8 @@ class Weekly_Report extends Abstract_Endpoint {
 			),
 		) );
 
+		$route = '/wr-status';
+
 		$this->register_route( $route, array(
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
@@ -46,41 +48,32 @@ class Weekly_Report extends Abstract_Endpoint {
 					$this->auth,
 					'permissions_check'
 				),
-				/**
-				 * These args are the params submitted to this endpoint.
-				 * Validating and sanitizing them this way is the proper WP REST API way.
-				 */
-				'args'                => array(
-					'status' => array(
-						'description'       => esc_html__( 'The status of the weekly report' ),
-						'required'          => true,
-						'type'              => 'string',
-						'enum'              => array(
-							'complete',
-							'late',
-							'out',
-							'incomplete'
-						),
-						'validate_callback' => array(
-							$this,
-							'validate_status'
-						),
-					),
-					'userid' => array(
-						'description'       => esc_html__( 'The teammate id' ),
-						'required'          => true,
-						'sanitize_callback' => 'absint',
-						'validate_callback' => array( $this, 'validate_int' )
-					),
-					'week'   => array(
-						'description'       => esc_html__( 'The week id' ),
-						'required'          => true,
-						'sanitize_callback' => 'absint',
-						'validate_callback' => array( $this, 'validate_int' )
-					),
-				),
+				'args'                => array(),
 			),
 		) );
+	}
+
+	//TODO: Need to make this part of the admin interface to pre-generate weeks
+	private function generateWeeks(){
+		global $wpdb;
+		$currYear = date("Y");
+
+		//TODO: Need to make dynamic so we can generate weeks from the admin or automatically if missing
+		$currDate = strtotime("first thursday of january $currYear");
+		$result ="";
+		
+		while(date("Y", $currDate) == $currYear) {
+			$startDate = strtotime("-6 day", $currDate);
+			$current_week = array(
+				'start_date'   => date('Y-m-d', $startDate),
+				'end_date'     => date('Y-m-d', $currDate)
+			);
+	
+			$wpdb->insert($wpdb->prefix."rhythmus_weekly_report_week", $current_week);
+			//$result.="Inserted ".date('Y-m-d',$currDate)."\n";
+			$currDate = strtotime("+7 day", $currDate);
+		}
+		//die("Finished generating \n".$result);
 	}
 
 	/**
@@ -92,44 +85,62 @@ class Weekly_Report extends Abstract_Endpoint {
 	 */
 	public function get_status_summary( $request ) {
 
+		//TODO: No paging yet but may want to page by year or month
 		global $wpdb;
 
 		$results = $wpdb->get_results( "SELECT w.id as week_id, w.start_date, w.end_date, w.num_submitted,
-		w.num_reviewed, r.id as report_id, r.status, r.reviewed, r.submit_date,
-		t.id as teammate_id, CONCAT(t.fname, ' ', t.lname) as name
-		FROM {$wpdb->prefix}rhythmus_weekly_report r
-		LEFT OUTER JOIN {$wpdb->prefix}rhythmus_weekly_report_week w ON w.id = r.week_id
-		JOIN {$wpdb->prefix}rhythmus_teammate t ON r.teammate_id = t.id;" );
+		w.num_reviewed from {$wpdb->prefix}rhythmus_weekly_report_week w 
+		order by end_date asc" );
 
 		$weeks     = array();
+		foreach ( $results as $result ) {
+			$weeks[ $result->week_id ] = array(
+				'week_id'       => $result->week_id,
+				'start_date'    => $result->start_date,
+				'end_date'      => $result->end_date,
+				'num_submitted' => $result->num_submitted,
+				'num_reviewed'  => $result->num_reviewed,
+			);
+		}
+
+		$results = $wpdb->get_results( "SELECT t.id as teammate_id, r.week_id, r.status, r.reviewed, r.submit_date,
+		CONCAT(t.fname, ' ', t.lname) as name
+		FROM {$wpdb->prefix}rhythmus_teammate t
+		LEFT OUTER JOIN {$wpdb->prefix}rhythmus_weekly_report r ON t.id = r.teammate_id
+		order by t.fname asc, t.lname asc, t.id asc" );	
+		
+		//die($wpdb->last_query);
 		$teammates = array();
+		$currTeammateID = 0;
+		$currTeammate = null;
 
 		foreach ( $results as $result ) {
 
-			if ( ! array_key_exists( $result->week_id, $weeks ) ) {
-				$weeks[ $result->week_id ] = array(
-					'id'            => $result->week_id,
-					'start_date'    => $result->start_date,
-					'end_date'      => $result->end_date,
-					'num_submitted' => $result->num_submitted,
-					'num_reviewed'  => $result->num_reviewed,
-				);
+			if($result->teammate_id != $currTeammateID){
+				
+				if($currTeammateID){
+					array_push($teammates, $currTeammate);
+				}
+				$currTeammateID = $result->teammate_id;
+				$currTeammate = array();
+				$currTeammate["teammate_id"] = $result->teammate_id;
+				$currTeammate["name"] = $result->name;
+				$currTeammate["weeks"] = array();
 			}
 
-			if ( ! array_key_exists( $result->name, $teammates ) ) {
-				$teammates[ $result->name ] = array(
-					'name'    => $result->name,
-					'user_id' => $result->teammate_id,
-					'weeks'   => array(),
+			if ( $result->week_id ) {
+				$week = array(
+					'status' => $result->status,
+					// 'submit_date' => $result->submit_date,
+					// 'reviewed'  => (int) $result->reviewed === 1,
+					// 'submitted' => empty( $result->submit_date ) ? false : true,
 				);
+				$currTeammate["weeks"][$result->week_id] = $week;
 			}
 
-			$teammates[ $result->name ]['weeks'][ $result->week_id ] = array(
-				'id'        => $result->report_id,
-				'status'    => $result->status,
-				'reviewed'  => (int) $result->reviewed === 1,
-				'submitted' => empty( $result->submit_date ) ? false : true,
-			);
+		}
+		if($currTeammateID){
+			array_push($teammates, $currTeammate);
 		}
 
 		$response_data = array(
@@ -180,25 +191,30 @@ class Weekly_Report extends Abstract_Endpoint {
 	public function update( $request ) {
 		global $wpdb;
 
-		/**
-		 * For now, simply set status to 1 if complete, 0 if anything else.
-		 * TODO: This will be updated as we get more statuses
-		 */
-		$status      = $request->get_param( 'status' ) === 'complete' ? 1 : 0;
-		$teammate_id = $request->get_param( 'userid' );
-		$week_id     = $request->get_param( 'week' );
+		$data = json_decode( file_get_contents( 'php://input' ), true );
+
+		$status      = $data['status' ];
+		$teammate_id = $data[ 'teammate_id' ];
+		$week_id     = $data[ 'week_id' ];
 
 		$table_name = $wpdb->prefix . 'rhythmus_weekly_report';
 
-		/**
-		 * Insert the updated data into the database
-		 * base on the id of the teammate and the id of the week.
-		 */
-		$sql = $wpdb->prepare( "UPDATE $table_name SET status = %d WHERE teammate_id = %d AND week_id = %d", $status, $teammate_id, $week_id );
+		//TODO: Validate that the teammate ID is valid and user has permission along with the week chosen
+		$sql = $wpdb->prepare("select * from $table_name where teammate_id=%d and week_id=%d", $teammate_id, $week_id);
+		$row = $wpdb->get_row($sql);
 
-		if ( ! $wpdb->query( $sql ) ) {
+		if(!$row){
+			$result = $wpdb->insert($table_name, 
+				array("teammate_id"=>$teammate_id, "week_id"=>$week_id, "status"=>$status));
+		}
+		else {
+			$sql = $wpdb->prepare( "Update $table_name SET status = %d WHERE teammate_id = %d AND week_id = %d", 
+				$status, $teammate_id, $week_id );
+			$result = $wpdb->query( $sql );
+		}	
+		if ( ! $result ) {
 			return $this->endpoint_response(
-				new WP_Error( 'rhythmus_kra_update', 'Could not update record #' . $request->get_param( 'id' ) )
+				new WP_Error( 'rhythmus_kra_update', 'Could not update record #' . $week_id )
 			);
 		}
 

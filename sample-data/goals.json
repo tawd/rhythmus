@@ -1,0 +1,37 @@
+{
+    "app":"Rhythmus",
+    "version":1,
+    "name":"Aaron Griffy",
+    "userid":"345",
+    "goals":
+        [
+            {
+                "create-date":"2019-01-01",
+                "last-update":"2019-02-12 16:34",
+                "mission":"Be excellent to each other.",
+                "goals":{
+                    "career":"Make more cool stuff",
+                    "financial":"Emergency fund",
+                    "spiritual":"Pray",
+                    "physical":"Bench 500 pounds",
+                    "intellectual":"Raise IQ 20 points",
+                    "family":"Have more kids",
+                    "social":"Meet new people"
+                }
+            },
+            {
+                "create-date":"2018-01-01",
+                "last-update":"2018-05-12 16:34",
+                "mission":"Be excellent to each other.",
+                "goals":{
+                    "career":"Make more cool stuff",
+                    "financial":"Emergency fund",
+                    "spiritual":"Pray",
+                    "physical":"Bench 500 pounds",
+                    "intellectual":"Raise IQ 20 points",
+                    "family":"Have more kids",
+                    "social":"Meet new people"
+                }
+            }
+        ]
+}

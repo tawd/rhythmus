@@ -157,7 +157,7 @@ class KRAReviewEditor extends Component {
 
     render() {
 
-        let { year, month, teammate, submitting, kra, classes } = this.props;
+        let { year, month, teammate, submitting, classes } = this.props;
         let review = teammate && teammate.months && teammate.months[year+"-"+month];
         if(!review){
             review = {};

@@ -13,7 +13,7 @@
  * Plugin Name:       Rhythmus
  * Plugin URI:        https://showit.co
  * Description:       Team rhythm plugin to do KRA Reviews and Weekly Reports.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            Showit
  * Author URI:        https://showit.co
  * Text Domain:       rhythmus

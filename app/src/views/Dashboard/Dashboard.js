@@ -13,6 +13,7 @@ import IconEdit from '@material-ui/icons/EditRounded';
 import IconStar from '@material-ui/icons/StarsRounded';
 import PublishIcon from '@material-ui/icons/Publish';
 import { ButtonGroup } from '@material-ui/core';
+import Goal from './../Goal/Goal.js';
 
 const styles = theme => ({
     container: {
@@ -307,17 +308,12 @@ class Dashboard extends Component {
         return (
             <div>
                 <Paper className={classes.paper}>
-                    <h2>My Assessment of {m[prevMonth-1]}, {prevYear}</h2>
                     {completionStatus}
+                    <h2>My Assessment of {m[prevMonth-1]}, {prevYear}</h2>
                     <div className={scoreColorClass}>{prevTotal}</div>
                         {toggleEditPrevButton} 
                     <br/>
                     {prevMonthContent}
-                </Paper>
-
-<br/><br/>
-                
-                <Paper className={classes.paper}>
                     <h2>My Goals for {m[month-1]}, {year}</h2>
                     <ButtonGroup size="small" aria-label="small button group">
                         {toggleEditCurrButton} 
@@ -325,8 +321,7 @@ class Dashboard extends Component {
                     <br/>
                     {currMonthContent}
                 </Paper>
-                
-
+                <Goal></Goal>
             </div>
         );
     }

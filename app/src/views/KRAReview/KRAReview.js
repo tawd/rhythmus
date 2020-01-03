@@ -14,6 +14,8 @@ import IconNext from '@material-ui/icons/ArrowForwardIosRounded';
 import IconBack from '@material-ui/icons/ArrowBackIosRounded';
 import IconEdit from '@material-ui/icons/EditRounded';
 import IconStar from '@material-ui/icons/StarsRounded';
+import Goal from './../Goal/Goal.js';
+
 import { ButtonGroup } from '@material-ui/core';
 
 const styles = theme => ({
@@ -234,19 +236,17 @@ onChooseTeammatePrevMonth = () => {
         } else if (total > 1) {
             totalContent = <div className={"score score-mid"}>{total}</div>;
         }
-        
         return(
             <div>
                 <Grid container>
-                    
-                    <Grid container xs={6}>
+                    <Grid container>
                         <ButtonGroup size="small" aria-label="small button group">
                             {viewBtn}
                             {editBtn}
                             {submitBtn}
                         </ButtonGroup>
                     </Grid>
-                    <Grid container justify="flex-end" xs={6}>
+                    <Grid container justify="flex-end">
                         <ButtonGroup size="small" aria-label="small button group">
                             <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth} disabled={this.state.saving} title={prevMonthLabel}><IconBack/> {prevMonthLabel}</Button>
                             <Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth} disabled={this.state.saving} title={nextMonthLabel}>{nextMonthLabel} <IconNext/></Button>
@@ -262,7 +262,8 @@ onChooseTeammatePrevMonth = () => {
                         </Paper>
                     </Grid>
                 </form>
-                    {body}
+                {body}
+                <Goal teammate_id={teammate.userid}></Goal>
             </div>
         );
         }else {

@@ -3,28 +3,28 @@
     "version":1,
     "weeks":[
         {
-            "id":384,
+            "week_id":384,
             "start_date":"2019-03-29",
             "end_date":"2019-04-04",
             "num_submitted":25,
             "num_reviewed":25
         },
         {
-            "id":385,
+            "week_id":385,
             "start_date":"2019-04-05",
             "end_date":"2019-04-11",
             "num_submitted":22,
             "num_reviewed":17
         },
         {
-            "id":386,
+            "week_id":386,
             "start_date":"2019-04-12",
             "end_date":"2019-04-18",
             "num_submitted":26,
             "num_reviewed":26
         },
         {
-            "id":387,
+            "week_id":387,
             "start_date":"2019-04-19",
             "end_date":"2019-04-25",
             "num_submitted":12,
@@ -34,28 +34,24 @@
     "teammates":[ 
         {
             "name":"Aaron Griffy",
-            "userid":"345",
+            "teammate_id":"345",
             "weeks":{
                 "384": {
-                    "id":556,
                     "status":"complete",
                     "reviewed":false,
                     "submitted":true
                 },
                 "385": {
-                    "id":557,
                     "status":"complete",
                     "reviewed":false,
                     "submitted":true
                 },
                 "386": {
-                    "id":558,
                     "status":"complete",
                     "reviewed":false,
                     "submitted":true
                 },
                 "387": {
-                    "id":559,
                     "status":"complete",
                     "reviewed":false,
                     "submitted":true
@@ -64,28 +60,24 @@
         },        
         {
             "name":"Adria Vigna",
-            "userid":"346",
+            "teammate_id":"346",
             "weeks":{
                 "384": {
-                    "id":560,
                     "status":"late",
                     "reviewed":false,
                     "submitted":true
                 },
                 "385": {
-                    "id":561,
                     "status":"complete",
                     "reviewed":false,
                     "submitted":true
                 },
                 "386": {
-                    "id":562,
                     "status":"complete",
                     "reviewed":false,
                     "submitted":true
                 },
                 "387": {
-                    "id":563,
                     "status":"out",
                     "reviewed":false,
                     "submitted":true
@@ -94,22 +86,19 @@
         },        
         {
             "name":"Ahmed Ghorab",
-            "userid":"347",
+            "teammate_id":"347",
             "weeks":{
                 "384": {
-                    "id":564,
                     "status":"complete",
                     "reviewed":false,
                     "submitted":true
                 },
                 "386": {
-                    "id":565,
                     "status":"complete",
                     "reviewed":false,
                     "submitted":true
                 },
                 "387": {
-                    "id":566,
                     "status":"late",
                     "reviewed":false,
                     "submitted":true
@@ -118,22 +107,19 @@
         },        
         {
             "name":"Ben Junk",
-            "userid":"348",
+            "teammate_id":"348",
             "weeks":{
                 "384": {
-                    "id":567,
                     "status":"complete",
                     "reviewed":false,
                     "submitted":true
                 },
                 "385": {
-                    "id":568,
                     "status":"late",
                     "reviewed":false,
                     "submitted":true
                 },
                 "387": {
-                    "id":570,
                     "status":"complete",
                     "reviewed":false,
                     "submitted":true

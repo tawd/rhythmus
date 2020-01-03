@@ -120,5 +120,7 @@ class Rhythmus {
 		( new Endpoints\KRA_Review() )->do_hooks();
 		( new Endpoints\KRA_Topics() )->do_hooks();
 		( new Endpoints\KRA() )->do_hooks();
+		( new Endpoints\Goal() )->do_hooks();
+		( new Endpoints\Goal_Topics() )->do_hooks();
 	}
 }
