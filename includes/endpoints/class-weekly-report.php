@@ -38,6 +38,16 @@ class Weekly_Report extends Abstract_Endpoint {
 			),
 		) );
 
+		$route = '/wr-generate-weeks';
+
+		$this->register_route( $route, array(
+			array(
+				'methods'  => WP_REST_Server::READABLE,
+				'callback' => array( $this, 'generateWeeks' ),
+				'args'     => array(),
+			),
+		) );
+
 		$route = '/wr-status';
 
 		$this->register_route( $route, array(
@@ -53,27 +63,34 @@ class Weekly_Report extends Abstract_Endpoint {
 		) );
 	}
 
-	//TODO: Need to make this part of the admin interface to pre-generate weeks
-	private function generateWeeks(){
+	public function generateWeeks( $request ){
+		$result ="";
 		global $wpdb;
 		$currYear = date("Y");
+        $hasCurrYear = get_option("wr-generate-weeks-".$currYear);
 
-		//TODO: Need to make dynamic so we can generate weeks from the admin or automatically if missing
-		$currDate = strtotime("first thursday of january $currYear");
-		$result ="";
-		
-		while(date("Y", $currDate) == $currYear) {
-			$startDate = strtotime("-6 day", $currDate);
-			$current_week = array(
-				'start_date'   => date('Y-m-d', $startDate),
-				'end_date'     => date('Y-m-d', $currDate)
-			);
-	
-			$wpdb->insert($wpdb->prefix."rhythmus_weekly_report_week", $current_week);
-			//$result.="Inserted ".date('Y-m-d',$currDate)."\n";
-			$currDate = strtotime("+7 day", $currDate);
+		if(!$hasCurrYear){
+			$currDate = strtotime("first thursday of january $currYear");
+			
+			while(date("Y", $currDate) == $currYear) {
+				$startDate = strtotime("-6 day", $currDate);
+				$current_week = array(
+					'start_date'   => date('Y-m-d', $startDate),
+					'end_date'     => date('Y-m-d', $currDate)
+				);
+				
+				$wpdb->insert($wpdb->prefix."rhythmus_weekly_report_week", $current_week);
+				$result.="Inserted ".date('Y-m-d',$currDate)."\n";
+				$currDate = strtotime("+7 day", $currDate);
+			}
+			add_option( "wr-generate-weeks-".$currYear, "true" );
+		} else {
+			$result = "Current year already generated";
 		}
-		//die("Finished generating \n".$result);
+		$response_data = array(
+			'result'     =>  $result ,
+		);
+		return $this->endpoint_response( $response_data );
 	}
 
 	/**

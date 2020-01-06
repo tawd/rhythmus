@@ -39,7 +39,7 @@ class GoalViewer extends Component {
             <Grid item xs={12}>
                 <div className={classes.paper}>
                         <h4>Mission Statement</h4>
-                        <div>{goal.mission}</div>
+                        <div style={viewerStyle}>{goal.mission}</div>
                 </div>
                 </Grid>
               <Grid item xs={12} style={viewerStyle}>

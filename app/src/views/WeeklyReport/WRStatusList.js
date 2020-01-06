@@ -143,7 +143,6 @@ class WRStatusList extends Component {
                 currWeeks.push(m);
             }
         });
-        currWeeks.reverse();
         this.setState({currWeeks:currWeeks,month:month,year:year});
     }  
 

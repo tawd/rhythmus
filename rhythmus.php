@@ -60,7 +60,6 @@ function rhythmus_init() {
 		exit();
 	}
 
-
 }
 add_action( 'plugins_loaded', 'rhythmus_init' );
 

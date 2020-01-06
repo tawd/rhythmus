@@ -158,6 +158,7 @@ class GoalEditor extends Component {
                 <Grid item xs={8}>
                     <TextField
                         id="mission"
+                        multiline
                         value={goal.mission}
                         label={"Mission Statement"}
                         className={classes.textField}
