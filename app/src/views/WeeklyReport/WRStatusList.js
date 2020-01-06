@@ -18,7 +18,13 @@ import Grid from '@material-ui/core/Grid';
 const styles = theme => ({
 
     underline: {
-        borderBottom: '2px solid white'
+        borderBottom: '2px solid white',
+    },
+    heading3: {
+        margin: '5px 0',
+    },
+    headingText: {
+        textAlign: "center"
     }
 
 });
@@ -197,11 +203,11 @@ class WRStatusList extends Component {
 
         return(
             <div>
-                <Grid container justify="flex-end">
+                <Grid container>
                     <Grid item xs={8}>
-                        <h3>{currLabel}</h3>
+                        <h3 className={classes.heading3}>{currLabel}</h3>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={4} container justify="flex-end">
                         <ButtonGroup size="small" aria-label="small button group">
                             <Button className={classes.prevBtn} onClick={this.onChoosePrevMonth} title={prevMonthLabel}><IconBack/> {prevMonthLabel}</Button>
                             <Button className={classes.nextBtn} onClick={this.onChooseNextMonth} title={nextMonthLabel}>{nextMonthLabel} <IconNext/></Button>

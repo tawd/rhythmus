@@ -41,11 +41,6 @@ require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 register_activation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'deactivate' ) );
 
-/**
- * Register activation and deactivation hooks
- */
-register_activation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'activate' ) );
-register_deactivation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'deactivate' ) );
 
 /**
  * Initialize Plugin
@@ -61,7 +56,6 @@ function rhythmus_init() {
 	$current_path = strtolower( trim( $url[0], '/' ) );
 
 	if ( 'app' === $current_path ) {
-		status_header( 200 );
 		include( __DIR__ . '/AppPageTemplate.php' );
 		exit();
 	}

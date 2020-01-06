@@ -15,9 +15,11 @@
 
 	$table_name = $wpdb->prefix . 'rhythmus_teammate';
     $my_teammate_id = $wpdb->get_var("select id from $table_name where wp_user_id=$uid");
-?><!doctype html>
+    
+    status_header( 200 );
+    
+    ?><!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -61,5 +63,6 @@
 </html>
 <?php
   } else {
-      echo "Please login to continue";
+      wp_redirect("/login");
+    //   echo "Please <a href='/login'>login</a> to continue.";
   }

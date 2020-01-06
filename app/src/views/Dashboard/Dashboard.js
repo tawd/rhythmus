@@ -307,8 +307,8 @@ class Dashboard extends Component {
 
         return (
             <div>
+                <div className={classes.paper}>{completionStatus}</div>
                 <Paper className={classes.paper}>
-                    {completionStatus}
                     <h2>My Assessment of {m[prevMonth-1]}, {prevYear}</h2>
                     <div className={scoreColorClass}>{prevTotal}</div>
                         {toggleEditPrevButton} 

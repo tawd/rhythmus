@@ -173,10 +173,6 @@ onChooseTeammatePrevMonth = () => {
     let { classes, year, month } = this.props;
     const{isLoading, error, teammate, canEdit} = this.state;
 
-    let review = teammate && teammate.months && teammate.months[year+"-"+month];
-    if(!review){
-        review = {};
-    }
 
     const closeBtn = <Button variant="outlined" className={classes.closeBtn} onClick={this.closeTeammate} disabled={this.state.saving} title="Close"><IconClose/></Button>;
     if(error)
@@ -189,6 +185,11 @@ onChooseTeammatePrevMonth = () => {
     }
 
     if(teammate && teammate.name && month && year) {
+
+        let review = teammate && teammate.months && teammate.months[year+"-"+month];
+        if(!review){
+            review = {};
+        }
         let m = Config.monthNames;
         let { reviewed, review_notes,total} = review;
         if( ! reviewed ) {

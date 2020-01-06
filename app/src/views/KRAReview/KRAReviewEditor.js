@@ -72,7 +72,6 @@ class KRAReviewEditor extends Component {
         let review = this.state.review;
         if(!review.topics) {
             review.topics = {};
-            //TODO:Set topic in state
         }
         let topic = review.topics[topicKey];
         if(!topic) {
@@ -158,7 +157,7 @@ class KRAReviewEditor extends Component {
     render() {
 
         let { year, month, teammate, submitting, classes } = this.props;
-        let review = teammate && teammate.months && teammate.months[year+"-"+month];
+        let review = this.state.review;
         if(!review){
             review = {};
             if(!teammate.months){

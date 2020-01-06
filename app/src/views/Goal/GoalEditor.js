@@ -15,8 +15,13 @@ const styles = theme => ({
   dense: {
     marginTop: 19,
   },
+  textFieldWrapper: {
+    margin:'0 auto',
+    display:'flex',
+    justifyContent:'space-between'
+  },
   textField: {
-    width: '60%',      
+    width: '100%',      
   },
   menu: {
     width: 200,
@@ -147,29 +152,33 @@ class GoalEditor extends Component {
     const createMarkup = htmlString => ({ __html: htmlString });
     return( 
         <Grid container>
-          <Grid item xs={10}>
-            <TextField
-                id="mission"
-                value={goal.mission}
-                label={"Mission Statement"}
-                className={classes.textField}
-                onChange={this.handleChange('mission')}
-              />
+          <Grid item xs={12}>
+          <h2>Mission Statement</h2>
+            <Grid item xs={8} className={classes.textFieldWrapper}>
+                <Grid item xs={8}>
+                    <TextField
+                        id="mission"
+                        value={goal.mission}
+                        label={"Mission Statement"}
+                        className={classes.textField}
+                        onChange={this.handleChange('mission')}
+                    />
+                </Grid>
+                <Grid item xs={2}>
+                    <TextField
+                        id="date"
+                        label="Create Date"
+                        type="date"
+                        value={goal.create_date}
+                        className={classes.textField}
+                        onChange={this.handleChange('create_date')}
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                    />
+                </Grid>
             </Grid>
-            <Grid item xs={2}>
-                <TextField
-                    id="date"
-                    label="Create Date"
-                    type="date"
-                    value={goal.create_date}
-                    className={classes.textField}
-                    onChange={this.handleChange('create_date')}
-                    InputLabelProps={{
-                    shrink: true,
-                    }}
-                />
-            </Grid>
-            
+          </Grid>
           <Grid item xs={12}>
           <br/><br/>  
             {areas}

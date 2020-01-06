@@ -18,8 +18,12 @@ const styles = theme => ({
     paper: {
         margin: '8px',
     },
+    textFieldWrapper: {
+        margin:'0 auto',
+    },
     textField: {
-      width: '60%',      
+      width: '100%', 
+      marginBottom:'30px'     
     },
     headerTextField: {
       width: '60%',   
@@ -48,7 +52,7 @@ const styles = theme => ({
     render(){
         const {classes, area, topic} = this.props;
         return(
-        <Grid item xs={12}>
+        <Grid item xs={8} className={classes.textFieldWrapper}>
           
                 <TextField
                   id="goal"
