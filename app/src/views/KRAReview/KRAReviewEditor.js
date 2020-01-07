@@ -158,14 +158,7 @@ class KRAReviewEditor extends Component {
 
         let { year, month, teammate, submitting, classes } = this.props;
         let review = this.state.review;
-        if(!review){
-            review = {};
-            if(!teammate.months){
-                teammate.months = {};
-            }
-            teammate.months[year+"-"+month] = review;
-        }
-
+  
         if(teammate && teammate.name && month && year) {
             let onReviewTopicChangeFunction = this.onReviewTopicChange;
             let topicJSX = [];
