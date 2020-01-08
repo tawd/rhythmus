@@ -28,6 +28,14 @@ const styles = theme => ({
     }
 
 });
+const tableSpacing = {
+    marginTop: '20px'
+};
+const tableHeading = {
+    textAlign: "center",
+    border:"solid 1px #aaa",
+    backgroundColor: "#999"
+};
 
 class WRStatusList extends Component {
 
@@ -137,9 +145,10 @@ class WRStatusList extends Component {
     getWeeks(month, year){
         let weeks = this.state.weeks;
         let currWeeks = [];
+        let today = new Date();
         weeks.forEach(function(m){
             let endDate = new Date(m.end_date);
-            if(endDate.getFullYear() === year && (endDate.getMonth()+1) === month) {
+            if(endDate.getFullYear() === year && (endDate.getMonth()+1) === month && endDate < today) {
                 currWeeks.push(m);
             }
         });
@@ -191,7 +200,7 @@ class WRStatusList extends Component {
             let startDate = new Date(week.start_date.replace(/-/g, '/'));
             let endDate = new Date(week.end_date.replace(/-/g, '/'));
             let header = dateFormat(startDate, "mmm d") + " to " + dateFormat(endDate, "mmm d yyyy");
-           return (<TableCell key={week.week_id}>{header}</TableCell>);
+           return (<TableCell style={tableHeading} key={week.week_id}>{header}</TableCell>);
         });
         let m = Config.monthNames;
         const nextMonth = this.getNextMonth();
@@ -213,9 +222,9 @@ class WRStatusList extends Component {
                         </ButtonGroup>
                     </Grid>
                 </Grid>
-                <Table className={classes.mainTable} align="center">
+                <Table className={classes.mainTable} style={tableSpacing} align="center">
                     <TableHead>
-                    <TableRow><TableCell>Name</TableCell>{weekHeadings}</TableRow>
+                    <TableRow><TableCell style={tableHeading}>Name</TableCell>{weekHeadings}</TableRow>
                     </TableHead>
                     <TableBody>
                 {teammateRows}

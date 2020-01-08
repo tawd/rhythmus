@@ -15,24 +15,21 @@ const styles = theme => ({
     }
 
 });
-const nameStyle = {
+const nameStyleComplete = {
     textAlign: "center",
     border:"solid 1px #aaa",
-    cursor: "pointer",
-    backgroundColor: "#e37f7f"
 };
 
-const nameStyleSubmitted = {
+const nameStylePending = {
     textAlign: "center",
     border:"solid 1px #aaa",
-    cursor: "pointer",
     backgroundColor: "#d6d979"
 };
 
-const nameStyleReviewed = {
+const nameStyleLate = {
     textAlign: "center",
     border:"solid 1px #aaa",
-    cursor: "pointer"
+    backgroundColor: "#e37f7f"
 };
 
 class WRStatusListRow extends Component {
@@ -44,28 +41,45 @@ class WRStatusListRow extends Component {
     render() {
         let { classes, teammate, weeks, canEdit } = this.props;
 
-        let style = nameStyle;
-        if(false){
-            style = nameStyleReviewed;
-        } else if(false) {
-            style = nameStyleSubmitted;
-        }
 
         let weekCols = [];
         let handleWRStatusChange = this.handleWRStatusChange;
+        let numLate = 0;
+        let numMissing = 0;
 
-        weekCols.push(<TableCell key={"name-"+teammate.userid} style={style}>{teammate.name}</TableCell>);
         weeks.forEach(function(week) {
             let teammateWeek = teammate.weeks[week.week_id];
             let key = teammate.userid +"-"+week.week_id;
+            let status = 0;
+            if(teammateWeek) {
+                    status = teammateWeek.status;
+            }
+            let statusVal = parseInt(status);
+            if(statusVal === 3) {
+                numLate++;
+            } else if(statusVal === 0) {
+                numMissing++;
+            }
             weekCols.push(<WRStatusListRowCol key={key} canEdit={canEdit} handleWRStatusChange={handleWRStatusChange}
                 teammate_id={teammate.teammate_id} week_id={week.week_id} week={teammateWeek} />);
         });
+        let style = {};
+        if((numLate <=1 && numMissing === 0)){
+            style = nameStyleComplete;
+        } else if((numLate + numMissing) < 2) {
+            style = nameStylePending;
+        } else if((numLate + numMissing) >= 2) {
+            style = nameStyleLate;
+        }
         let classesForThis = "";
         if(this.props.background){
             classesForThis = classes.shadedRow;
         }
-        return (<TableRow className={classesForThis} key={teammate.userid}>{weekCols}</TableRow>);
+        return (
+            <TableRow className={classesForThis} key={teammate.userid}>
+                <TableCell key={"name-"+teammate.userid} style={style}>{teammate.name}</TableCell>
+                {weekCols}
+            </TableRow>);
     }
 }
 export default withStyles(styles)(WRStatusListRow);
