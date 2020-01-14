@@ -124,6 +124,7 @@ class Weekly_Report extends Abstract_Endpoint {
 		CONCAT(t.fname, ' ', t.lname) as name
 		FROM {$wpdb->prefix}rhythmus_teammate t
 		LEFT OUTER JOIN {$wpdb->prefix}rhythmus_weekly_report r ON t.id = r.teammate_id
+		where t.is_active = 1 
 		order by t.fname asc, t.lname asc, t.id asc" );	
 		
 		//die($wpdb->last_query);

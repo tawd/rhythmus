@@ -199,7 +199,7 @@ class WRStatusList extends Component {
         let weekHeadings = currWeeks.map((week) => {
             let startDate = new Date(week.start_date.replace(/-/g, '/'));
             let endDate = new Date(week.end_date.replace(/-/g, '/'));
-            let header = dateFormat(startDate, "mmm d") + " to " + dateFormat(endDate, "mmm d yyyy");
+            let header = dateFormat(startDate, "mmm d") + " - " + dateFormat(endDate, "mmm d, yyyy");
            return (<TableCell style={tableHeading} key={week.week_id}>{header}</TableCell>);
         });
         let m = Config.monthNames;
