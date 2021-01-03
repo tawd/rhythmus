@@ -49,14 +49,7 @@ class Goal extends Abstract_Endpoint {
 		$this->register_route( '/goal-revision', array(
 			'methods'  => WP_REST_Server::EDITABLE,
 			'callback' => array( $this, 'create_revision' ),
-			'args'     => array(
-				'teammate_id' => array(
-					'description'       => esc_html__( 'The teammate id' ),
-					'required'          => true,
-					'sanitize_callback' => 'absint',
-					'validate_callback' => array( $this, 'validate_int' )
-				)
-			)
+			'args'     => array()
 		)	);
 
 	}
@@ -75,9 +68,9 @@ class Goal extends Abstract_Endpoint {
 		$revision_num = $request->get_param( 'revision_num' );
 
 		$rev_count_query = $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}rhythmus_goal where teammate_id=%d", $teammate_id);
-		$num_revisions = $wpdb->get_var( $rev_count_query );
+		$total_revisions = $wpdb->get_var( $rev_count_query );
 
-		if($num_revisions == 0) {
+		if($total_revisions == 0) {
 			$current_time = date( 'Y-m-d H:i:s' );
 
 			//TODO: Validate that the teammate_id is valid and the user has permission to insert for that teammate
@@ -97,16 +90,17 @@ class Goal extends Abstract_Endpoint {
 					new WP_Error( 'rhythmus_goal_revision', 'Could not insert new record for ' . $teammate_id )
 				);
 			}
-			$num_revisions = 1;
+			$total_revisions = 1;
 		}
 
 		//Get the latest, aka the total count of revisions, unless specified revision number in request
 		$filter_rev = " and is_current = 1";
-		if( $revision_num && $revision_num < $rev_count_query ) {
-			$filter_rev = " order_by k.id asc limit $revision_num, 1";
+		if( $revision_num && $revision_num < $total_revisions ) {
+			$r = $revision_num - 1;
+			$filter_rev = " order by g.id asc limit $r, 1";
 		}
 		else {
-			$revision_num = $num_revisions;
+			$revision_num = $total_revisions;
 		}
 
 		$query = $wpdb->prepare(
@@ -127,6 +121,8 @@ class Goal extends Abstract_Endpoint {
 			$goal['goals']         = json_decode( $row->goals);
 			$goal['create_date']    		= $row->create_date;
 			$goal['last_update_date']    = $row->last_update_date;
+			$goal['total_revisions'] = $total_revisions;
+			$goal['revision_num'] = $revision_num;
 			return $this->endpoint_response( $goal );
 		}
 		else {
@@ -199,20 +195,44 @@ class Goal extends Abstract_Endpoint {
 		$teammate_id = $request->get_param( 'teammate_id' );
 		$id = $request->get_param( 'id' );
 
+		if(!$teammate_id || !$id) {
+			return $this->endpoint_response(
+				new WP_Error( 'rhythmus_goal_revision', 'No paramas for goal [' . $id . '] ['.$teammate_id .']' )
+			);
+		}
+
 		$query = $wpdb->prepare(
-			"SELECT teammate_id, is_current, create_date, last_update_date, position, goal
+			"SELECT teammate_id, is_current, create_date, last_update_date, mission, goals
 			FROM {$wpdb->prefix}rhythmus_goal
-			WHERE teammate_id = %d and id = %d and is_current = 1, $teammate_id, $id"
+			WHERE teammate_id = %d and id = %d and is_current = 1", $teammate_id, $id
 		);
-
-		$results = $wpdb->get_results( $query );
-
-		if ( count( $results ) != 1 ) {
+		
+		$row = $wpdb->get_row( $query );
+		if ( !$row ) {
 			return $this->endpoint_response(
 				new WP_Error( 'rhythmus_goal_revision', 'Could not find current Goal for ' . $id )
 			);
 		}
 
+		$arr = array(
+			'teammate_id'      => $row->teammate_id,
+			'is_current'       => 1,
+			'mission'          => $row->mission,
+			'goals'            => $row->goals,
+			'create_date'      => $current_time,
+			'last_update_date' => $current_time,
+		);
+
+		$insert_result = $wpdb->insert(
+			$table_name,
+			$arr
+		);
+
+		if ( ! $insert_result ) {
+			return $this->endpoint_response(
+				new WP_Error( 'rhythmus_goal_revision', 'Could not insert new record for ' . $id )
+			);
+		}
 		$update_result = $wpdb->update(
 			$table_name,
 			array( 'is_current' => 0, 'last_update_date' => $current_time ),
@@ -224,25 +244,6 @@ class Goal extends Abstract_Endpoint {
 				new WP_Error( 'rhythmus_goal_revision', 'Could not update record #' . $id )
 			);
 		}
-
-		$insert_result = $wpdb->insert(
-			$table_name,
-			array(
-				'teammate_id'      => $results->teammate_id,
-				'is_current'       => 1,
-				'position'         => $results->position,
-				'goal'              => $results->goal,
-				'create_date'      => $current_time,
-				'last_update_date' => $current_time,
-			)
-		);
-
-		if ( ! $insert_result ) {
-			return $this->endpoint_response(
-				new WP_Error( 'rhythmus_goal_revision', 'Could not insert new record for ' . $id )
-			);
-		}
-
-		return $this->read($request);
+		return $this->endpoint_response();
 	}
 }
