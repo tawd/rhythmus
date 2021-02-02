@@ -1,0 +1,8 @@
+{
+  "name": "rhythmus-package",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "package": "node deploy-plugin.js"
+  }
+}
