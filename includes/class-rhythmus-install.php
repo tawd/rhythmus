@@ -129,6 +129,40 @@ class Rhythmus_Install
           PRIMARY KEY  (teammate_id, week_id)
             ) $charset_collate;";
         dbDelta( $sql );
+
+        $table_name = $wpdb->prefix . "rhythmus_weekly_report_supervisor_status";
+        $sql = "CREATE TABLE $table_name (
+          teammate_id mediumint(9) not null,
+          supervisor_id mediumint(9) not null,
+          week_id mediumint(9) not null,
+          status tinyint(1),
+          PRIMARY KEY  (teammate_id, supervisor_id, week_id)
+            ) $charset_collate;";
+        dbDelta( $sql );
+
+        $table_name = $wpdb->prefix . "rhythmus_weekly_report_supervisor_comment";
+        $sql = "CREATE TABLE $table_name (
+          id mediumint(9) NOT NULL AUTO_INCREMENT,
+          week_id mediumint(9) not null,
+          teammate_id mediumint(9) not null,
+          commentor_id mediumint(9) not null,
+          submit_date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+          PRIMARY KEY  (id)
+            ) $charset_collate;";
+        dbDelta( $sql );
+
+        $table_name = $wpdb->prefix . "rhythmus_high5";
+        $sql = "CREATE TABLE $table_name (
+          id mediumint(9) NOT NULL AUTO_INCREMENT,
+          teammate_id mediumint(9) not null,
+          nominee_id mediumint(9) not null,
+          week_id mediumint(9) not null,
+          notes text,
+          priority tinyint(1) not null default 0,
+          selected tinyint(1) not null default 0,
+          PRIMARY KEY  (id)
+            ) $charset_collate;";
+        dbDelta( $sql );
         
         $table_name = $wpdb->prefix . "rhythmus_weekly_report_week";
         $sql = "CREATE TABLE $table_name (
@@ -250,23 +284,10 @@ class Rhythmus_Install
                     'field_name' => "gratitude",
                     'row_height' => 5,
                     'max_length' => 0,
-                    'question' => "Low",
+                    'question' => "Thankful for",
                     'tooltip' => "Gratitude makes life better, do it frequently, even more than once a week.",
                     'placeholder' => "",
                     'position' => 5,
-                    'required' => 1
-                )
-            );
-            $wpdb->insert($table_name,
-                array(
-                    'field_type' => "recognize",
-                    'field_name' => "high5",
-                    'row_height' => 5,
-                    'max_length' => 0,
-                    'question' => "Low",
-                    'tooltip' => "Who do you want to recognize this week for doing an awesome job and why?",
-                    'placeholder' => "",
-                    'position' => 6,
                     'required' => 1
                 )
             );
