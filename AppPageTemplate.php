@@ -40,6 +40,7 @@
     {
         "baseURL":"<?php echo $siteURL;?>",
         "apiKey":"<?php echo $apiKEY;?>",
+        "wp_uid":"<?php echo $uid;?>",
         "my_teammate_id":"<?php echo $my_teammate_id;?>",
         "is_admin":"<?php echo is_super_admin();?>"
     }

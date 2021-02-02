@@ -2,6 +2,7 @@ export default {
     baseURL:"",
     apiKey:"",
     my_teammate_id:"",
+    wp_uid:false,
     authKey:"",
     kraTopics:false,
     goalTopics:false,
@@ -29,10 +30,13 @@ export default {
             if(parsedConfig && parsedConfig.my_teammate_id) {
                 this.my_teammate_id = parsedConfig.my_teammate_id;
             }
+            if(parsedConfig && parsedConfig.wp_uid) {
+                this.wp_uid = parsedConfig.wp_uid;
+            }
             if(parsedConfig && parsedConfig.is_admin) {
                 this.is_admin = true;
             }
-            this.authKey="k="+Buffer.from(this.uid + ":" + this.apiKey).toString('base64');
+            this.authKey="k="+Buffer.from(this.wp_uid + ":" + this.apiKey).toString('base64');
         }
     }
 }

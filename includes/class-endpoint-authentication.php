@@ -15,19 +15,13 @@ class Endpoint_Authentication {
 	 * @return WP_Error|bool
 	 */
 	public function permissions_check( $request ) {
-
-		if ( RHYTHMUS_ENV === 'development' ) {
-			return true;
-		}
-
 		$key = base64_decode( $_GET['k'] );
 		if ( $key && strpos( $key, ":" ) > 0 ) {
 			$keyParts = explode( ":", $key );
 			if ( $keyParts[1] == get_user_meta( $keyParts[0], 'rhythmus-key', true ) ) {
-				return true;
+				return $keyParts[0];
 			}
 		}
-
 		return false;
 	}
 }
