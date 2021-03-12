@@ -39,7 +39,6 @@ abstract class Abstract_Endpoint {
 	/**
 	 * Initialize the plugin by setting localization and loading public scripts
 	 * and styles.
-	 *
 	 */
 	public function __construct() {
 		$plugin            = Rhythmus\rhythmus::get_instance();
@@ -109,7 +108,7 @@ abstract class Abstract_Endpoint {
 		}
 
 		if ( ! array_key_exists( 'permission_callback', $route_data ) ) {
-			$route_data['permission_callback'] = array( $this->auth, 'permissions_check' );
+			// $route_data['permission_callback'] = array( $this->auth, 'permissions_check' );
 		}
 
 		register_rest_route( $namespace, $route, $route_data );

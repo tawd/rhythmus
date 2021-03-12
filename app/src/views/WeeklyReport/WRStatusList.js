@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import '../../Rhythmus.css';
 import { withStyles } from '@material-ui/core/styles';
 import Config from '../../config.js';
+import { rhythmus_api } from "../../RhythmusApi.js";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import WRStatusListRow from './WRStatusListRow';
 import Table from '@material-ui/core/Table';
@@ -54,17 +55,7 @@ class WRStatusList extends Component {
     componentDidMount() {
         this.setState({isLoading:true});
 
-        fetch(Config.baseURL + '/wp-json/rhythmus/v1/wr-status-list?'+Config.authKey,{
-            method: "GET",
-            cache: "no-cache"
-        })
-            .then(response => {
-                if (response.ok) {
-                  return response.json();
-                } else {
-                  throw new Error('Something went wrong ...');
-                }
-            })
+        rhythmus_api("wr-status-list")
             .then(data => {
                 let teammates = data.teammates;
                 let weeks = data.weeks;
@@ -105,18 +96,7 @@ class WRStatusList extends Component {
             "status":status
         };
 
-        fetch(Config.baseURL + '/wp-json/rhythmus/v1/wr-status?'+Config.authKey,{
-            method: "POST",
-            cache: "no-cache",
-            body: JSON.stringify(wrStatus)
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Something went wrong ...');
-                }
-            })
+        rhythmus_api("wr-status", {}, wrStatus)
             .then(data => {
                 if( !data.success ) {
                     throw new Error('Error saving to server ...');

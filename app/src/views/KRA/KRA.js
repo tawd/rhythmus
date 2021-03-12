@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import '../../Rhythmus.css';
 import Config from '../../config.js';
+import { rhythmus_api } from "../../RhythmusApi.js";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -76,20 +77,8 @@ class KRA extends Component {
             teammate_id = Config.my_teammate_id;
         }
         this.setState({isLoading:true, teammate_id:teammate_id});
-        let params = "teammate_id=" + teammate_id;
         
- 
-        fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra?'+params+'&'+Config.authKey,{
-            method: "GET",
-            cache: "no-cache"
-        })
-            .then(response => {
-                if (response.ok) {
-                  return response.json();
-                } else {
-                  throw new Error('Something went wrong ...');
-                }
-            })
+        rhythmus_api("kra", {teammate_id:teammate_id}, {})
             .then(data => {
                 let kra = data;
                 const canEdit = Config.is_admin || kra.teammate_id === Config.my_teammate_id;

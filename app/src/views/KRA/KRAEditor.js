@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Config from '../../config.js';
+import { rhythmus_api } from '../../RhythmusApi';
 
 const styles = theme => ({
   container: {
@@ -51,18 +52,7 @@ class KRAEditor extends Component {
 
   saveKRA = () => {
       let kra = this.state.kra;
-      fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra?'+Config.authKey,{
-          method: "POST",
-          cache: "no-cache",
-          body: JSON.stringify(kra)
-      })
-          .then(response => {
-              if (response.ok) {
-                  return response.json();
-              } else {
-                  throw new Error('Something went wrong ...');
-              }
-          })
+      rhythmus_api("kra",{},kra)
           .then(data => {
               if( !data.success ) {
                   throw new Error('Error saving to server ...');

@@ -2,7 +2,6 @@
 /**
  * Rhythmus
  *
- *
  * @package   Rhythmus
  * @author    Todd Watson
  * @license   GPL-3.0
@@ -28,13 +27,14 @@ class KRA_Topics extends Abstract_Endpoint {
 
 		$kra_topics_route = '/kra-topics';
 
-		$this->register_route( $kra_topics_route, array(
+		$this->register_route(
+			$kra_topics_route,
 			array(
 				'methods'  => \WP_REST_Server::READABLE,
 				'callback' => array( $this, 'get_kra_topics' ),
 				'args'     => array(),
-			),
-		) );
+			)
+		);
 	}
 
 	/**
@@ -47,8 +47,10 @@ class KRA_Topics extends Abstract_Endpoint {
 	public function get_kra_topics( $request ) {
 		global $wpdb;
 
-		$results = $wpdb->get_results( "SELECT id, name, title, description, type, source 
-        FROM {$wpdb->prefix}rhythmus_kra_topic" );
+		$results = $wpdb->get_results(
+			"SELECT id, name, title, description, type, source 
+        FROM {$wpdb->prefix}rhythmus_kra_topic"
+		);
 
 		$topics = array();
 
@@ -63,7 +65,7 @@ class KRA_Topics extends Abstract_Endpoint {
 				'name'        => $row->name,
 				'title'       => $row->title,
 				'type'        => $type,
-				'description' => $row->description
+				'description' => $row->description,
 			);
 			if ( $row->source == 1 ) {
 				$topic['source'] = 'kra-titles';

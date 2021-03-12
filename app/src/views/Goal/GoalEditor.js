@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Config from '../../config.js';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { rhythmus_api } from '../../RhythmusApi';
 
 const styles = theme => ({
   container: {
@@ -58,18 +59,7 @@ class GoalEditor extends Component {
 
   saveGoal = () => {
       let goal = this.state.goal;
-      fetch(Config.baseURL + '/wp-json/rhythmus/v1/goal?'+Config.authKey,{
-          method: "POST",
-          cache: "no-cache",
-          body: JSON.stringify(goal)
-      })
-          .then(response => {
-              if (response.ok) {
-                  return response.json();
-              } else {
-                  throw new Error('Something went wrong ...');
-              }
-          })
+      rhythmus_api("goal",{},goal)
           .then(data => {
               if( !data.success ) {
                   throw new Error('Error saving to server ...');
@@ -86,17 +76,7 @@ class GoalEditor extends Component {
     this.setState({goal:goal});
     if(!Config.goalTopics) {
         this.setState({isLoading:true});
-        fetch(Config.baseURL + '/wp-json/rhythmus/v1/goal-topics?'+Config.authKey,{
-            method: "GET",
-            cache: "no-cache"
-        })
-            .then(response => {
-                if (response.ok) {
-                  return response.json();
-                } else {
-                  throw new Error('Something went wrong ...');
-                }
-            })
+        rhythmus_api("goal-topics")
             .then(data => {
                 Config.goalTopics = data.topics;
                 Config.goalHelp = data.help;

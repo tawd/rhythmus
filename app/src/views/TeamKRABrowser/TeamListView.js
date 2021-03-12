@@ -3,6 +3,7 @@ import KRAReview from '../KRAReview/KRAReview';
 import TeamListRow from './TeamListRow';
 import '../../Rhythmus.css';
 import Config from '../../config.js';
+import { rhythmus_api } from "../../RhythmusApi.js";
 // eslint-disable-next-line
 //import KRAViewer from '../KRA/ViewKRA';
 // eslint-disable-next-line
@@ -53,20 +54,8 @@ class TeamListView extends Component {
             teammate_id:teammate_id,
             isLoading:true
         });
-
-        let params = "teammate_id=" + teammate_id;
  
-        fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra?'+params+'&'+Config.authKey,{
-            method: "GET",
-            cache: "no-cache"
-        })
-            .then(response => {
-                if (response.ok) {
-                  return response.json();
-                } else {
-                  throw new Error('Something went wrong ...');
-                }
-            })
+        rhythmus_api("kra", {teammate_id : teammate_id})
             .then(data => {
                 let kra = data;
                 const canEdit = Config.is_admin || kra.teammate_id === Config.my_teammate_id;
@@ -101,17 +90,7 @@ class TeamListView extends Component {
     loadData = () => {
         this.setState({isLoading:true, forceReload: false});
 
-        fetch(Config.baseURL + '/wp-json/rhythmus/v1/teammate-list?'+Config.authKey,{
-            method: "GET",
-            cache: "no-cache"
-        })
-            .then(response => {
-                if (response.ok) {
-                  return response.json();
-                } else {
-                  throw new Error('Something went wrong ...');
-                }
-            })
+        rhythmus_api("teammate-list")
             .then(data => {
                 let teammates = data.teammates;
                 this.setState({teammates:teammates,isLoading:false});

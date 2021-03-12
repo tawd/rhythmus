@@ -11,6 +11,7 @@ import TextField from '@material-ui/core/TextField';
 
 
 import Grid from '@material-ui/core/Grid';
+import { rhythmus_api } from '../../RhythmusApi';
 
 const styles = theme => ({
     container: {
@@ -121,18 +122,7 @@ class KRAReviewEditor extends Component {
             this.setState( {isDirty:false} );
             this.props.onSaving(true);
         }
-        fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-review?'+Config.authKey,{
-            method: "POST",
-            cache: "no-cache",
-            body: JSON.stringify(review)
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Something went wrong ...');
-                }
-            })
+        rhythmus_api("kra-review",{},review)
             .then(data => {
                 if( !data.success ) {
                     throw new Error('Error saving to server ...');

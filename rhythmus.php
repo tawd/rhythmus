@@ -2,7 +2,6 @@
 /**
  * Rhythmus
  *
- *
  * @package   Rhythmus
  * @author    Todd Watson
  * @license   GPL-3.0
@@ -41,7 +40,6 @@ require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 register_activation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Rhythmus\\Rhythmus', 'deactivate' ) );
 
-
 /**
  * Initialize Plugin
  *
@@ -52,43 +50,61 @@ function rhythmus_init() {
 	$rhythmus = Rhythmus\Rhythmus::get_instance();
 	$rhythmus->initialize();
 
-	$url = explode( '?', $_SERVER['REQUEST_URI'] );
+	$url          = explode( '?', $_SERVER['REQUEST_URI'] );
 	$current_path = strtolower( trim( $url[0], '/' ) );
 
 	if ( 'app' === $current_path ) {
-		include( __DIR__ . '/AppPageTemplate.php' );
+		include __DIR__ . '/AppPageTemplate.php';
 		exit();
 	}
 
 }
 add_action( 'plugins_loaded', 'rhythmus_init' );
 
-add_action( 'admin_menu', 'rhythmus_menu' );  
-function rhythmus_menu(){    
-	$page_title = 'Rhythmus Menu';   
-	$menu_title = 'Rhythmus';   
-	$capability = 'manage_options';   
+/**
+ * Undocumented function
+ *
+ * @return void
+ */
+function rhythmus_menu() {
+	$page_title = 'Rhythmus Menu';
+	$menu_title = 'Rhythmus';
+	$capability = 'manage_options';
 	$menu_slug  = 'rhythmus-admin';
-	$function   = 'rhythmus_admin_page';   
-	$icon_url   = 'dashicons-media-code';   
-	$position   = 1;    
-	add_menu_page( $page_title,                  
-		$menu_title,                   
-		$capability,                   
-		$menu_slug,                   
-		$function,                   
-		$icon_url,                   
-		$position 
-	); 
+	$function   = 'rhythmus_admin_page';
+	$icon_url   = 'dashicons-media-code';
+	$position   = 1;
+	add_menu_page(
+		$page_title,
+		$menu_title,
+		$capability,
+		$menu_slug,
+		$function,
+		$icon_url,
+		$position
+	);
 }
+add_action( 'admin_menu', 'rhythmus_menu' );
 
-function rhythmus_admin_page(){
-	include( __DIR__ . '/includes/rhythmus-admin.php' );
+/**
+ * Load admin pages.
+ *
+ * @return void
+ */
+function rhythmus_admin_page() {
+	include __DIR__ . '/includes/rhythmus-admin.php';
 	rhythmus_show_admin();
 }
 
-function rhythmus_login_redirect( $redirect_to, $request, $user  ) {
-	  return site_url("/app");
+/**
+ * Redirect users to app
+ *
+ * @param string  $redirect_to Where to redirect.
+ * @param string  $request Not sure what this is.
+ * @param WP_User $user Current user.
+ */
+function rhythmus_login_redirect( $redirect_to, $request, $user ) {
+	return site_url( '/app' );
 }
 add_filter( 'login_redirect', 'rhythmus_login_redirect', 10, 3 );
-	
+
