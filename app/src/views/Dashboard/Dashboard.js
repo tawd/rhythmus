@@ -14,6 +14,8 @@ import IconStar from '@material-ui/icons/StarsRounded';
 import PublishIcon from '@material-ui/icons/Publish';
 import { ButtonGroup } from '@material-ui/core';
 import Goal from './../Goal/Goal.js';
+import Milestonia from './../Milestonia/Milestonia.js';
+
 
 const styles = theme => ({
     container: {
