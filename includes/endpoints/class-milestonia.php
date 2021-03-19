@@ -21,6 +21,7 @@ namespace Rhythmus\Endpoints;
 use Rhythmus;
 use WP_REST_Request;
 use WP_REST_Response;
+use WP_Error;
 
 /**
  * @subpackage REST_Controller
@@ -99,12 +100,13 @@ class Milestonia extends Abstract_Endpoint {
 		ON t.wp_user_id = u.ID
 		WHERE t.id = %d", $teammate_id);
 
-		$user = $wpdb->get_row($query);
-		$user->user_email;
-		$email = $user->user_email;
+		$user = $wpdb->get_row( $query );
 
-		return $email;
+		if ( ! $user ) {
+			return '';
+		}
 		
+		return $user->user_email;		
 	}
 
 	public function get_api ($users_email, $token) {
