@@ -21,8 +21,8 @@ import Link from '@material-ui/core/Link';
 
 const styles = theme => ({
   container: {
-    display: 'flex',
-    flexWrap: 'wrap',
+    // display: 'flex',
+    // flexWrap: 'wrap',
     justifyContent: 'space-between',
     justify: 'center',
     alignItems: 'center',
@@ -168,8 +168,6 @@ class MilestoniaGoal extends Component {
 
           //outside loop -> grid set to 12
           //inside loop -> set index i to push into grid box of size 3
-
-        
         
 
         for(i = 0; i < goals.length; i++) {
@@ -197,11 +195,12 @@ class MilestoniaGoal extends Component {
 
         return(
             <div>
-                <Paper className={classes.paper}>
+                {/* <Paper className={classes.paper}> */}
                 <Grid container className={classes.root} spacing={2}>
+                  <br></br>
                     {body}
                 </Grid>
-                </Paper>
+                {/* </Paper> */}
             </div>
         )
 
