@@ -27,16 +27,16 @@ export default {
             if(parsedConfig && parsedConfig.apiKey) {
                 this.apiKey = parsedConfig.apiKey;
             }
-            if(parsedConfig && parsedConfig.my_teammate_id) {
-                this.my_teammate_id = parsedConfig.my_teammate_id;
+            if(parsedConfig && parsedConfig.myTeammateId) {
+                this.my_teammate_id = parsedConfig.myTeammateId;
             }
-            if(parsedConfig && parsedConfig.wp_uid) {
-                this.wp_uid = parsedConfig.wp_uid;
+            if(parsedConfig && parsedConfig.wpUid) {
+                this.wp_uid = parsedConfig.wpUid;
             }
-            if(parsedConfig && parsedConfig.is_admin) {
-                this.is_admin = true;
+            if(parsedConfig && parsedConfig.isAdmin) {
+                this.isAdmin = true;
             }
-            this.authKey="k="+Buffer.from(this.wp_uid + ":" + this.apiKey).toString('base64');
+            this.authKey="k="+Buffer.from(this.wpUid + ":" + this.apiKey).toString('base64');
         }
     }
 }
