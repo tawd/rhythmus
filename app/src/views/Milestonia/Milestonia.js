@@ -112,7 +112,7 @@ class Milestonia extends Component {
     render() {
         const{ isLoading, error, canEdit, goals} = this.state;
 
-        const { classes } = this.props;
+        const { teammate_id, classes } = this.props;
 
 
         if(error)
@@ -141,7 +141,7 @@ class Milestonia extends Component {
                 {/* URL = https://app.milestonia.com/my-goals */}
                 <a href="https://app.milestonia.com/my-goals"><Button variant="outlined">Status Milestones</Button></a>
                 <Grid container className={classes.root} spacing={2}>
-                <MilestoniaGoal teammate_id = "3"></MilestoniaGoal>
+                <MilestoniaGoal teammate_id={teammate_id}></MilestoniaGoal>
                 </Grid>
                 </Paper>
             </div>

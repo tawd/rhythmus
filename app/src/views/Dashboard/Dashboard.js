@@ -309,7 +309,7 @@ class Dashboard extends Component {
 
         return (
             <div>
-                <Milestonia teammate_id = "3"></Milestonia>
+                <Milestonia teammate_id={teammate.teammate_id}></Milestonia>
                
                 <div className={classes.paper}>{completionStatus}</div>
                 <Paper className={classes.paper}>
