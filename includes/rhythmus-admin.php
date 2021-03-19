@@ -34,11 +34,20 @@ function rhythmus_show_admin() {
     }
 
 
+    // update_api_value();
+
+
     $userArr = $wpdb->get_results( "SELECT `ID`, `user_email` FROM {$wpdb->prefix}users ORDER BY user_email asc", OBJECT );
 
     $results = $wpdb->get_results( "SELECT `id`, `wp_user_id`, `fname`, `lname`, `slack`, `is_active` 
     FROM {$wpdb->prefix}rhythmus_teammate ORDER BY fname asc, lname ASC", OBJECT );
 
+
+    // show_api_field();
+
+	milestonia_api_field();
+
+    
     ?>
     <table>
         <tr><td>First Name</td><td>Last Name</td><td>Slack User Name</td><td>WordPress User</td><td>Is Active</td><td>&nbsp;</tr>
@@ -64,6 +73,59 @@ function rhythmus_show_admin() {
         echo "<td><input type='submit' value='Save'/></td></form></tr>";
     }
     ?>
-    </table><?php
 
+
+    <!-- //2. Save API key in wp_options table -->
+
+
+    <!-- //3. Display API key if it exists -->
+
+
+    <!-- 1. Display text field and submit button -->
+    <table>
+        <br>
+        <tr><td>MILESTONIA API KEY</td></tr>
+        <td><input type='text' name='milestonia-api-key' /></td>
+        <td><input type='submit' value='Save'/></td></form></tr>
+
+        <tr><td><br>CURRENT MILESTONIA API KEY:</td></tr>
+
+        <!-- if milestonia key exists, display it
+        <tr><td>fake-milestonia-key</td></tr>
+
+        <?php
+
+    
+    // If save key is pressed, add-option is called using the value of milestonia-api-key
+    // <?php add_option( '$api-key', 'submit-text', '', 'yes' ); 
+    
+    ?>
+
+    </table><?php
+}
+
+function milestonia_api_field() {
+
+    if ( array_key_exists( 'milestonia_api_key', $_POST ) ) {
+        $milestonia_api_key = trim( $_POST['milestonia_api_key'] );
+        update_option( 'milestonia_api_key', $milestonia_api_key );
+    } else {
+        $milestonia_api_key = get_option( 'milestonia_api_key', '' );
+    }
+    
+        $text_field = sprintf( '<input name="milestonia_api_key" type="text" value="%s" />', $milestonia_api_key );
+        ?>
+        <h2 class="title">Milestonia</h2>
+        <form method="POST">
+            <table class="form-table" role="presentation">
+                <tbody><tr>
+                    <th><label for="milestonia_api_key">Milestonia API Key</label></th>
+                    <td><input name="milestonia_api_key" id="milestonia_api_key" type="text" value="<?php echo $milestonia_api_key; ?>" class="regular-text"></td>
+                </tr>
+                </tbody>
+            </table>
+            <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Update API Key"></p>
+        </form>
+        <?
+    
 }

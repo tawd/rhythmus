@@ -76,6 +76,7 @@ h3.topic-title {
   background-color:#4caf50;
 }
 .notes {
+  word-break: break-word;
   background:rgba(236, 238, 240, 0.5);
   border-radius:2px;
   padding:0.75em;

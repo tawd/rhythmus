@@ -122,5 +122,6 @@ class Rhythmus {
 		( new Endpoints\KRA() )->do_hooks();
 		( new Endpoints\Goal() )->do_hooks();
 		( new Endpoints\Goal_Topics() )->do_hooks();
+		( new Endpoints\Milestonia() )->do_hooks();
 	}
 }

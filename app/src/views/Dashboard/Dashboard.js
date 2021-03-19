@@ -15,7 +15,7 @@ import PublishIcon from '@material-ui/icons/Publish';
 import { ButtonGroup } from '@material-ui/core';
 import Goal from './../Goal/Goal.js';
 import Milestonia from './../Milestonia/Milestonia.js';
-
+import MilestoniaGoal from '../Milestonia/MilestoniaGoal';
 
 const styles = theme => ({
     container: {
@@ -309,8 +309,12 @@ class Dashboard extends Component {
 
         return (
             <div>
+                <Milestonia teammate_id = "3"></Milestonia>
+               
                 <div className={classes.paper}>{completionStatus}</div>
                 <Paper className={classes.paper}>
+
+
                     <h2>My Assessment of {m[prevMonth-1]}, {prevYear}</h2>
                     <div className={scoreColorClass}>{prevTotal}</div>
                         {toggleEditPrevButton} 
