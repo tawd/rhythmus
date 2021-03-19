@@ -91,9 +91,9 @@ class Milestonia extends Component {
       <div>
         <Paper className={classes.paper}>
           <h2>Milestonia Goals</h2>
-          <Button size="small" href="#text-buttons" color="primary" className={classes.status}>
-              <a href="https://app.milestonia.com/my-goals">Status My Milestones</a>
-            </Button>
+          <Button size="small" href="https://app.milestonia.com/my-goals" color="primary" className={classes.status}>
+            Status My Milestones
+          </Button>
           <Grid className={classes.container} item xs={12}>
             {milestoniaGoals}
           </Grid>
