@@ -82,26 +82,7 @@ function rhythmus_show_admin() {
 
 
     <!-- 1. Display text field and submit button -->
-    <table>
-        <br>
-        <tr><td>MILESTONIA API KEY</td></tr>
-        <td><input type='text' name='milestonia-api-key' /></td>
-        <td><input type='submit' value='Save'/></td></form></tr>
-
-        <tr><td><br>CURRENT MILESTONIA API KEY:</td></tr>
-
-        <!-- if milestonia key exists, display it
-        <tr><td>fake-milestonia-key</td></tr>
-
-        <?php
-
-    
-    // If save key is pressed, add-option is called using the value of milestonia-api-key
-    // <?php add_option( '$api-key', 'submit-text', '', 'yes' ); 
-    
-    ?>
-
-    </table><?php
+    <?php
 }
 
 function milestonia_api_field() {
