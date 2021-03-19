@@ -91,11 +91,11 @@ class Milestonia extends Abstract_Endpoint {
 		global $wpdb;
 
 		$query = $wpdb->prepare(
-			"SELECT u.user_email,t.fname,t.lname
-		FROM wp_users u 
-		JOIN {$wpdb->prefix}rhythmus_teammate t
-		ON t.wp_user_id = u.ID
-		WHERE t.id = %d",
+			"SELECT u.user_email
+			FROM {$wpdb->prefix}users u 
+			JOIN {$wpdb->prefix}rhythmus_teammate t
+			ON t.wp_user_id = u.ID
+			WHERE t.id = %d",
 			$teammate_id
 		);
 
