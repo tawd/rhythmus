@@ -147,6 +147,7 @@ class TeamListView extends Component {
         }
         if(viewTeammate){
             return(
+                //show the teammate info once selected with set data input
                     <KRAReview forceReload={this.forceReload} userid={teammate_id} month={month} year={year} onChooseTeammateMonth={this.onChooseTeammateMonth} onCloseTeammate={this.onCloseTeammate}/>
             )
         }

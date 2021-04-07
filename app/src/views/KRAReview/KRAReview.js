@@ -227,6 +227,11 @@ onChooseTeammatePrevMonth = () => {
         
         const nextMonth = this.getNextMonth();
         const nextMonthLabel = m[nextMonth.month - 1] + " " + nextMonth.year;
+        //let statement think of like a if statement passing in these values
+        let nextMonthReview = teammate && teammate.months && teammate.months[nextMonth.year+"-"+nextMonth.month];
+        if(!nextMonthReview){
+            nextMonthReview = {};
+        }
         const prevMonth = this.getPreviousMonth();
         const prevMonthLabel = m[prevMonth.month - 1] + " " + prevMonth.year;
         var totalContent = '';
@@ -263,7 +268,10 @@ onChooseTeammatePrevMonth = () => {
                         </Paper>
                     </Grid>
                 </form>
+                
                 {body}
+                {/* //next month - krareviewviewer*/}
+                <KRAReviewViewer review={nextMonthReview} classes={classes} teammate={teammate}></KRAReviewViewer>
                 <Goal teammate_id={teammate.userid}></Goal>
             </div>
         );
