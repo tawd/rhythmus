@@ -15,6 +15,7 @@ import IconBack from '@material-ui/icons/ArrowBackIosRounded';
 import IconEdit from '@material-ui/icons/EditRounded';
 import IconStar from '@material-ui/icons/StarsRounded';
 import Goal from './../Goal/Goal.js';
+import Milestonia from './../Milestonia/Milestonia.js';
 
 import { ButtonGroup } from '@material-ui/core';
 
@@ -270,8 +271,8 @@ onChooseTeammatePrevMonth = () => {
                 </form>
                 
                 {body}
-                {/* //next month - krareviewviewer*/}
                 <KRAReviewViewer review={nextMonthReview} classes={classes} teammate={teammate}></KRAReviewViewer>
+                <Milestonia teammate_id={teammate.userid}></Milestonia>
                 <Goal teammate_id={teammate.userid}></Goal>
             </div>
         );

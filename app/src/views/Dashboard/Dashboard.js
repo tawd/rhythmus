@@ -15,7 +15,6 @@ import PublishIcon from '@material-ui/icons/Publish';
 import { ButtonGroup } from '@material-ui/core';
 import Goal from './../Goal/Goal.js';
 import Milestonia from './../Milestonia/Milestonia.js';
-import MilestoniaGoal from '../Milestonia/MilestoniaGoal';
 
 const styles = theme => ({
     container: {
@@ -309,7 +308,6 @@ class Dashboard extends Component {
 
         return (
             <div>
-                <Milestonia teammate_id={teammate.teammate_id}></Milestonia>
                
                 <div className={classes.paper}>{completionStatus}</div>
                 <Paper className={classes.paper}>
@@ -327,6 +325,7 @@ class Dashboard extends Component {
                     <br/>
                     {currMonthContent}
                 </Paper>
+                <Milestonia teammate_id={teammate.teammate_id}></Milestonia>
                 <Goal></Goal>
             </div>
         );

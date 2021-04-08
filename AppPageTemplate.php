@@ -22,7 +22,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="shortcut icon" type="image/png" href="https://static.showit.co/file/RwW8sV87QZ2ZM6Yjb9OeLQ/70405/rhythmus-favicon.png"/>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <title>Rhythmus</title>
