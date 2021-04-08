@@ -34,6 +34,10 @@ const styles = theme => ({
     menu: {
       width: 'auto',
     },
+    nextMonthLbl: {
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
     paper: {
         padding: theme.spacing(2),
         textAlign: 'center',
@@ -271,6 +275,7 @@ onChooseTeammatePrevMonth = () => {
                 </form>
                 
                 {body}
+                <h3 className={classes.nextMonthLbl}>Next Month</h3>
                 <KRAReviewViewer review={nextMonthReview} classes={classes} teammate={teammate}></KRAReviewViewer>
                 <Milestonia teammate_id={teammate.userid}></Milestonia>
                 <Goal teammate_id={teammate.userid}></Goal>
