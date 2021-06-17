@@ -34,10 +34,6 @@ const styles = theme => ({
     menu: {
       width: 'auto',
     },
-    nextMonthLbl: {
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    },
     paper: {
         padding: theme.spacing(2),
         textAlign: 'center',
@@ -63,6 +59,7 @@ class KRAReview extends Component {
           open:false,
           isSubmitting:false,
           isEditing:false,
+          previousAndNextTeammate:false,
           canEdit:false
       };
   }
@@ -97,8 +94,13 @@ class KRAReview extends Component {
   }
   loadKRAs = () => {
     const{year, userid, month} = this.props;
+
+    this.loadKRAData(userid, year, month)
+  }
+
+  loadKRAData = (userid, year, month) => {
     
-    this.setState({isLoading:true, month:month, year:year});
+    this.setState({isLoading:true, month:month, year:year, teammate_id:userid});
     let params = "teammate_id="+userid;
     fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-review?'+params+'&'+Config.authKey,{
         method: "GET",
@@ -123,7 +125,8 @@ class KRAReview extends Component {
                 this.setState({review:review});
             }
             const canEdit = Config.is_admin || teammate.userid === Config.my_teammate_id;
-            this.setState({teammate:data,isLoading:false,canEdit:canEdit});
+            const previousAndNextTeammate = this.getNextPrevTeammates();
+            this.setState({teammate:data,isLoading:false,canEdit:canEdit, previousAndNextTeammate:previousAndNextTeammate});
         }
     ).catch(error => this.setState({error, isLoading:false}));
   }
@@ -139,6 +142,45 @@ onChooseTeammatePrevMonth = () => {
           this.props.onChooseTeammateMonth(this.props.userid, prevMonth.month, prevMonth.year);
       }
   }
+
+onChooseTeammateNext = () => {
+    let { year, month } = this.props;
+    let {previousAndNextTeammate} = this.state;
+    let uid = previousAndNextTeammate.next.userid;
+    this.props.onChooseTeammateMonth(uid, month, year);
+    this.loadKRAData(uid, month, year);
+}
+
+onChooseTeammatePrev = () => {
+    let { year, month } = this.props;
+    let {previousAndNextTeammate} = this.state;
+    let uid = previousAndNextTeammate.prev.userid;
+    this.props.onChooseTeammateMonth(uid, month, year);
+    this.loadKRAData(uid, month, year);
+}
+
+getNextPrevTeammates = () => {
+    const {teammates, userid} = this.props;
+    var found = false;
+    var retVal = {};
+    var prev = false;
+    teammates.map((teammate) => {
+        if(found){
+            retVal.next = teammate;
+            found = false;
+        }
+        if(teammate.userid === userid){
+            found = true;
+            if(prev){
+                retVal.prev = prev;
+            }
+        }
+        prev = teammate;
+        return teammate;
+    });
+    return retVal;
+
+}
 
   getNextMonth = () => {
     let nextMonth = this.props.month + 1;
@@ -172,12 +214,39 @@ onChooseTeammatePrevMonth = () => {
   onViewKRA = () => {
     this.setState({isEditing:false, isSubmitting:false});
   }
+  markReviewed = () => {
+    let review = this.state.review;
+    this.props.forceReload();
+    review.userid = this.state.teammate_id;
+    review.month = this.state.month;
+    review.year = this.state.year;
+    review.reviewed = true;
+    this.setState({review:review});
+    fetch(Config.baseURL + '/wp-json/rhythmus/v1/kra-review?'+Config.authKey,{
+        method: "POST",
+        cache: "no-cache",
+        body: JSON.stringify(review)
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong ...');
+            }
+        })
+        .then(data => {
+            if( !data.success ) {
+                throw new Error('Error saving to server ...');
+            }
+        }
+    ).catch(error => this.setState({error}));
+
+}
 
   render() {
 
     let { classes, year, month } = this.props;
-    const{isLoading, error, teammate, canEdit} = this.state;
-
+    const{isLoading, error, teammate, canEdit, previousAndNextTeammate} = this.state;
 
     const closeBtn = <Button variant="outlined" className={classes.closeBtn} onClick={this.closeTeammate} disabled={this.state.saving} title="Close"><IconClose/></Button>;
     if(error)
@@ -247,6 +316,31 @@ onChooseTeammatePrevMonth = () => {
         } else if (total > 1) {
             totalContent = <div className={"score score-mid"}>{total}</div>;
         }
+
+
+        let ptBtn = false;
+        let ntBtn = false;
+        let pn = previousAndNextTeammate;
+
+        if(pn.prev){
+            let prevTeammateLabel = pn.prev.name;
+            ptBtn = <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrev} disabled={this.state.saving} title={prevTeammateLabel}><IconBack/> {prevTeammateLabel}</Button>
+
+        }
+        if(pn.next){
+            let nextTeammateLabel = pn.next.name;
+            ntBtn = <Button className={classes.nextBtn} onClick={this.onChooseTeammateNext} disabled={this.state.saving} title={nextTeammateLabel}>{nextTeammateLabel} <IconNext/></Button>
+        }
+        let reviewBtn = false;
+        if(Config.is_admin) {
+            if(review.reviewed){
+                reviewBtn = <div>Reviewed</div>;
+            } else {
+                reviewBtn =<Button className={classes.prevBtn} onClick={this.markReviewed} title={"Mark Reviewed"} >Mark Reviewed</Button>; 
+            }
+
+        }
+
         return(
             <div>
                 <Grid container>
@@ -259,6 +353,8 @@ onChooseTeammatePrevMonth = () => {
                     </Grid>
                     <Grid container justify="flex-end">
                         <ButtonGroup size="small" aria-label="small button group">
+                            {ptBtn}
+                            {ntBtn}
                             <Button className={classes.prevBtn} onClick={this.onChooseTeammatePrevMonth} disabled={this.state.saving} title={prevMonthLabel}><IconBack/> {prevMonthLabel}</Button>
                             <Button className={classes.nextBtn} onClick={this.onChooseTeammateNextMonth} disabled={this.state.saving} title={nextMonthLabel}>{nextMonthLabel} <IconNext/></Button>
                             {closeBtn}
@@ -270,6 +366,7 @@ onChooseTeammatePrevMonth = () => {
                         <Paper className={classes.paper}>
                                     <h2>{teammate.name} for {m[month-1]}, {year}</h2>
                                     {totalContent}
+                                    {reviewBtn}
                         </Paper>
                     </Grid>
                 </form>

@@ -137,6 +137,7 @@ class TeamListView extends Component {
     render() {
         let { classes } = this.props;
         const{isLoading, error, teammates, viewTeammate,viewKRA, kra, teammate_id, month, year, canEdit} = this.state;
+
         if(error)
         {
             return <p>{error.message}</p>
@@ -148,12 +149,12 @@ class TeamListView extends Component {
         if(viewTeammate){
             return(
                 //show the teammate info once selected with set data input
-                    <KRAReview forceReload={this.forceReload} userid={teammate_id} month={month} year={year} onChooseTeammateMonth={this.onChooseTeammateMonth} onCloseTeammate={this.onCloseTeammate}/>
+                    <KRAReview forceReload={this.forceReload} teammates={teammates} userid={teammate_id} month={month} year={year} onChooseTeammateMonth={this.onChooseTeammateMonth} onCloseTeammate={this.onCloseTeammate}/>
             )
         }
         if(viewKRA){
             return(
-                <KRA teammate_id={teammate_id} kra={kra} canEdit={canEdit} onCloseKRA={this.onCloseKRA}/>
+                <KRA teammate_id={teammate_id} kra={kra} teammates={teammates} onChooseTeammateKRA={this.onChooseTeammateKRA} canEdit={canEdit} onCloseKRA={this.onCloseKRA}/>
             )
         }
         let today = new Date();
